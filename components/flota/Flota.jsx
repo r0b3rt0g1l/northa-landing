@@ -20,8 +20,21 @@ function FlotaCard({ municipio, index }) {
         rel="noopener"
         className="group flex h-full flex-col overflow-hidden rounded-2xl border border-[var(--color-line)] bg-[var(--color-surface)] transition-colors duration-200 hover:border-[var(--color-bright)]/40 hover:bg-[var(--color-surface-2)]"
       >
-        {/* Placa clara fija: los escudos están diseñados para papel, no para fondo oscuro */}
+        {/*
+          Placa clara fija: los escudos están diseñados para papel, no para fondo oscuro.
+          h-32 (128px, ~96px de alto útil tras el padding) es solo densidad visual: cuanto
+          más chica, más se comprime hacia abajo un escudo alto como Soyopa (157px nativo).
+          No confundir con el tope de escalado hacia arriba, que vive en el <img> de abajo.
+        */}
         <span className="flex h-32 items-center justify-center bg-[#F7F7F4] p-4">
+          {/*
+            w-auto/h-auto (nunca w-full/h-full ni un width/height fijo) es lo que evita el
+            escalado hacia arriba: sin ellos, un navegador solo usa el tamaño intrínseco del
+            PNG, y max-w-full/max-h-full únicamente lo topan hacia abajo — nunca lo agrandan.
+            Soyopa (125×157 nativo) y Aconchi (198×196) dependen de esto para no verse
+            lavados. Si algún día se cambia por w-full/h-full, revisar antes los tamaños
+            nativos reales en public/escudos/.
+          */}
           <img
             src={`/escudos/${municipio.slug}.png`}
             alt={`Escudo de ${municipio.nombre}`}

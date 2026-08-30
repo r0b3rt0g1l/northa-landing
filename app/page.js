@@ -5,7 +5,6 @@ import { Servicios } from "@/components/servicios/Servicios";
 import { ServiciosIA } from "@/components/ia/ServiciosIA";
 import { Diferenciacion } from "@/components/diferenciacion/Diferenciacion";
 import { Pilares } from "@/components/pilares/Pilares";
-import { Showcase } from "@/components/showcase/Showcase";
 import { Proceso } from "@/components/proceso/Proceso";
 import { ContactoCTA } from "@/components/contacto/ContactoCTA";
 import { organizationJsonLd, websiteJsonLd } from "@/lib/jsonld";
@@ -30,7 +29,6 @@ export default function Home() {
       <ServiciosIA />
       <Diferenciacion />
       <Pilares />
-      <Showcase />
       <Proceso />
       <ContactoCTA />
     </>
