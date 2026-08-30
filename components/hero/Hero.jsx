@@ -4,6 +4,7 @@ import { HeroStar } from "./HeroStar";
 import { Button } from "@/components/ui/Button";
 import { GlowBadge } from "@/components/ui/GlowBadge";
 import { Reveal } from "@/components/ui/Reveal";
+import { CompassRose } from "@/components/ui/CompassRose";
 
 export function Hero() {
   return (
@@ -18,6 +19,8 @@ export function Hero() {
         className="pointer-events-none absolute inset-0 -z-20 bg-[radial-gradient(60%_50%_at_78%_12%,rgba(255,46,126,0.16),transparent_60%),radial-gradient(45%_40%_at_12%_92%,rgba(255,122,179,0.10),transparent_60%)]"
       />
       <Starfield className="absolute inset-0 -z-10 h-full w-full" />
+      {/* Rosa de los vientos: pieza gráfica grande de fondo, no un ícono de marca */}
+      <CompassRose className="pointer-events-none absolute left-1/2 top-1/2 -z-10 h-[min(620px,82vw)] w-[min(620px,82vw)] -translate-x-1/2 -translate-y-1/2 opacity-[0.3]" />
       {/* Viñeta inferior que funde con el fondo */}
       <div
         aria-hidden="true"
