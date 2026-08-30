@@ -1,4 +1,5 @@
 import { Hero } from "@/components/hero/Hero";
+import { Flota } from "@/components/flota/Flota";
 import { TechMarquee } from "@/components/marquee/TechMarquee";
 import { Servicios } from "@/components/servicios/Servicios";
 import { ServiciosIA } from "@/components/ia/ServiciosIA";
@@ -23,6 +24,7 @@ export default function Home() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd()) }}
       />
       <Hero />
+      <Flota />
       <TechMarquee />
       <Servicios />
       <ServiciosIA />
