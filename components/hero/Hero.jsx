@@ -1,73 +1,28 @@
-import { ArrowRight, MonitorPlay } from "lucide-react";
-import { Starfield } from "./Starfield";
-import { HeroStar } from "./HeroStar";
-import { Button } from "@/components/ui/Button";
-import { GlowBadge } from "@/components/ui/GlowBadge";
 import { Reveal } from "@/components/ui/Reveal";
 import { CompassRose } from "@/components/ui/CompassRose";
 
 export function Hero() {
   return (
     <section
-      id="inicio"
       aria-labelledby="hero-title"
-      className="relative isolate flex min-h-dvh items-center justify-center overflow-hidden px-6 pb-24 pt-28"
+      className="relative isolate overflow-hidden px-6 pb-12 pt-16 sm:px-[60px] sm:pb-[66px] sm:pt-[88px]"
     >
-      {/* Capa de aurora estática (pintura instantánea, base del canvas) */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0 -z-20 bg-[radial-gradient(60%_50%_at_78%_12%,rgba(255,46,126,0.16),transparent_60%),radial-gradient(45%_40%_at_12%_92%,rgba(255,122,179,0.10),transparent_60%)]"
-      />
-      <Starfield className="absolute inset-0 -z-10 h-full w-full" />
-      {/* Rosa de los vientos: pieza gráfica grande de fondo, no un ícono de marca */}
-      <CompassRose className="pointer-events-none absolute left-1/2 top-1/2 -z-10 h-[min(620px,82vw)] w-[min(620px,82vw)] -translate-x-1/2 -translate-y-1/2 opacity-[0.3]" />
-      {/* Viñeta inferior que funde con el fondo */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-x-0 bottom-0 -z-10 h-40 bg-gradient-to-b from-transparent to-[var(--color-bg)]"
-      />
+      {/* Rosa de los vientos: pieza gráfica de fondo, no un ícono de marca */}
+      <CompassRose className="pointer-events-none absolute right-[-60px] top-1/2 -z-10 h-[380px] w-[380px] -translate-y-1/2 opacity-[0.22] sm:right-[20px] sm:h-[440px] sm:w-[440px]" />
 
-      <div className="relative z-10 mx-auto flex max-w-3xl flex-col items-center text-center">
-        <Reveal>
-          <HeroStar className="mb-9 h-24 w-24 sm:h-28 sm:w-28" />
-        </Reveal>
-
-        <Reveal delay={0.05}>
-          <GlowBadge>Gobierno municipal de Sonora</GlowBadge>
-        </Reveal>
-
-        <Reveal delay={0.1} as="h1">
-          <span
-            id="hero-title"
-            className="mt-6 block text-[length:var(--text-h1)] font-semibold"
-          >
-            Portales municipales de última generación, con{" "}
-            <span className="text-gradient">inteligencia artificial</span>.
-          </span>
-        </Reveal>
-
-        <Reveal delay={0.16} as="p">
-          <span className="mt-6 block max-w-2xl text-[length:var(--text-lead)] text-[var(--color-muted)]">
-            Diseñamos y construimos sitios institucionales rápidos, seguros y
-            accesibles para el gobierno municipal de Sonora —y los llevamos más
-            allá con servicios de IA al servicio del ciudadano.
-          </span>
-        </Reveal>
-
-        <Reveal
-          delay={0.22}
-          className="mt-10 flex flex-col items-center gap-3 sm:flex-row"
+      <Reveal className="flex max-w-[900px] flex-col gap-6 sm:gap-[24px]">
+        <h1
+          id="hero-title"
+          className="max-w-[15ch] text-[42px] font-extrabold leading-[0.98] tracking-[-0.03em] sm:text-[76px] sm:leading-[0.96] sm:tracking-[-0.045em]"
         >
-          <Button href="#contacto">
-            Solicitar propuesta
-            <ArrowRight className="h-4 w-4" aria-hidden="true" />
-          </Button>
-          <Button href="#casos" variant="secondary">
-            <MonitorPlay className="h-4 w-4" aria-hidden="true" />
-            Ver demo en vivo
-          </Button>
-        </Reveal>
-      </div>
+          Un municipio, de principio a fin.
+        </h1>
+        <p className="max-w-[56ch] text-[16px] font-light leading-[1.55] text-[#A0A0AC] sm:text-[18.5px] sm:leading-[1.56]">
+          Dos empresas, una misma oficina y un solo recorrido: primero se
+          ordena la gestión, después se publica. Nadie entrega a medias
+          porque nadie se queda a medio camino.
+        </p>
+      </Reveal>
     </section>
   );
 }

@@ -1,9 +1,7 @@
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
-import { spaceGrotesk, inter } from "@/lib/fonts";
+import { bricolageGrotesque, karla, jetbrainsMono } from "@/lib/fonts";
 import { buildMetadata, defaultViewport } from "@/lib/seo";
-import { Nav } from "@/components/nav/Nav";
-import { Footer } from "@/components/footer/Footer";
 import "./globals.css";
 
 export const metadata = buildMetadata();
@@ -11,7 +9,10 @@ export const viewport = defaultViewport;
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="es" className={`${spaceGrotesk.variable} ${inter.variable}`}>
+    <html
+      lang="es"
+      className={`${bricolageGrotesque.variable} ${karla.variable} ${jetbrainsMono.variable}`}
+    >
       <body className="min-h-dvh bg-[var(--color-bg)] text-[var(--color-text)] antialiased">
         <a
           href="#contenido"
@@ -19,9 +20,7 @@ export default function RootLayout({ children }) {
         >
           Saltar al contenido principal
         </a>
-        <Nav />
         <main id="contenido">{children}</main>
-        <Footer />
         <Analytics />
         <SpeedInsights />
       </body>

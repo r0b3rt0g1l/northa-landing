@@ -1,24 +1,23 @@
 @import "tailwindcss";
 
 @theme {
-  /* Paleta de marca (tokens autoritativos del brand board) */
-  --color-bg: #0b0b0c;
+  /* Paleta de marca — valores exactos de la dirección C (un-solo-flujo) */
+  --color-bg: #08090b;
   --color-surface: #141416;
   --color-surface-2: #1a1a1d;
   --color-line: #26262a;
-  --color-text: #f5f5f7;
+  --color-text: #f2f2f5;
   --color-muted: #86868b;
   --color-primary: #ff2e7e;
   --color-bright: #ff4d93;
   --color-glow: #ff7ab3;
-
-  /* Glass */
-  --color-glass: rgba(20, 20, 22, 0.6);
-  --color-glass-border: rgba(245, 245, 247, 0.08);
+  /* Teal de Amplía Consultoría — la otra mitad del despacho */
+  --color-amplia: #3fb8ac;
 
   /* Tipografía — punto único de cambio (ver lib/fonts.js) */
-  --font-sans: var(--font-inter);
-  --font-display: var(--font-space-grotesk);
+  --font-sans: var(--font-karla);
+  --font-display: var(--font-bricolage);
+  --font-mono: var(--font-jetbrains-mono);
 
   /* Escala tipográfica fluida */
   --text-eyebrow: clamp(0.72rem, 0.5vw + 0.6rem, 0.85rem);
@@ -27,10 +26,6 @@
   --text-h3: clamp(1.35rem, 1.5vw + 0.9rem, 1.9rem);
   --text-h2: clamp(2rem, 3vw + 1rem, 3.25rem);
   --text-h1: clamp(2.6rem, 5vw + 1rem, 5.25rem);
-
-  /* Sombras / glow */
-  --shadow-nav: 0 8px 30px rgba(0, 0, 0, 0.45);
-  --shadow-card: 0 18px 50px -12px rgba(0, 0, 0, 0.6);
 }
 
 @layer base {
@@ -45,7 +40,6 @@
     scroll-behavior: smooth;
     text-rendering: optimizeLegibility;
     color-scheme: dark;
-    scroll-padding-top: 5.5rem; /* compensa la nav sticky al saltar a anclas */
   }
 
   body {
@@ -102,55 +96,6 @@
   /* Fondo con gradiente de marca (botones, acentos) */
   .gradient-brand {
     background-image: linear-gradient(135deg, #ff7ab3 0%, #ff2e7e 100%);
-  }
-
-  /* Texto con gradiente de marca */
-  .text-gradient {
-    background-image: linear-gradient(135deg, #ff7ab3 0%, #ff2e7e 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-  }
-
-  /* Superficie glass translúcida */
-  .glass {
-    background-color: var(--color-glass);
-    backdrop-filter: blur(14px) saturate(140%);
-    -webkit-backdrop-filter: blur(14px) saturate(140%);
-    border: 1px solid var(--color-glass-border);
-  }
-
-  /* Pista de marquee infinito */
-  .marquee-track {
-    animation: northa-marquee 38s linear infinite;
-  }
-  .marquee-track:hover {
-    animation-play-state: paused;
-  }
-
-  /* Aparición suave (paneles del comparador, etc.) */
-  .fade-in {
-    animation: northa-fade 0.35s ease both;
-  }
-}
-
-@keyframes northa-marquee {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(-50%);
-  }
-}
-
-@keyframes northa-fade {
-  from {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-  to {
-    opacity: 1;
-    transform: none;
   }
 }
 

@@ -2,7 +2,7 @@ import { ImageResponse } from "next/og";
 
 export const runtime = "nodejs";
 export const alt =
-  "Northa Digital — Portales municipales de última generación, con inteligencia artificial";
+  "Northa Digital y Amplía Consultoría — un municipio, de principio a fin";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -17,8 +17,8 @@ export default function OpenGraphImage() {
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
-          background: "#0B0B0C",
-          color: "#F5F5F7",
+          background: "#08090B",
+          color: "#F2F2F5",
           padding: 80,
           position: "relative",
           fontFamily: "sans-serif",
@@ -30,64 +30,85 @@ export default function OpenGraphImage() {
             inset: 0,
             display: "flex",
             background:
-              "radial-gradient(circle at 78% 16%, rgba(255,46,126,0.35), transparent 55%), radial-gradient(circle at 16% 92%, rgba(255,122,179,0.18), transparent 55%)",
+              "radial-gradient(circle at 78% 16%, rgba(255,46,126,0.28), transparent 55%), radial-gradient(circle at 16% 92%, rgba(63,184,172,0.16), transparent 55%)",
           }}
         />
 
-        <svg
-          width="118"
-          height="118"
-          viewBox="0 0 200 200"
-          style={{ filter: "drop-shadow(0 0 40px rgba(255,46,126,0.6))" }}
-        >
-          <path
-            d="M100 18 L121.2 78.8 L168 100 L121.2 121.2 L100 182 L78.8 121.2 L32 100 L78.8 78.8 Z"
-            fill="#F5F5F7"
+        <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
+          <svg width="40" height="40" viewBox="0 0 100 100">
+            <circle cx="50" cy="50" r="37" fill="none" stroke="#3FB8AC" strokeWidth="9" />
+          </svg>
+          <span
+            style={{
+              fontSize: 22,
+              letterSpacing: 4,
+              textTransform: "uppercase",
+              color: "#7A7A88",
+            }}
+          >
+            AMPLÍA
+          </span>
+          <span
+            style={{
+              width: 44,
+              height: 2,
+              background:
+                "linear-gradient(90deg, #3FB8AC, #FF2E7E)",
+            }}
           />
-          <path
-            d="M100 18 L121.2 78.8 L100 100 L78.8 78.8 Z"
-            fill="#FF2E7E"
-          />
-        </svg>
-
-        <div
-          style={{
-            display: "flex",
-            fontSize: 82,
-            fontWeight: 700,
-            marginTop: 40,
-            letterSpacing: -2,
-          }}
-        >
-          <span>Northa</span>
-          <span style={{ color: "#FF4D93", marginLeft: 18 }}>Digital</span>
+          <span
+            style={{
+              fontSize: 22,
+              letterSpacing: 4,
+              textTransform: "uppercase",
+              color: "#7A7A88",
+            }}
+          >
+            NORTHA
+          </span>
+          <svg
+            width="40"
+            height="40"
+            viewBox="0 0 200 200"
+            style={{ filter: "drop-shadow(0 0 30px rgba(255,46,126,0.6))" }}
+          >
+            <path
+              d="M100 18 L121.2 78.8 L168 100 L121.2 121.2 L100 182 L78.8 121.2 L32 100 L78.8 78.8 Z"
+              fill="#F2F2F5"
+            />
+            <path
+              d="M100 18 L121.2 78.8 L100 100 L78.8 78.8 Z"
+              fill="#FF2E7E"
+            />
+          </svg>
         </div>
 
         <div
           style={{
             display: "flex",
-            fontSize: 30,
-            color: "#B9B2C2",
-            marginTop: 18,
-            maxWidth: 920,
+            fontSize: 68,
+            fontWeight: 800,
+            marginTop: 44,
+            letterSpacing: -2,
+            textAlign: "center",
+            maxWidth: 980,
+          }}
+        >
+          Un municipio, de principio a fin.
+        </div>
+
+        <div
+          style={{
+            display: "flex",
+            fontSize: 26,
+            color: "#A0A0AC",
+            marginTop: 22,
+            maxWidth: 860,
             textAlign: "center",
           }}
         >
-          Portales municipales de última generación, con inteligencia
-          artificial.
-        </div>
-
-        <div
-          style={{
-            display: "flex",
-            fontSize: 20,
-            color: "#86868B",
-            marginTop: 30,
-            letterSpacing: 4,
-            textTransform: "uppercase",
-          }}
-        >
-          Gobierno municipal de Sonora
+          Amplía ordena la gestión. Northa la publica. Un solo recorrido, para
+          los ayuntamientos de Sonora.
         </div>
       </div>
     ),
