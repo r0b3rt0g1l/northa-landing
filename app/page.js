@@ -1,9 +1,12 @@
-import { Cabecera } from "@/components/home/Cabecera";
 import { Hero } from "@/components/hero/Hero";
-import { Espina } from "@/components/home/Espina";
-import { Prueba } from "@/components/home/Prueba";
-import { EscudosCta } from "@/components/home/EscudosCta";
-import { Pie } from "@/components/home/Pie";
+import { Flota } from "@/components/flota/Flota";
+import { TechMarquee } from "@/components/marquee/TechMarquee";
+import { Servicios } from "@/components/servicios/Servicios";
+import { ServiciosIA } from "@/components/ia/ServiciosIA";
+import { Diferenciacion } from "@/components/diferenciacion/Diferenciacion";
+import { Pilares } from "@/components/pilares/Pilares";
+import { Proceso } from "@/components/proceso/Proceso";
+import { ContactoCTA } from "@/components/contacto/ContactoCTA";
 import { organizationJsonLd, websiteJsonLd } from "@/lib/jsonld";
 
 export default function Home() {
@@ -19,12 +22,15 @@ export default function Home() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd()) }}
       />
-      <Cabecera />
       <Hero />
-      <Espina />
-      <Prueba />
-      <EscudosCta />
-      <Pie />
+      <Flota />
+      <TechMarquee />
+      <Servicios />
+      <ServiciosIA />
+      <Diferenciacion />
+      <Pilares />
+      <Proceso />
+      <ContactoCTA />
     </>
   );
 }

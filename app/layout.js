@@ -2,6 +2,8 @@ import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { bricolageGrotesque, karla, jetbrainsMono } from "@/lib/fonts";
 import { buildMetadata, defaultViewport } from "@/lib/seo";
+import { Nav } from "@/components/nav/Nav";
+import { Footer } from "@/components/footer/Footer";
 import "./globals.css";
 
 export const metadata = buildMetadata();
@@ -20,7 +22,9 @@ export default function RootLayout({ children }) {
         >
           Saltar al contenido principal
         </a>
+        <Nav />
         <main id="contenido">{children}</main>
+        <Footer />
         <Analytics />
         <SpeedInsights />
       </body>
