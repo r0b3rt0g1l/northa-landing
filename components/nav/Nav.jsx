@@ -85,7 +85,7 @@ export function Nav() {
 
         <div className="hidden lg:block">
           <Button href="#contacto" className="px-5 py-2.5">
-            Solicitar propuesta
+            Hablemos
           </Button>
         </div>
 
@@ -137,7 +137,7 @@ export function Nav() {
                 className="w-full"
                 onClick={() => setOpen(false)}
               >
-                Solicitar propuesta
+                Hablemos
               </Button>
             </li>
           </ul>

@@ -1,14 +1,15 @@
 import { Hero } from "@/components/hero/Hero";
 import { Flota } from "@/components/flota/Flota";
-import { TechMarquee } from "@/components/marquee/TechMarquee";
-import { Servicios } from "@/components/servicios/Servicios";
-import { ServiciosIA } from "@/components/ia/ServiciosIA";
-import { Diferenciacion } from "@/components/diferenciacion/Diferenciacion";
-import { Pilares } from "@/components/pilares/Pilares";
+import { QueHacemos } from "@/components/servicios/QueHacemos";
 import { Proceso } from "@/components/proceso/Proceso";
 import { ContactoCTA } from "@/components/contacto/ContactoCTA";
 import { organizationJsonLd, websiteJsonLd } from "@/lib/jsonld";
 
+/**
+ * Home minimalista: hero con video → la flota → qué hacemos → cómo trabajamos
+ * → contacto. Las secciones largas (Servicios, ServiciosIA, Diferenciacion,
+ * Pilares, TechMarquee) siguen en components/ por si vuelven a hacer falta.
+ */
 export default function Home() {
   return (
     <>
@@ -24,11 +25,7 @@ export default function Home() {
       />
       <Hero />
       <Flota />
-      <TechMarquee />
-      <Servicios />
-      <ServiciosIA />
-      <Diferenciacion />
-      <Pilares />
+      <QueHacemos />
       <Proceso />
       <ContactoCTA />
     </>

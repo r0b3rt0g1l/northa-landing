@@ -118,6 +118,23 @@ public/escudos/ escudos de los municipios, optimizados
 El contenido vive en `lib/content/`, separado de los componentes: para cambiar lo que
 dice la página no hace falta tocar JSX.
 
+### Hero con video
+
+El inicio es un video de fondo (día → noche) generado con Higgsfield a partir de las
+placas limpias en `assets/hero-plates/` (sin logotipo: el texto va en HTML encima).
+El componente `components/hero/Hero.jsx` busca `public/hero/hero.webm` y
+`public/hero/hero.mp4`; mientras no existan, muestra la imagen fija
+`public/hero/noche.jpg`. El clip no hace loop: termina en el cuadro nocturno, que
+coincide con la imagen fija. Con `prefers-reduced-motion` no se carga el video.
+
+Para publicar el video: exportar 1920×1080 (o 2560×1024 si se conserva 2.5:1),
+sin audio, y convertir:
+
+```bash
+ffmpeg -i hero-src.mp4 -an -vf "scale=1920:-2" -c:v libx264 -crf 24 -preset slow -movflags +faststart -pix_fmt yuv420p public/hero/hero.mp4
+ffmpeg -i hero-src.mp4 -an -vf "scale=1920:-2" -c:v libvpx-vp9 -crf 34 -b:v 0 -row-mt 1 public/hero/hero.webm
+```
+
 ### Despliegue
 
 Vercel, team `northa-digital1`, rama de producción `main`.

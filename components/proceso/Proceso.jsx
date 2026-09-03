@@ -9,23 +9,21 @@ export function Proceso() {
       <SectionHeader
         eyebrow="Cómo trabajamos"
         titleId="proceso-title"
-        title="De la conversación al lanzamiento"
-        description="Un camino claro y acompañado, de principio a fin."
+        title="De la conversación al lanzamiento."
       />
-      <ol className="mt-14 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+      <ol className="mt-14 grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
         {proceso.map((step, i) => (
-          <Reveal as="li" key={step.title} delay={(i % 4) * 0.08} className="relative">
+          <Reveal as="li" key={step.title} delay={(i % 4) * 0.08}>
             <span
               aria-hidden="true"
-              className="text-gradient font-display text-4xl font-bold"
+              className="font-mono text-xs text-[var(--color-bright)]"
             >
               {String(i + 1).padStart(2, "0")}
             </span>
-            <span
-              aria-hidden="true"
-              className="mt-4 block h-px w-full bg-gradient-to-r from-[var(--color-bright)]/40 to-transparent"
-            />
-            <h3 className="mt-5 text-xl font-semibold">{step.title}</h3>
+            <span aria-hidden="true" className="hairline mt-4 block" />
+            <h3 className="mt-5 text-xl font-semibold tracking-[-0.02em]">
+              {step.title}
+            </h3>
             <p className="mt-2 text-sm text-[var(--color-muted)]">
               {step.description}
             </p>
