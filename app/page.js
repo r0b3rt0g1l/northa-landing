@@ -1,14 +1,15 @@
 import { Hero } from "@/components/hero/Hero";
-import { Flota } from "@/components/flota/Flota";
-import { QueHacemos } from "@/components/servicios/QueHacemos";
-import { Proceso } from "@/components/proceso/Proceso";
+import { ServiciosGrid } from "@/components/servicios/ServiciosGrid";
+import { PorQue } from "@/components/porque/PorQue";
+import { Planes } from "@/components/planes/Planes";
 import { ContactoCTA } from "@/components/contacto/ContactoCTA";
 import { organizationJsonLd, websiteJsonLd } from "@/lib/jsonld";
 
 /**
- * Home minimalista: hero con video → la flota → qué hacemos → cómo trabajamos
- * → contacto. Las secciones largas (Servicios, ServiciosIA, Diferenciacion,
- * Pilares, TechMarquee) siguen en components/ por si vuelven a hacer falta.
+ * Home: hero (video) → servicios → por qué Northa → planes → contacto.
+ * Se entiende en tres segundos: un titular y un botón por bloque.
+ * Las secciones largas (Servicios, ServiciosIA, Diferenciacion, Pilares,
+ * Proceso, Flota, TechMarquee) siguen en components/ por si vuelven a hacer falta.
  */
 export default function Home() {
   return (
@@ -24,9 +25,9 @@ export default function Home() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd()) }}
       />
       <Hero />
-      <Flota />
-      <QueHacemos />
-      <Proceso />
+      <ServiciosGrid />
+      <PorQue />
+      <Planes />
       <ContactoCTA />
     </>
   );

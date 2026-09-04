@@ -120,6 +120,8 @@ dice la página no hace falta tocar JSX.
 
 ### Hero con video
 
+La home sigue el brief de conversión: hero (video) → servicios → por qué Northa → planes → contacto, con un titular y un botón por bloque; la navegación aparece hasta que se pasa el hero.
+
 El inicio es un video de fondo (día → noche) generado con Higgsfield a partir de las
 placas limpias en `assets/hero-plates/` (sin logotipo: el texto va en HTML encima).
 El componente `components/hero/Hero.jsx` busca `public/hero/hero.webm` y

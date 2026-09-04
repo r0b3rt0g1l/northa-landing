@@ -16,11 +16,18 @@ export function Nav() {
   const activeId = useScrollSpy(SPY_IDS);
   const panelRef = useRef(null);
 
+  // La nav no existe mientras el hero ocupa la pantalla: aparece al pasar
+  // ~70% del alto del viewport (menos fricción arriba del pliegue).
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 8);
+    const onScroll = () =>
+      setScrolled(window.scrollY > window.innerHeight * 0.7);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    window.addEventListener("resize", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
   }, []);
 
   // Cerrar el menú móvil con Escape.
@@ -35,11 +42,12 @@ export function Nav() {
 
   return (
     <header
+      inert={!(scrolled || open)}
       className={cn(
-        "fixed inset-x-0 top-0 z-50 transition-colors duration-300",
+        "fixed inset-x-0 top-0 z-50 transition-[transform,opacity] duration-500 ease-out glass shadow-[var(--shadow-nav)]",
         scrolled || open
-          ? "glass shadow-[var(--shadow-nav)]"
-          : "border-b border-transparent bg-transparent",
+          ? "translate-y-0 opacity-100"
+          : "pointer-events-none -translate-y-full opacity-0",
       )}
     >
       <nav

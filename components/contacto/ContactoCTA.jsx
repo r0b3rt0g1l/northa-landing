@@ -17,7 +17,7 @@ export function ContactoCTA() {
             eyebrow="Contacto"
             titleId="contacto-title"
             title="Hablemos."
-            description="Cuéntanos qué necesita tu municipio. Respondemos el mismo día."
+            description="Respondemos el mismo día."
           />
 
           <Reveal delay={0.06} className="mt-8 flex flex-col gap-3">
