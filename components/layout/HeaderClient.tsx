@@ -119,6 +119,9 @@ export function HeaderClient({ data }: { data: HeaderData }) {
           : "glass border-b border-line/70 text-ink shadow-[0_12px_40px_-28px_rgba(0,0,0,0.6)]",
       )}
       data-over-hero={overHero ? "true" : undefined}
+      // Sobre el Cerro (siempre oscuro) los controles usan los colores del tema
+      // oscuro, también con el tema claro activo.
+      data-theme={overHero ? "dark" : undefined}
     >
       <div className="container-x flex h-[4.5rem] items-center gap-4">
         <Link

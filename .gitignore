@@ -41,6 +41,9 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# render del video (temporales)
+# render del video anterior (temporales; por si quedan carpetas viejas)
 /.render-preview/
 /.render-frames/
+
+# Borradores y pruebas locales
+/.scratch/

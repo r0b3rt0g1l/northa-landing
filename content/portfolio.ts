@@ -70,14 +70,14 @@ export const work: WorkItem[] = [
     kicker: { es: "Identidad animada", en: "Animated identity" },
     title: { es: "El Cerro de la Campana, en código.", en: "Cerro de la Campana, in code." },
     body: {
-      es: "El logotipo animado, el video del inicio y el modelo 3D salen del mismo código, renderizado en tu navegador.",
-      en: "The animated logo, the hero video and the 3D model all come from the same code, rendered in your browser.",
+      es: "El Cerro del inicio cambia con la hora y el clima de Hermosillo, renderizado en tu navegador.",
+      en: "The Cerro on the home page follows Hermosillo's time and weather, rendered in your browser.",
     },
     facts: {
-      es: ["Three.js", "Low-poly + curvas de nivel"],
-      en: ["Three.js", "Low-poly + contour lines"],
+      es: ["Three.js", "Hora y clima en vivo"],
+      en: ["Three.js", "Live time and weather"],
     },
-    href: "/#hermosillo",
+    href: "/#inicio",
     ctaKey: "seeCerro",
     visual: "cerro",
   },
@@ -150,11 +150,11 @@ const ownProducts: Project[] = [
     published: true,
     title: { es: "El Cerro de la Campana, en código", en: "Cerro de la Campana, in code" },
     summary: {
-      es: "Identidad animada: logotipo SVG, favicon, loader, video del hero y escena 3D interactiva salen del mismo modelo procedural.",
-      en: "Animated identity: SVG logo, favicon, loader, hero video and interactive 3D scene all come from the same procedural model.",
+      es: "El Cerro en vivo del inicio: amanece, atardece y anochece con la hora real de Hermosillo, con nubes según el clima.",
+      en: "The live Cerro on the home page: sunrise, sunset and night follow Hermosillo's real time, with clouds from the weather.",
     },
-    tags: { es: ["Three.js", "Low-poly", "Curvas de nivel"], en: ["Three.js", "Low-poly", "Contour lines"] },
-    href: "/#hermosillo",
+    tags: { es: ["Three.js", "Open-Meteo", "Tiempo real"], en: ["Three.js", "Open-Meteo", "Real time"] },
+    href: "/#inicio",
   },
 ];
 

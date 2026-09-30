@@ -15,13 +15,13 @@ Una revisión al mes (unos 60–90 minutos) mantiene el sitio rápido, seguro y 
 
 - [ ] PageSpeed Insights en móvil para `/`, `/portfolio`, `/servicios/desarrollo-web` y `/amplia`. Anota los resultados en `05-lanzamiento.md` (tabla 3.2). Si alguno baja de 95 dos corridas seguidas, investiga qué cambió.
 - [ ] Vercel → Speed Insights: LCP, INP y CLS de usuarios reales, en celular.
-- [ ] Revisa a mano el inicio en el iPhone: video, escena 3D, Nort y un formulario.
+- [ ] Revisa a mano el inicio en el iPhone: Cerro en vivo (hora, clima y luces al bajar), Nort y un formulario.
 
 ### SEO y contenido
 
 - [ ] Search Console: errores de indexación, páginas excluidas y las búsquedas que traen visitas (ideas para el blog).
 - [ ] Publica el artículo del mes (`06-contenido.md`, calendario editorial).
-- [ ] Cifras y textos siguen siendo ciertos (número de portales, servicios, planes).
+- [ ] Cifras y textos siguen siendo ciertos (número de portales, servicios).
 - [ ] Enlaces externos del blog y del portafolio siguen vivos.
 
 ### Portafolio
@@ -49,7 +49,7 @@ Una revisión al mes (unos 60–90 minutos) mantiene el sitio rápido, seguro y 
 - [ ] `npm run audit:sites` sobre la competencia (Imagina Studio, Creapptivo, Hecho en Sonora) y actualiza `01-analisis-competitivo.md` si algo cambió.
 - [ ] Revisa accesos: miembros del team en Vercel, colaboradores del repo en GitHub, usuarios de Supabase y del portal.
 - [ ] Prueba de restauración: levanta el respaldo más reciente en un proyecto de prueba (no en producción).
-- [ ] Revisa si vale la pena volver a renderizar el video del hero (`04-video.md`).
+- [ ] Si cambió algo de la escena del Cerro, vuelve a renderizar los pósters (`npm run render:cerro`, ver `04-cerro-en-vivo.md`).
 
 ## Cada año
 

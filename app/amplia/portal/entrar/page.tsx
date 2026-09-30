@@ -18,7 +18,7 @@ export default async function PortalSignIn() {
       {/* Panel de marca */}
       <section
         data-theme="dark"
-        className="relative hidden overflow-hidden bg-[radial-gradient(120%_120%_at_0%_0%,#0f4f49_0%,var(--navy)_55%,#060a16_100%)] p-12 text-ink lg:flex lg:flex-col lg:justify-between"
+        className="relative hidden overflow-hidden bg-[radial-gradient(120%_120%_at_0%_0%,#0f4f49_0%,var(--navy)_55%,#0a1124_100%)] p-12 text-ink lg:flex lg:flex-col lg:justify-between"
         aria-hidden
       >
         {/* eslint-disable-next-line @next/next/no-img-element -- decorativo */}

@@ -1,7 +1,6 @@
 import "server-only";
 import type { Locale } from "@/lib/i18n/config";
 import { services } from "@/content/services";
-import { plans } from "@/content/plans";
 import { processSteps } from "@/content/process";
 import { principles } from "@/content/principles";
 import { flota } from "@/content/gov";
@@ -17,7 +16,6 @@ export function buildInstructions(locale: Locale, page?: string): string {
   const serviceLines = services
     .map((s) => `- ${s.name[L]}: ${s.short[L]} Incluye: ${s.includes[L].join("; ")}. Página: /servicios/${s.slug}`)
     .join("\n");
-  const planLines = plans.map((p) => `- ${p.name} (${p.tagline[L]}): ${p.features[L].join("; ")}`).join("\n");
   const processLine = processSteps.map((s) => `${s.title[L]} (${s.body[L]})`).join(" → ");
   const principleLines = principles.map((p) => `- ${p.title[L]} ${p.body[L]}`).join("\n");
   const faqLines = faq.map((f) => `- ${f.q[L]} ${f.a[L]}`).join("\n");
@@ -49,8 +47,8 @@ Eres **Nort**, el asistente con inteligencia artificial de ${site.name}, un estu
 ${serviceLines}
 - Portales de gobierno municipal: apartado propio en /gobierno. ${site.name} opera ${flota.length} portales municipales de transparencia en Sonora (${flota.map((m) => m.nombre).join(", ")}) sobre una sola plataforma: backend compartido, panel único, dominio .com.mx propio por municipio y aislamiento entre municipios verificado por una suite automatizada.
 
-## Planes (sin montos: se cotiza por proyecto)
-${planLines}
+## Precios
+No hay planes publicados: cada proyecto se cotiza por alcance y por escrito. No inventes paquetes ni montos.
 
 ## Proceso
 ${processLine}
@@ -62,7 +60,7 @@ ${principleLines}
 ${faqLines}
 
 ## Amplía Consultoría (sitio hermano, otra empresa)
-${amplia.name}: asesoría jurídica y gestión pública para ayuntamientos de Sonora (entrega-recepción, Plan Municipal de Desarrollo, normatividad, auditorías, transparencia). Diez de los catorce municipios de la flota de Northa trabajan también con Amplía. Para temas de gestión pública, remite a su página /amplia o a su contacto: ${amplia.presenta}, tel. ${amplia.contact.phoneDisplay}, ${amplia.contact.email}. No hables en nombre de Amplía más allá de esto.
+${amplia.name}: consultoría en gestión pública (entrega-recepción, planeación, normatividad, auditorías, transparencia). Para esos temas, remite a su página /amplia o a su WhatsApp ${site.contact.phoneDisplay} (el mismo de Northa). No hables en nombre de Amplía más allá de esto.
 
 ## Contacto de Northa
 WhatsApp ${site.contact.phoneDisplay} · ${site.contact.email} · Hermosillo, Sonora. ${site.calUrl ? "Hay agenda de videollamadas disponible (bookCall)." : "No hay agenda en línea: para llamadas, coordina por WhatsApp."}

@@ -28,8 +28,11 @@ Además, axe-core (WCAG 2.2 A/AA) da **0 violaciones** en 15 páginas × 2 temas
 
 ### 2.2 Proyecto en Vercel
 
-- [ ] Se reusa el proyecto **`northa-landing`**, que ya está enlazado en `.vercel/project.json` de tu carpeta. Confirma en el panel en qué team está (debería ser `northa-digital1`) y que use Next.js con Node 22.
-- [ ] Revisa si tiene **Git conectado** (Project → Settings → Git). Con Git conectado, cada rama sale en preview y cada merge a `main` va a producción; el Action de deploy no hace falta (ver 2.4).
+- [x] Proyecto **`northa-landing`** en el team **`northa-digital`** (el mismo de los portales), creado el 30-sep-2026 al importar la repo. Dominio de Vercel: `northa-landing-beryl.vercel.app`. El `.vercel/project.json` de tu carpeta ya apunta a él.
+- [ ] El proyecto `northa-landing` anterior está en otra cuenta de Vercel (su enlace quedó respaldado en `.vercel/project.anterior-otra-cuenta.json`) y sigue sirviendo el landing viejo en `northa-landing.vercel.app`. Ya no se usa: bórralo desde esa cuenta cuando quieras y no lo vuelvas a enlazar.
+- [x] **Git conectado** a `r0b3rt0g1l/northa-landing`. Cada rama sale en preview y cada merge a `main` va a producción; el Action de deploy no hace falta (ver 2.4).
+- [ ] Node: Vercel usa 24.x y el CI usa 22 (`.nvmrc`); los dos cumplen `"engines": ">=22"`. Si prefieres el mismo en los dos, fija 22.x en la configuración del proyecto ("Node.js Version").
+- [ ] Las previews piden iniciar sesión en Vercel (protección estándar del team). Para revisarlas en el iPhone, entra con tu cuenta en Safari.
 - [ ] Project → Settings → **Analytics**: activar **Web Analytics** y **Speed Insights**. Sin esto, sus scripts dan 404 en producción y bajan Buenas prácticas.
 - [ ] Project → Settings → Environment Variables: captura las variables **antes del primer build** (tabla 2.3).
 - [ ] Project → Settings → General: deja activado "Automatically expose System Environment Variables" (el sitio usa `VERCEL_ENV` para cargar la analítica solo en Vercel).
@@ -57,7 +60,7 @@ Reglas que ya nos costaron caro:
 Hay dos formas; usa **una**.
 
 **A. Git conectado en Vercel (la de esta repo, que es personal).**
-- [ ] Project → Settings → Git: conectado a `r0b3rt0g1l/northa-landing`, con `main` como rama de producción.
+- [x] Project → Settings → Git: conectado a `r0b3rt0g1l/northa-landing`, con `main` como rama de producción.
 - [ ] Push de una rama → preview automática. Merge a `main` → producción.
 
 **B. GitHub Actions + Vercel CLI** (para cuando la repo sea privada y de una organización: en Hobby, Vercel no despliega solo esas repos).
@@ -84,7 +87,7 @@ En las dos:
 
 - [ ] **Supabase (proyecto nuevo):** migraciones, llaves y primer admin → `07-portal-amplia.md`.
 - [ ] **Resend:** verifica el dominio (registros SPF/DKIM en Cloudflare), define `LEADS_FROM_EMAIL` y, si quieres acuse para el prospecto, `LEADS_CONFIRMATION=true`.
-- [ ] **AI Gateway:** actívalo en el team, carga crédito o conecta la llave del proveedor y pon un presupuesto mensual. Sin crédito, Nort cae a modo guiado (no se rompe).
+- [ ] **AI Gateway:** actívalo en el team, carga crédito o conecta la llave del proveedor y pon un presupuesto mensual. Sin crédito, Nort cae a modo guiado (no se rompe). Hoy el Gateway responde 403 "requires a valid credit card on file": hace falta registrar una tarjeta en el team antes de que Nort use IA.
 - [ ] **Cloudflare Turnstile** (opcional): crea el widget para `northadigital.com` y captura las dos llaves.
 - [ ] **HubSpot** (opcional): Private App con permisos de escritura de contactos y notas → `HUBSPOT_ACCESS_TOKEN`.
 - [ ] **Cal.com** (opcional): liga pública → `NEXT_PUBLIC_CAL_URL`.
@@ -149,23 +152,24 @@ En las dos:
 
 - [ ] Solo teclado: "Saltar al contenido", mega menú (Escape cierra), menú móvil con foco atrapado, chat y formularios.
 - [ ] VoiceOver en iPhone y NVDA o Narrador en Windows: encabezados en orden, botones con nombre, errores anunciados.
-- [ ] "Reducir movimiento" del sistema y "Pausar animaciones" del pie: sin video automático ni animaciones.
+- [ ] "Reducir movimiento" del sistema y "Pausar animaciones" del pie: el Cerro queda quieto (se redibuja solo al cambiar la hora o al bajar) y sin animaciones.
 - [ ] Zoom al 200 % sin cortes, en los dos temas.
 
 ### 3.8 Navegadores y dispositivos
 
-| Dispositivo / navegador | Inicio (video y 3D) | ES/EN | Tema | Nort | Formulario | Amplía + intranet |
+| Dispositivo / navegador | Inicio (Cerro en vivo, hora y clima) | ES/EN | Tema | Nort | Formulario | Amplía + intranet |
 |---|---|---|---|---|---|---|
 | iPhone · Safari | | | | | | |
-| iPhone · modo de bajo consumo (sin autoplay: póster + botón) | | — | — | — | — | — |
+| iPhone · modo de bajo consumo | | — | — | — | — | — |
 | Android · Chrome | | | | | | |
 | Mac · Safari | | | | | | |
 | Mac/Windows · Chrome | | | | | | |
 | Windows · Edge | | | | | | |
 | Firefox (escritorio) | | | | | | |
 
-- [ ] Sin WebGL (o con fallo de la escena), la sección de Hermosillo muestra la imagen fija.
-- [ ] Anclas: `/#contacto`, `/#planes` y "Proceso" desde otra página aterrizan en su sección.
+- [ ] Sin WebGL (o con fallo de la escena), el inicio se queda con el póster del Cerro de la hora que toca.
+- [ ] La barra del hero: hora de Hermosillo, clima, las 4 fases y "Ahora". Al bajar quedan solo las luces.
+- [ ] Anclas: `/#contacto`, `/#servicios` y "Arma tu proyecto" (`/#arma-tu-proyecto`) desde otra página aterrizan en su sección.
 
 ### 3.9 Legal y privacidad
 

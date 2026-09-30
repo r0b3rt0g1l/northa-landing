@@ -49,17 +49,17 @@ export function CerroMark({ size = 36, id = "cm", animate = false, title, classN
     >
       <defs>
         <linearGradient id={sky} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="#1a3270" />
-          <stop offset="0.62" stopColor="#0d1b42" />
-          <stop offset="1" stopColor="#060a16" />
+          <stop offset="0" stopColor="#2a3d72" />
+          <stop offset="0.62" stopColor="#15204a" />
+          <stop offset="1" stopColor="#0a1124" />
         </linearGradient>
         <radialGradient id={glow} cx="32" cy="15" r="15" gradientUnits="userSpaceOnUse">
-          <stop offset="0" stopColor="#ff2e7e" stopOpacity="0.45" />
-          <stop offset="1" stopColor="#ff2e7e" stopOpacity="0" />
+          <stop offset="0" stopColor="#FF9F6E" stopOpacity="0.45" />
+          <stop offset="1" stopColor="#FF9F6E" stopOpacity="0" />
         </radialGradient>
         <linearGradient id={north} x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stopColor="#ff7ab3" />
-          <stop offset="1" stopColor="#ff2e7e" />
+          <stop offset="0" stopColor="#FFD2B8" />
+          <stop offset="1" stopColor="#FF9F6E" />
         </linearGradient>
         <clipPath id={clip}>
           <circle cx="32" cy="32" r="30.5" />
@@ -81,7 +81,7 @@ export function CerroMark({ size = 36, id = "cm", animate = false, title, classN
           pathLength={1}
           d="M20.2 36Q32 39.2 43.8 36"
           fill="none"
-          stroke="#FF2E7E"
+          stroke="#FF9F6E"
           strokeWidth="1.3"
           strokeLinecap="round"
         />
@@ -90,13 +90,13 @@ export function CerroMark({ size = 36, id = "cm", animate = false, title, classN
           pathLength={1}
           d="M15.3 43Q32 47 48.7 43"
           fill="none"
-          stroke="#FF2E7E"
+          stroke="#FF9F6E"
           strokeWidth="1.3"
           strokeLinecap="round"
         />
       </g>
 
-      <circle className="cm-light" cx="32" cy="26.3" r="1.25" fill="#FF2E7E" />
+      <circle className="cm-light" cx="32" cy="26.3" r="1.25" fill="#FF9F6E" />
 
       <g className="cm-star">
         <path d={STAR} fill="#F5F5F7" />
@@ -110,7 +110,7 @@ export function CerroMark({ size = 36, id = "cm", animate = false, title, classN
         cy="32"
         r="30.5"
         fill="none"
-        stroke="#2c3858"
+        stroke="#2f3f6b"
         strokeWidth="1"
         transform="rotate(-90 32 32)"
       />

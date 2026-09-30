@@ -1,14 +1,17 @@
 import {
   Accessibility,
+  Bot,
   Camera,
-  Compass,
+  CodeXml,
   EyeOff,
   Gauge,
   Globe,
+  GraduationCap,
   Landmark,
   LayoutDashboard,
   Lock,
   Newspaper,
+  ScanLine,
   ShieldCheck,
   Smartphone,
   Sparkles,
@@ -29,11 +32,15 @@ export function WhatsAppIcon({ className }: { className?: string }) {
 
 export const serviceIcons: Record<ServiceIcon, LucideIcon> = {
   globe: Globe,
-  dashboard: LayoutDashboard,
+  code: CodeXml,
   smartphone: Smartphone,
+  dashboard: LayoutDashboard,
+  bot: Bot,
   sparkles: Sparkles,
+  scan: ScanLine,
+  shield: ShieldCheck,
   wrench: Wrench,
-  compass: Compass,
+  graduation: GraduationCap,
 };
 
 export const govIcons = {

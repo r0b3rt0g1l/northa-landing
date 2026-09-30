@@ -11,14 +11,15 @@ import type { L, LList } from "@/lib/l10n";
 
 export const ampliaHero = {
   eyebrow: { es: "Aliado en gestión pública", en: "Public management partner" },
-  // Frase tomada de "¿Quiénes somos?".
+  // 30-sep-2026: "es una consultoría nomás" (Roberto) → sin lo municipal en el
+  // hero. Frases de la propia Amplía, recortadas (Misión y ¿Quiénes somos?).
   title: {
-    es: "Acompañamiento y fortalecimiento de la gestión pública municipal.",
-    en: "Supporting and strengthening municipal public management.",
+    es: "Consultoría en gestión y desarrollo estratégico.",
+    en: "Consulting in management and strategic development.",
   },
   lead: {
-    es: "Asesoría jurídica especializada para los Ayuntamientos del Estado de Sonora, actualización de la información de los sujetos obligados en transparencia y rendición de cuentas, y trabajo organizacional para la modernización administrativa.",
-    en: "Specialized legal advisory for the municipalities of the State of Sonora, updating the information of obligated parties on transparency and accountability, and organizational work for administrative modernization.",
+    es: "Asesoría jurídica especializada, transparencia y rendición de cuentas, y trabajo organizacional para la modernización administrativa.",
+    en: "Specialized legal advisory, transparency and accountability, and organizational work for administrative modernization.",
   },
 } satisfies Record<string, L>;
 

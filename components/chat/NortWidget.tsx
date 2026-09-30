@@ -2,12 +2,13 @@
 
 import dynamic from "next/dynamic";
 import { usePathname } from "next/navigation";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { X } from "lucide-react";
 import { OPEN_CHAT_EVENT } from "@/lib/chat-events";
 import { track } from "@/lib/analytics";
 import { StarGlyph } from "@/components/ui/Icons";
 import { isAmpliaPath } from "@/components/layout/Preferences";
+import { splitLocale } from "@/lib/i18n/href";
 import { cn } from "@/lib/utils";
 import type { NortShellProps } from "./types";
 
@@ -15,6 +16,17 @@ import type { NortShellProps } from "./types";
 const NortPanel = dynamic(() => import("./NortPanel"), { ssr: false });
 
 const TEASER_KEY = "nort-teaser-shown";
+
+// ¿Sigue a la vista el hero del inicio (el Cerro)?
+function subscribeScroll(onChange: () => void) {
+  window.addEventListener("scroll", onChange, { passive: true });
+  window.addEventListener("resize", onChange);
+  return () => {
+    window.removeEventListener("scroll", onChange);
+    window.removeEventListener("resize", onChange);
+  };
+}
+const heroInView = () => window.scrollY < window.innerHeight * 0.5;
 
 export function NortWidget(props: NortShellProps) {
   const { dict } = props;
@@ -54,6 +66,19 @@ export function NortWidget(props: NortShellProps) {
   // sobre el botón. No se descarga "por si acaso": así no pesa en la carga inicial.
   const preload = useCallback(() => void import("./NortPanel"), []);
 
+  // En el inicio, mientras se ve el Cerro, el botón se esconde en celular (tapaba
+  // la barra de hora y clima) y la sugerencia espera a que la persona baje.
+  // Ojo: usePathname puede traer la ruta interna reescrita ("/es").
+  const isHome = splitLocale(pathname).path === "/";
+  const overHero = useSyncExternalStore(subscribeScroll, heroInView, () => true) && isHome;
+
+  // La sugerencia se va sola a los 9 s (no se queda tapando el contenido).
+  useEffect(() => {
+    if (!teaser) return;
+    const t = window.setTimeout(() => setTeaser(false), 9000);
+    return () => window.clearTimeout(t);
+  }, [teaser]);
+
   // Sugerencia discreta: una vez por sesión, a los 25 s o al 55 % de la página.
   useEffect(() => {
     if (isAmpliaPath(pathname)) return;
@@ -63,8 +88,13 @@ export function NortWidget(props: NortShellProps) {
       return;
     }
     let done = false;
+    let due = false;
     const show = () => {
       if (done) return;
+      if (isHome && heroInView()) {
+        due = true;
+        return;
+      }
       done = true;
       setTeaser(true);
       try {
@@ -76,14 +106,14 @@ export function NortWidget(props: NortShellProps) {
     const timer = window.setTimeout(show, 25000);
     const onScroll = () => {
       const max = document.documentElement.scrollHeight - window.innerHeight;
-      if (max > 0 && window.scrollY / max > 0.55) show();
+      if (due || (max > 0 && window.scrollY / max > 0.55)) show();
     };
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => {
       window.clearTimeout(timer);
       window.removeEventListener("scroll", onScroll);
     };
-  }, [pathname]);
+  }, [pathname, isHome]);
 
   return (
     <div
@@ -133,11 +163,12 @@ export function NortWidget(props: NortShellProps) {
         onFocus={preload}
         onTouchStart={preload}
         className={cn(
-          "group relative inline-flex h-14 items-center gap-3 rounded-full border border-line-2 bg-surface/90 pl-2 pr-5 text-ink shadow-[0_18px_50px_-18px_rgba(0,0,0,0.8)] backdrop-blur-xl transition-[transform,border-color] duration-300 hover:-translate-y-0.5 hover:border-accent-line",
+          "group relative inline-flex h-14 items-center gap-3 rounded-full border border-line-2 bg-surface/90 pl-2 pr-5 text-ink shadow-[0_18px_50px_-18px_rgba(0,0,0,0.8)] backdrop-blur-xl transition-[transform,border-color,opacity,visibility] duration-300 hover:-translate-y-0.5 hover:border-accent-line",
           open && "pr-2 max-md:hidden",
+          overHero && !open && "max-md:invisible max-md:translate-y-6 max-md:opacity-0",
         )}
       >
-        <span className="relative grid size-10 place-items-center rounded-full bg-[radial-gradient(circle_at_50%_35%,#1a3270,#060a16)]">
+        <span className="relative grid size-10 place-items-center rounded-full bg-[radial-gradient(circle_at_50%_35%,#2a3d72,#0a1124)]">
           <span
             aria-hidden
             className="absolute inset-0 animate-pulse-soft rounded-full shadow-[0_0_24px_2px_var(--accent)] [animation-duration:4s]"

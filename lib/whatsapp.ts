@@ -17,6 +17,10 @@ export const whatsappMessages = {
     es: "Hola Northa 👋 Escribo de parte de un ayuntamiento y nos interesa un portal municipal.",
     en: "Hi Northa 👋 I'm writing on behalf of a municipality interested in a government portal.",
   },
+  amplia: {
+    es: "Hola Amplía 👋 Vengo de su sitio web y me gustaría recibir información.",
+    en: "Hi Amplía 👋 I found you through your website and I'd like some information.",
+  },
 } satisfies Record<string, Record<Locale, string>>;
 
 export function serviceWhatsappMessage(serviceName: string, locale: Locale): string {

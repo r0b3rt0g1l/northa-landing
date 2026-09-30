@@ -55,11 +55,15 @@ const en: Dictionary = {
   hero: {
     eyebrow: "Northa Digital · Hermosillo, Sonora",
     title: "Sonora's digital north.",
-    subtitle: "Software that stays in production.",
-    lead: "We design and build websites, custom systems, apps and artificial intelligence for companies and institutions in Sonora, Mexico.",
-    scrollCue: "Scroll to explore",
-    videoLabel:
-      "Animation of Cerro de la Campana at dusk, with Northa's north star above the summit.",
+    lead: "Websites, systems, apps and artificial intelligence.",
+    secondaryCta: "Tell us what you need",
+    timeline: {
+      city: "Hermosillo",
+      live: "Live",
+      backToNow: "Now",
+      group: "See the Cerro at another time of day",
+      phases: { dawn: "Sunrise", day: "Day", dusk: "Sunset", night: "Night" },
+    },
   },
   sections: {
     trust: {
@@ -68,8 +72,8 @@ const en: Dictionary = {
     },
     services: {
       eyebrow: "Services",
-      title: "What people search for, built to last.",
-      lead: "Every service has its own page with what's included, how we work and frequently asked questions.",
+      title: "What we do.",
+      lead: "Everything digital your business needs, from one team.",
       cardCta: "See details",
     },
     scope: {
@@ -83,11 +87,15 @@ const en: Dictionary = {
       step4: "Done. This is what we'll send the team:",
       needs: {
         web: "Website",
-        system: "System or admin panel",
+        dev: "Web development",
         app: "App",
-        ai: "Chatbot / AI",
+        portal: "Admin portal",
+        chatbot: "AI chatbot",
+        ai: "AI solution",
+        digital: "Digitization",
+        vpn: "Security & VPN",
         care: "Maintenance",
-        consulting: "Consulting",
+        training: "Training",
         gov: "Government portal",
       },
       stages: {
@@ -116,9 +124,9 @@ const en: Dictionary = {
       selectAtLeastOne: "Pick at least one option to continue.",
     },
     work: {
-      eyebrow: "Work in production",
-      title: "We don't show mockups. We show what's live.",
-      lead: "Projects that get real traffic today, with their own domain, real users and someone accountable for keeping them running.",
+      eyebrow: "Portfolio",
+      title: "Live, not a mockup.",
+      lead: "Fourteen municipal portals in Sonora run on our platform today.",
       tryNort: "Try Nort",
       seeFleet: "See the 14 portals",
       seeCerro: "See the Cerro in 3D",
@@ -185,6 +193,7 @@ const en: Dictionary = {
       eyebrow: "Contact",
       title: "Let's talk about your project.",
       lead: "WhatsApp is the fastest way. If you prefer, leave your details or book a video call.",
+      compactLead: "WhatsApp is the fastest way.",
       or: "or",
       emailLabel: "Email",
       whatsappLabel: "WhatsApp",

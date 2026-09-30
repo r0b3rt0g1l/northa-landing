@@ -35,9 +35,9 @@ function markSvg({ animated, padding = 0 }: { animated: boolean; padding?: numbe
     : "";
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${vb}" width="64" height="64">${style}
 <defs>
-<linearGradient id="s" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1a3270"/><stop offset=".62" stop-color="#0d1b42"/><stop offset="1" stop-color="#060a16"/></linearGradient>
-<radialGradient id="h" cx="32" cy="15" r="15" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#ff2e7e" stop-opacity=".45"/><stop offset="1" stop-color="#ff2e7e" stop-opacity="0"/></radialGradient>
-<linearGradient id="n" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff7ab3"/><stop offset="1" stop-color="#ff2e7e"/></linearGradient>
+<linearGradient id="s" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2a3d72"/><stop offset=".62" stop-color="#15204a"/><stop offset="1" stop-color="#0a1124"/></linearGradient>
+<radialGradient id="h" cx="32" cy="15" r="15" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#FF9F6E" stop-opacity=".45"/><stop offset="1" stop-color="#FF9F6E" stop-opacity="0"/></radialGradient>
+<linearGradient id="n" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFD2B8"/><stop offset="1" stop-color="#FF9F6E"/></linearGradient>
 <clipPath id="c"><circle cx="32" cy="32" r="30.5"/></clipPath>
 </defs>
 <circle cx="32" cy="32" r="${padding ? 32 + padding : 30.5}" fill="url(#s)"/>
@@ -45,12 +45,12 @@ function markSvg({ animated, padding = 0 }: { animated: boolean; padding?: numbe
 <g clip-path="url(#c)">
 <path d="${FACET_LIGHT}" fill="#ECECF1"/><path d="${FACET_MID}" fill="#CFCFD9"/><path d="${FACET_DARK}" fill="#A9AAB7"/>
 <path d="${HILL}" fill="none" stroke="#fff" stroke-opacity=".25" stroke-width=".6"/>
-<path d="M20.2 36Q32 39.2 43.8 36" fill="none" stroke="#FF2E7E" stroke-width="1.6" stroke-linecap="round"/>
-<path d="M15.3 43Q32 47 48.7 43" fill="none" stroke="#FF2E7E" stroke-width="1.6" stroke-linecap="round"/>
+<path d="M20.2 36Q32 39.2 43.8 36" fill="none" stroke="#FF9F6E" stroke-width="1.6" stroke-linecap="round"/>
+<path d="M15.3 43Q32 47 48.7 43" fill="none" stroke="#FF9F6E" stroke-width="1.6" stroke-linecap="round"/>
 </g>
-<circle class="l" cx="32" cy="26.3" r="1.4" fill="#FF2E7E"/>
+<circle class="l" cx="32" cy="26.3" r="1.4" fill="#FF9F6E"/>
 <path d="${STAR}" fill="#F5F5F7"/><path d="${STAR_NORTH}" fill="url(#n)"/>
-<circle cx="32" cy="32" r="30.5" fill="none" stroke="#2c3858" stroke-width="1"/>
+<circle cx="32" cy="32" r="30.5" fill="none" stroke="#2f3f6b" stroke-width="1"/>
 </svg>`;
 }
 

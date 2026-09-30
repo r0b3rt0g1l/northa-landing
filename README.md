@@ -7,12 +7,12 @@ Sitio de **Northa Digital** (Hermosillo, Sonora) con **Amplía Consultoría** co
 | Producción | `https://northadigital.com` (ver `docs/05-lanzamiento.md`) |
 | Repo | `github.com/r0b3rt0g1l/northa-landing` (el sitio nuevo entra por la rama `v2`) |
 | Deploy | `git push`: Vercel con Git conectado (proyecto `northa-landing`); GitHub Actions como alternativa |
-| Lighthouse (local, HTTP/2) | Rendimiento 96–99 móvil y 100 escritorio · Accesibilidad, Buenas prácticas y SEO 100 |
+| Lighthouse (local, HTTP/2, 30-sep-2026) | Rendimiento 92–96 móvil (inicio) y 100 escritorio · Accesibilidad, Buenas prácticas y SEO 100 |
 
 ## Qué incluye
 
-- **Páginas:** inicio, `/servicios` (+ 6 servicios), `/portfolio`, `/gobierno`, `/amplia`, `/blog` (+ artículos en MDX), `/contacto` y `/privacidad`, en español (raíz) y en inglés (`/en`).
-- **Identidad del Cerro de la Campana:** logo animado, favicon SVG animado, loader, curvas de nivel, video del hero y escena 3D interactiva (Three.js), todo del mismo modelo.
+- **Páginas:** inicio, `/servicios` (+ 10 servicios, página corta cada uno), `/portfolio`, `/gobierno`, `/amplia`, `/blog` (+ artículos en MDX), `/contacto` y `/privacidad`, en español (raíz) y en inglés (`/en`).
+- **Identidad del Cerro de la Campana:** logo animado, favicon SVG animado, loader, curvas de nivel y el **Cerro en vivo** del inicio (Three.js): sigue la hora y el clima reales de Hermosillo, y al bajar quedan solo las luces de la ciudad. Todo sale del mismo modelo.
 - **Nort:** chat con Vercel AI SDK y AI Gateway, con herramientas (WhatsApp con resumen, guardar lead, agendar) e historial de 7 días en el navegador. Sin IA disponible, entra en modo guiado.
 - **Leads:** formulario, "Arma tu proyecto" y Nort → Supabase + correo (Resend) + HubSpot, con WhatsApp de respaldo si ningún destino responde.
 - **Intranet de Amplía** (`/amplia/portal`): comunicados, directorio, recursos, solicitudes, proyectos y usuarios, con roles y reglas RLS en Supabase.
@@ -36,7 +36,7 @@ npm run dev                  # http://localhost:3000
 | `npm run build` / `npm start` | Build de producción y servidor |
 | `npm run lint` · `npm run typecheck` · `npm run check` | ESLint, tipos (con `next typegen`) y los dos juntos |
 | `npm run test:db` | Pruebas de las reglas RLS de Supabase en Postgres en memoria (PGlite) |
-| `npm run render:video` | Vuelve a renderizar el video del hero desde la escena 3D (`docs/04-video.md`) |
+| `npm run render:cerro` | Vuelve a renderizar los pósters del Cerro (amanecer, día, atardecer, noche) desde la escena 3D (`docs/04-cerro-en-vivo.md`) |
 | `npm run brand:assets` | Regenera favicon, íconos y curvas de nivel |
 | `npm run capture:portfolio` | Actualiza las capturas de los portales para `/portfolio` |
 | `npm run audit:sites` | Auditoría rápida de sitios (propios o de la competencia) |
@@ -48,14 +48,14 @@ npm run dev                  # http://localhost:3000
 app/
   [locale]/          sitio público ES/EN (estático)
   amplia/portal/     intranet (otro layout raíz, dinámica)
-  api/               chat (Nort) · leads · og (imágenes para redes)
-components/          brand · hero · sections · chat · forms · three · portfolio · portal · layout · ui
+  api/               chat (Nort) · leads · og (imágenes para redes) · clima (Hermosillo)
+components/          brand · hero · cerro · sections · chat · forms · amplia · portfolio · portal · layout · ui
 content/             textos y datos del sitio + blog en MDX
-lib/                 i18n · seo · jsonld · ai · leads · supabase · portal · three · gsap · hooks
-public/              video · portfolio · escudos · brand · amplia
-scripts/             video · activos de marca · capturas · auditoría · alta de admin
+lib/                 i18n · seo · jsonld · ai · leads · supabase · portal · three · cerro · gsap · hooks
+public/              cerro (pósters) · portfolio · escudos · brand · amplia
+scripts/             pósters del Cerro · activos de marca · capturas · auditoría · alta de admin
 supabase/            migraciones SQL y pruebas de RLS
-docs/                análisis, arquitectura, wireframes, video, lanzamiento, contenido, portal, mantenimiento
+docs/                análisis, arquitectura, wireframes, Cerro en vivo, lanzamiento, contenido, portal, mantenimiento
 proxy.ts             idiomas + sesión de la intranet
 .github/workflows/   ci.yml (PR y main) · deploy.yml (opcional)
 ```
@@ -75,7 +75,7 @@ Paso a paso, dominio y lista de verificación: `docs/05-lanzamiento.md`.
 | `docs/01-analisis-competitivo.md` | Comparativa con Imagina Studio, Creapptivo y Hecho en Sonora, y las 15 mejoras |
 | `docs/02-arquitectura.md` | Mapa del sitio, navegación, flujos y arquitectura técnica |
 | `docs/03-wireframes.md` | Wireframes de alta fidelidad en texto |
-| `docs/04-video.md` | Video del hero: formatos, carga y cómo reemplazarlo |
+| `docs/04-cerro-en-vivo.md` | Cerro en vivo del inicio: hora, clima, carga, pósters y cómo cambiarlo |
 | `docs/05-lanzamiento.md` | Configuración, deploy, mediciones y checklist de lanzamiento |
 | `docs/06-contenido.md` | Cómo editar textos, blog, portafolio y calendario editorial |
 | `docs/07-portal-amplia.md` | Intranet: puesta en marcha, operación y seguridad |

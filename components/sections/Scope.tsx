@@ -8,7 +8,7 @@ import { ScopeBuilder } from "./ScopeBuilder";
 export function Scope({ locale }: { locale: Locale }) {
   const dict = getDictionary(locale);
   return (
-    <Section id="arma-tu-proyecto" labelledBy="scope-title" className="pt-8 md:pt-12" defer={[930, 820]}>
+    <Section id="arma-tu-proyecto" labelledBy="scope-title" className="pb-16 pt-4 md:pb-20 md:pt-8" defer={[930, 820]}>
       <div className="container-x">
         <SectionHeading
           id="scope-title"

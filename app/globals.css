@@ -2,33 +2,33 @@
 
 /* ------------------------------------------------------------------ */
 /* Tema: `data-theme` en <html> (dark por defecto, light opcional).   */
-/* Marca: `data-brand="amplia"` cambia el acento de rosa a teal.      */
+/* Marca: `data-brand="amplia"` cambia el acento de naranja a teal.   */
 /* ------------------------------------------------------------------ */
 @custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
 @custom-variant light (&:where([data-theme="light"], [data-theme="light"] *));
 @custom-variant motion-paused (&:where([data-motion="paused"], [data-motion="paused"] *));
 
 /* Propiedades registradas: permiten que el acento se transforme suavemente
-   al pasar de Northa (rosa) a Amplía (teal). */
+   al pasar de Northa (naranja pastel) a Amplía (teal). */
 @property --accent {
   syntax: "<color>";
   inherits: true;
-  initial-value: #ff2e7e;
+  initial-value: #ffae82;
 }
 @property --accent-2 {
   syntax: "<color>";
   inherits: true;
-  initial-value: #ff7ab3;
+  initial-value: #ffd2b8;
 }
 @property --accent-ink {
   syntax: "<color>";
   inherits: true;
-  initial-value: #ff5c9a;
+  initial-value: #ffc3a1;
 }
 @property --accent-strong {
   syntax: "<color>";
   inherits: true;
-  initial-value: #db0066;
+  initial-value: #ffa477;
 }
 @property --accent-contrast {
   syntax: "<color>";
@@ -38,70 +38,72 @@
 @property --accent-soft {
   syntax: "<color>";
   inherits: true;
-  initial-value: rgb(255 46 126 / 0.1);
+  initial-value: rgb(255 174 130 / 0.12);
 }
 @property --accent-line {
   syntax: "<color>";
   inherits: true;
-  initial-value: rgb(255 46 126 / 0.32);
+  initial-value: rgb(255 174 130 / 0.35);
 }
 
 :root,
 [data-theme="dark"] {
   color-scheme: dark;
-  /* Negro con tinte azul marino: el marino es el secundario de la marca. */
-  --bg: #060a16;
-  --bg-2: #0a1020;
-  --surface: #0e1528;
-  --surface-2: #141c33;
-  --line: #1f2944;
-  --line-2: #2c3858;
-  --ink: #f4f5f9;
-  --dim: #a9b1c6;
-  --faint: #8b94ab;
-  --glass: rgb(8 13 28 / 0.74);
-  /* Azul marino de marca: fondos de sección, cielo del Cerro, bandas. */
-  --navy: #0b1f4d;
-  --navy-2: #173a7a;
-  --navy-glow: rgb(45 91 181 / 0.35);
-  --shadow: 0 24px 60px -30px rgb(0 0 0 / 0.9);
-  --grain-opacity: 0.045;
+  /* Azul marino profundo como base; naranja y marino en tonos pastel como acentos. */
+  --bg: #0a1124;
+  --bg-2: #0e1730;
+  --surface: #131e3b;
+  --surface-2: #1a2748;
+  --line: #222f55;
+  --line-2: #2f3f6b;
+  --ink: #f5f3ef;
+  --dim: #b3bdd6;
+  --faint: #8e9ab8;
+  --glass: rgb(10 17 36 / 0.72);
+  /* Azul marino de marca (pastel en los acentos, profundo en los fondos). */
+  --navy: #1a2748;
+  --navy-2: #3a4d7e;
+  --navy-pastel: #a9bbe3;
+  --navy-glow: rgb(127 149 201 / 0.3);
+  --shadow: 0 24px 60px -30px rgb(0 0 0 / 0.85);
+  --grain-opacity: 0.04;
 
-  --accent: #ff2e7e;
-  --accent-2: #ff7ab3;
-  --accent-ink: #ff5c9a;
-  --accent-strong: #db0066;
-  --accent-contrast: #ffffff;
-  --accent-soft: rgb(255 46 126 / 0.1);
-  --accent-line: rgb(255 46 126 / 0.32);
+  --accent: #ffae82;
+  --accent-2: #ffd2b8;
+  --accent-ink: #ffc3a1;
+  --accent-strong: #ffa477;
+  --accent-contrast: #0e1730;
+  --accent-soft: rgb(255 174 130 / 0.12);
+  --accent-line: rgb(255 174 130 / 0.35);
 }
 
 [data-theme="light"] {
   color-scheme: light;
-  /* Neutros fríos y tinta azul marino. */
-  --bg: #f5f7fb;
-  --bg-2: #eaeef6;
+  /* Blanco cálido, tinta azul marino y naranja pastel. */
+  --bg: #faf7f3;
+  --bg-2: #f2ede6;
   --surface: #ffffff;
-  --surface-2: #eef2f8;
-  --line: #dce2ed;
-  --line-2: #c7d0df;
-  --ink: #0b1633;
-  --dim: #3b4663;
-  --faint: #56607a;
-  --glass: rgb(245 247 251 / 0.8);
-  --shadow: 0 24px 60px -34px rgb(11 22 51 / 0.35);
-  --navy: #0b1f4d;
-  --navy-2: #173a7a;
-  --navy-glow: rgb(23 58 122 / 0.18);
+  --surface-2: #f6f1ea;
+  --line: #e7dfd4;
+  --line-2: #d7cdbf;
+  --ink: #14213d;
+  --dim: #3d4a66;
+  --faint: #5b6680;
+  --glass: rgb(250 247 243 / 0.8);
+  --shadow: 0 24px 60px -34px rgb(20 33 61 / 0.3);
+  --navy: #1a2748;
+  --navy-2: #3a4d7e;
+  --navy-pastel: #4f6399;
+  --navy-glow: rgb(58 77 126 / 0.16);
   --grain-opacity: 0.03;
 
-  --accent: #ff2e7e;
-  --accent-2: #ff7ab3;
-  --accent-ink: #b8004b;
-  --accent-strong: #db0066;
-  --accent-contrast: #ffffff;
-  --accent-soft: rgb(219 0 102 / 0.08);
-  --accent-line: rgb(219 0 102 / 0.3);
+  --accent: #ffae82;
+  --accent-2: #ffd2b8;
+  --accent-ink: #a6481a;
+  --accent-strong: #ff9f6e;
+  --accent-contrast: #14213d;
+  --accent-soft: rgb(240 138 85 / 0.12);
+  --accent-line: rgb(214 110 60 / 0.35);
 }
 
 /* Las "islas" oscuras (footer, franja de gobierno, CTA) llevan data-theme="dark";
@@ -140,6 +142,7 @@
   --color-navy: var(--navy);
   --color-navy-2: var(--navy-2);
   --color-navy-glow: var(--navy-glow);
+  --color-navy-pastel: var(--navy-pastel);
   --color-accent: var(--accent);
   --color-accent-2: var(--accent-2);
   --color-accent-ink: var(--accent-ink);
@@ -154,12 +157,12 @@
 }
 
 @theme {
-  --color-northa: #ff2e7e;
-  --color-northa-2: #ff7ab3;
+  --color-northa: #ffae82;
+  --color-northa-2: #ffd2b8;
   --color-amplia: #3fb8ac;
   --color-amplia-2: #7fd8ce;
-  --color-paper: #f5f7fb;
-  --color-night: #060a16;
+  --color-paper: #faf7f3;
+  --color-night: #0a1124;
   --color-whatsapp: #25d366;
 
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
@@ -327,10 +330,12 @@
   color: transparent;
 }
 
+/* Ojo: el prefijo va ANTES. En el orden inverso el compilador de CSS se
+   quedaba solo con -webkit-backdrop-filter y Chrome/Firefox no desenfocaban. */
 @utility glass {
   background: var(--glass);
-  backdrop-filter: saturate(160%) blur(16px);
   -webkit-backdrop-filter: saturate(160%) blur(16px);
+  backdrop-filter: saturate(160%) blur(16px);
 }
 
 /* Tarjeta con "reflector" que sigue al cursor (variables --mx/--my). */
@@ -787,4 +792,204 @@ a:focus-visible .cerro-mark .cm-star {
     -webkit-mask-image: none;
     mask-image: none;
   }
+}
+
+/* ------------------------------------------------------------------ */
+/* Cerro en vivo (inicio)                                             */
+/* El fondo fijo del inicio: póster según la hora (antes de que cargue */
+/* la escena 3D) y, al hacer scroll, solo las luces de la ciudad.      */
+/* ------------------------------------------------------------------ */
+body:has(.cerro-backdrop) {
+  background: transparent;
+  /* El fondo fijo (z-index negativo) queda dentro del contexto del body:
+     encima de su fondo y debajo del contenido. Así también lo "ven" los
+     validadores de contraste (texto sobre imagen, no sobre el color liso). */
+  isolation: isolate;
+}
+
+.cerro-backdrop {
+  --cerro-fade: 0;
+  position: fixed;
+  inset: 0;
+  z-index: -10;
+  overflow: hidden;
+  background: var(--bg);
+  /* Sin "pointer-events: none": así los validadores de contraste ven que el
+     texto del hero va sobre imagen/canvas (y no sobre el color de la página).
+     Queda detrás de todo, no estorba clics ni scroll. */
+}
+
+.cerro-poster {
+  position: absolute;
+  inset: 0;
+  background-color: #0a1124;
+  background-position: 62% 50%;
+  background-size: cover;
+  background-repeat: no-repeat;
+  opacity: calc(1 - var(--cerro-fade));
+  transition: opacity 1.2s var(--ease-out-expo);
+}
+.cerro-backdrop[data-ready="true"] .cerro-poster {
+  opacity: 0;
+}
+
+html[data-tod="dawn"] .cerro-poster {
+  background-image: image-set(url("/cerro/dawn-wide.avif") type("image/avif"), url("/cerro/dawn-wide.webp") type("image/webp"));
+}
+html[data-tod="day"] .cerro-poster {
+  background-image: image-set(url("/cerro/day-wide.avif") type("image/avif"), url("/cerro/day-wide.webp") type("image/webp"));
+}
+html[data-tod="dusk"] .cerro-poster {
+  background-image: image-set(url("/cerro/dusk-wide.avif") type("image/avif"), url("/cerro/dusk-wide.webp") type("image/webp"));
+}
+html[data-tod="night"] .cerro-poster {
+  background-image: image-set(url("/cerro/night-wide.avif") type("image/avif"), url("/cerro/night-wide.webp") type("image/webp"));
+}
+@media (max-aspect-ratio: 1/1) {
+  .cerro-poster {
+    background-position: 50% 100%;
+  }
+  html[data-tod="dawn"] .cerro-poster {
+    background-image: image-set(url("/cerro/dawn-tall.avif") type("image/avif"), url("/cerro/dawn-tall.webp") type("image/webp"));
+  }
+  html[data-tod="day"] .cerro-poster {
+    background-image: image-set(url("/cerro/day-tall.avif") type("image/avif"), url("/cerro/day-tall.webp") type("image/webp"));
+  }
+  html[data-tod="dusk"] .cerro-poster {
+    background-image: image-set(url("/cerro/dusk-tall.avif") type("image/avif"), url("/cerro/dusk-tall.webp") type("image/webp"));
+  }
+  html[data-tod="night"] .cerro-poster {
+    background-image: image-set(url("/cerro/night-tall.avif") type("image/avif"), url("/cerro/night-tall.webp") type("image/webp"));
+  }
+}
+
+.cerro-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transition: opacity 1.2s var(--ease-out-expo);
+}
+.cerro-backdrop[data-ready="true"] .cerro-canvas {
+  opacity: 1;
+}
+
+/* Velos para leer el texto del hero sobre cualquier cielo; se van al bajar. */
+.cerro-veil {
+  position: absolute;
+  inset: 0;
+  opacity: calc(1 - var(--cerro-fade));
+  background:
+    linear-gradient(180deg, rgb(10 17 36 / 0.62) 0%, rgb(10 17 36 / 0) 16%),
+    linear-gradient(90deg, rgb(10 17 36 / 0.84) 0%, rgb(10 17 36 / 0.6) 34%, rgb(10 17 36 / 0) 60%);
+}
+@media (max-aspect-ratio: 1/1) {
+  .cerro-veil {
+    background:
+      linear-gradient(180deg, rgb(10 17 36 / 0.88) 0%, rgb(10 17 36 / 0.7) 42%, rgb(10 17 36 / 0.05) 66%, rgb(10 17 36 / 0.35) 100%);
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Ensō de Amplía en HD: el pincel traza, la tinta respira, una luz    */
+/* recorre el círculo. Con "reducir movimiento" o pausa: quieto.      */
+/* ------------------------------------------------------------------ */
+.enso-animate .enso-reveal {
+  stroke-dasharray: 1 1;
+  stroke-dashoffset: 1;
+  animation: enso-stroke 2s cubic-bezier(0.62, 0.02, 0.3, 1) 0.25s forwards;
+}
+@keyframes enso-stroke {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+.enso-animate .enso-halo {
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation:
+    enso-halo-in 1.4s var(--ease-out-expo) 1.9s forwards,
+    enso-breathe 6s ease-in-out 3.3s infinite;
+}
+@keyframes enso-halo-in {
+  from {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+@keyframes enso-breathe {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.55;
+    transform: scale(1.03);
+  }
+}
+.enso-animate .enso-orbit {
+  opacity: 0;
+  animation:
+    enso-fade 1s ease-out 2.1s forwards,
+    enso-orbit 9s linear 2.1s infinite;
+}
+@keyframes enso-fade {
+  to {
+    opacity: 1;
+  }
+}
+@keyframes enso-orbit {
+  to {
+    transform: rotate(360deg);
+  }
+}
+/* Nombre de Amplía que aparece cuando el pincel termina. */
+.enso-word {
+  opacity: 0;
+  translate: 0 0.35em;
+  filter: blur(6px);
+  animation: enso-word 0.9s var(--ease-out-expo) calc(1.6s + var(--i, 0) * 60ms) forwards;
+}
+@keyframes enso-word {
+  to {
+    opacity: 1;
+    translate: 0 0;
+    filter: blur(0);
+  }
+}
+[data-motion="paused"] .enso-animate .enso-reveal,
+[data-motion="paused"] .enso-animate .enso-halo,
+[data-motion="paused"] .enso-animate .enso-orbit,
+[data-motion="paused"] .enso-word {
+  animation: none;
+  stroke-dashoffset: 0;
+  opacity: 1;
+  translate: none;
+  filter: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .enso-animate .enso-reveal {
+    animation: none;
+    stroke-dashoffset: 0;
+  }
+  .enso-animate .enso-halo,
+  .enso-animate .enso-orbit,
+  .enso-word {
+    animation: none;
+    opacity: 1;
+    translate: none;
+    filter: none;
+  }
+}
+
+/* Amplía se contacta por WhatsApp: el correo de Northa no aparece en sus páginas. */
+html[data-brand="amplia"] .footer-northa-email {
+  display: none;
 }

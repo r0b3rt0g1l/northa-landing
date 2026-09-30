@@ -11,6 +11,7 @@ import { pageMetadata } from "@/lib/seo";
 import { href } from "@/lib/i18n/href";
 import { site } from "@/lib/site";
 import { whatsappMessages, whatsappUrl } from "@/lib/whatsapp";
+import { todBootSnippet } from "@/lib/cerro/sky-time";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { BrandSync } from "@/components/layout/Preferences";
@@ -41,17 +42,18 @@ export async function generateMetadata({ params }: LayoutProps<"/[locale]">): Pr
 
 export const viewport: Viewport = {
   themeColor: [
-    { media: "(prefers-color-scheme: dark)", color: "#060a16" },
-    { media: "(prefers-color-scheme: light)", color: "#f5f7fb" },
+    { media: "(prefers-color-scheme: dark)", color: "#0a1124" },
+    { media: "(prefers-color-scheme: light)", color: "#faf7f3" },
   ],
   colorScheme: "dark light",
 };
 
 /**
- * Corre antes del primer pintado: aplica tema y pausa guardados, y el acento
- * de Amplía si la URL es /amplia. Sin esto habría un destello al cargar.
+ * Corre antes del primer pintado: aplica tema y pausa guardados, el acento de
+ * Amplía si la URL es /amplia y la hora del día de Hermosillo (data-tod) para
+ * que el Cerro del inicio salga desde el primer cuadro con el cielo correcto.
  */
-const bootScript = `(function(){var d=document.documentElement;try{var t=localStorage.getItem("northa-theme");if(t==="light"||t==="dark")d.dataset.theme=t;if(localStorage.getItem("northa-motion")==="paused")d.dataset.motion="paused";}catch(e){}if(/^\\/(en\\/)?amplia(\\/|$)/.test(location.pathname))d.dataset.brand="amplia";})();`;
+const bootScript = `(function(){var d=document.documentElement;try{var t=localStorage.getItem("northa-theme");if(t==="light"||t==="dark")d.dataset.theme=t;if(localStorage.getItem("northa-motion")==="paused")d.dataset.motion="paused";}catch(e){}if(/^\\/(en\\/)?amplia(\\/|$)/.test(location.pathname))d.dataset.brand="amplia";${todBootSnippet}if(/^\\/(en\\/?)?$/.test(location.pathname)){var l=document.createElement("link");l.rel="preload";l.as="image";l.type="image/avif";l.href="/cerro/"+d.dataset.tod+"-"+(innerWidth<innerHeight?"tall":"wide")+".avif";l.setAttribute("fetchpriority","high");document.head.appendChild(l);}})();`;
 
 export default async function LocaleLayout({ children, params }: LayoutProps<"/[locale]">) {
   const { locale } = await params;

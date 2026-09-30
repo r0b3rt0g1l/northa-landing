@@ -23,7 +23,7 @@ export function Faq({
   id?: string;
 }) {
   return (
-    <section id={id} aria-labelledby={`${id}-title`} className="relative py-24 md:py-32" {...deferRender(880, 770)}>
+    <section id={id} aria-labelledby={`${id}-title`} className="relative py-16 md:py-20" {...deferRender(880, 770)}>
       <JsonLd data={faqJsonLd(items, locale)} />
       <div className="container-x grid gap-12 lg:grid-cols-[0.8fr_1.2fr]">
         <Reveal>

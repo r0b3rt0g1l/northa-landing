@@ -26,7 +26,7 @@ export function organizationJsonLd(locale: Locale): Json {
     name: site.name,
     url: site.url,
     logo: `${site.url}/brand/icon-512.png`,
-    image: `${site.url}/video/cerro-1920x1080-poster.jpg`,
+    image: `${site.url}/cerro/dusk-wide.jpg`,
     slogan: site.tagline[locale],
     description:
       locale === "es"
@@ -152,7 +152,6 @@ export function ampliaJsonLd(locale: Locale, description: string): Json {
     url: absoluteUrl(site.url, locale, "/amplia"),
     description,
     telephone: amplia.contact.phoneE164,
-    email: amplia.contact.email,
     areaServed: { "@type": "State", name: "Sonora" },
     member: { "@type": "Person", name: amplia.presenta },
   };

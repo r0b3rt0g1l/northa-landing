@@ -1,7 +1,8 @@
 /**
  * Identidad, contacto y URLs de Northa Digital.
  *
- * Los datos de contacto vienen de northa-landing/lib/site.js (verificados).
+ * Contacto confirmado por Roberto el 30-sep-2026: WhatsApp +52 662 205 5021 y
+ * northadigital@gmail.com (el mismo número atiende Amplía).
  * Todo lo que puede cambiar entre entornos se puede sobreescribir con
  * variables de entorno — ver `.env.example`.
  */
@@ -14,7 +15,7 @@
 const or = (value: string | undefined, fallback: string) =>
   value && value.trim() !== "" ? value.trim() : fallback;
 
-const whatsappNumber = or(process.env.NEXT_PUBLIC_WHATSAPP_NUMBER, "526623866834");
+const whatsappNumber = or(process.env.NEXT_PUBLIC_WHATSAPP_NUMBER, "526622055021");
 
 export const site = {
   name: "Northa Digital",
@@ -37,10 +38,10 @@ export const site = {
     geo: { latitude: 29.0729, longitude: -110.9559 },
   },
   contact: {
-    email: or(process.env.NEXT_PUBLIC_CONTACT_EMAIL, "rgilh@hotmail.com"),
+    email: or(process.env.NEXT_PUBLIC_CONTACT_EMAIL, "northadigital@gmail.com"),
     whatsappNumber,
     phoneE164: `+${whatsappNumber}`,
-    phoneDisplay: or(process.env.NEXT_PUBLIC_PHONE_DISPLAY, "+52 662 386 6834"),
+    phoneDisplay: or(process.env.NEXT_PUBLIC_PHONE_DISPLAY, "+52 662 205 5021"),
   },
   /** Liga pública de Cal.com (p. ej. https://cal.com/northa/30min). Vacía = se oculta la agenda. */
   calUrl: or(process.env.NEXT_PUBLIC_CAL_URL, ""),

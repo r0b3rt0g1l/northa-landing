@@ -29,13 +29,25 @@ const nextConfig: NextConfig = {
     // Portal de Amplía: archivos de hasta 4 MB (Vercel corta el cuerpo en ~4.5 MB).
     serverActions: { bodySizeLimit: "4.5mb" },
   },
+  // Servicios que cambiaron de nombre (30-sep-2026).
+  async redirects() {
+    const moved: [string, string][] = [
+      ["sistemas-a-la-medida", "desarrollo-web"],
+      ["consultoria-tecnologica", "capacitaciones"],
+    ];
+    return moved.flatMap(([from, to]) => [
+      { source: `/servicios/${from}`, destination: `/servicios/${to}`, permanent: true },
+      { source: `/en/servicios/${from}`, destination: `/en/servicios/${to}`, permanent: true },
+    ]);
+  },
   async headers() {
     return [
       { source: "/:path*", headers: securityHeaders },
       {
-        // Los videos y pósters se regeneran con nombre nuevo si cambian.
-        source: "/video/:path*",
-        headers: [{ key: "Cache-Control", value: "public, max-age=2592000, stale-while-revalidate=86400" }],
+        // Pósters del Cerro en vivo (npm run render:cerro). Una semana: si se
+        // vuelven a renderizar con el mismo nombre, se actualizan pronto.
+        source: "/cerro/:path*",
+        headers: [{ key: "Cache-Control", value: "public, max-age=604800, stale-while-revalidate=86400" }],
       },
       {
         source: "/escudos/:path*",

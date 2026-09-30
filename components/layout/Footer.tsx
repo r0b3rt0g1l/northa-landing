@@ -19,7 +19,7 @@ export function Footer({ locale }: { locale: Locale }) {
   const year = new Date().getFullYear();
   const company = [
     { label: dict.nav.work, to: "/portfolio" },
-    { label: dict.nav.process, to: "/#proceso" },
+    { label: dict.sections.scope.eyebrow, to: "/#arma-tu-proyecto" },
     { label: dict.nav.gov, to: "/gobierno" },
     { label: dict.nav.blog, to: "/blog" },
     { label: "Amplía Consultoría", to: "/amplia" },
@@ -28,15 +28,15 @@ export function Footer({ locale }: { locale: Locale }) {
 
   return (
     <footer
-      {...deferRender(1380, 840)}
+      {...deferRender(1180, 900)}
       data-theme="dark"
-      className="relative overflow-hidden border-t border-white/10 bg-[linear-gradient(180deg,var(--navy)_0%,#07112b_55%,#060a16_100%)] text-ink"
+      className="relative overflow-hidden border-t border-white/10 bg-[linear-gradient(180deg,var(--navy)_0%,#0d1733_55%,#0a1124_100%)] text-ink"
     >
       <div
         aria-hidden
         className="pointer-events-none absolute -right-40 -top-40 size-[44rem] bg-line-2 opacity-40 [mask:url(/brand/contours.svg)_center/contain_no-repeat]"
       />
-      <div className="container-x relative py-20">
+      <div className="container-x relative py-14 md:py-20">
         <div className="grid gap-12 md:grid-cols-12">
           <div className="md:col-span-4">
             <Link href={href(locale, "/")} className="inline-block rounded-full" aria-label="Northa Digital">
@@ -46,10 +46,10 @@ export function Footer({ locale }: { locale: Locale }) {
             <p className="mt-3 max-w-xs text-sm text-faint">{dict.footer.madeIn}</p>
           </div>
 
-          <nav aria-label={dict.a11y.footerNav} className="grid gap-10 sm:grid-cols-3 md:col-span-8">
+          <nav aria-label={dict.a11y.footerNav} className="grid grid-cols-2 gap-x-6 gap-y-10 sm:grid-cols-3 md:col-span-8">
             <div>
               <h2 className="eyebrow mb-4 !text-faint">{dict.footer.services}</h2>
-              <ul className="grid gap-2.5">
+              <ul className="grid gap-2.5 text-[0.95rem]">
                 {services.map((s) => (
                   <li key={s.slug}>
                     <Link href={href(locale, `/servicios/${s.slug}`)} className="text-dim transition-colors hover:text-ink">
@@ -61,7 +61,7 @@ export function Footer({ locale }: { locale: Locale }) {
             </div>
             <div>
               <h2 className="eyebrow mb-4 !text-faint">{dict.footer.company}</h2>
-              <ul className="grid gap-2.5">
+              <ul className="grid gap-2.5 text-[0.95rem]">
                 {company.map((c) => (
                   <li key={c.to}>
                     <Link href={href(locale, c.to)} className="text-dim transition-colors hover:text-ink">
@@ -71,7 +71,7 @@ export function Footer({ locale }: { locale: Locale }) {
                 ))}
               </ul>
             </div>
-            <div>
+            <div className="col-span-2 sm:col-span-1">
               <h2 className="eyebrow mb-4 !text-faint">{dict.footer.contact}</h2>
               <ul className="grid gap-3">
                 <li>
@@ -86,7 +86,8 @@ export function Footer({ locale }: { locale: Locale }) {
                     {site.contact.phoneDisplay}
                   </TrackedLink>
                 </li>
-                <li>
+                {/* En las páginas de Amplía no se muestra el correo de Northa. */}
+                <li className="footer-northa-email">
                   <TrackedLink
                     href={`mailto:${site.contact.email}`}
                     event="email_click"
@@ -105,7 +106,7 @@ export function Footer({ locale }: { locale: Locale }) {
           </nav>
         </div>
 
-        <div className="mt-16 flex flex-col gap-6 border-t border-line pt-8 md:flex-row md:items-center md:justify-between">
+        <div className="mt-12 flex flex-col gap-6 border-t border-line pt-8 md:mt-16 md:flex-row md:items-center md:justify-between">
           <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-faint">
             <span>
               © {year} Northa Digital. {dict.footer.rights}

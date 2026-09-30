@@ -7,26 +7,26 @@ El español vive en la raíz y el inglés bajo `/en`. Las rutas usan slugs en es
 ```text
 northadigital.com
 │
-├── /                              Inicio                 (/en)
-│   ├── #servicios                 6 servicios (bento)
-│   ├── #arma-tu-proyecto          Configurador de 3 pasos → WhatsApp o lead
-│   ├── #trabajo                   Trabajo en producción (resumen del portafolio)
-│   ├── #proceso                   Brújula de 5 etapas
-│   ├── #como-trabajamos           Misión, visión y 4 reglas (valores)
-│   ├── #hermosillo                Cerro de la Campana en 3D (día → noche con scroll)
-│   ├── #gobierno-digital          Franja: portales municipales + alianza con Amplía
-│   ├── #planes                    3 planes de referencia ("Cotización a la medida")
-│   ├── #preguntas                 FAQ (FAQPage)
-│   ├── #blog                      Últimos artículos
-│   └── #contacto                  WhatsApp, formulario y datos
+├── /                              Inicio (30-sep-2026)   (/en)
+│   ├── #inicio                    Cerro en vivo: hora y clima de Hermosillo + fases del día
+│   ├── #servicios                 10 servicios en 3 columnas (web y apps · IA · operación)
+│   ├── #arma-tu-proyecto          "Cuéntanos qué necesitas": 4 pasos → WhatsApp o lead
+│   ├── #trabajo                   Portafolio corto: los 14 portales en una cinta
+│   ├── #preguntas                 4 preguntas (FAQPage)
+│   └── #contacto                  WhatsApp, correo y ubicación (el formulario vive en /contacto)
+│   (Al bajar, de fondo quedan solo las luces de la ciudad.)
 │
 ├── /servicios                     Índice de servicios    (/en/servicios)
-│   ├── /desarrollo-web
-│   ├── /sistemas-a-la-medida
+│   ├── /paginas-web
+│   ├── /desarrollo-web            (antes /sistemas-a-la-medida: redirección 308)
 │   ├── /aplicaciones
+│   ├── /portales-administradores
+│   ├── /chatbots-ia
 │   ├── /inteligencia-artificial
+│   ├── /digitalizacion
+│   ├── /seguridad-vpn
 │   ├── /mantenimiento-web
-│   └── /consultoria-tecnologica
+│   └── /capacitaciones            (antes /consultoria-tecnologica: redirección 308)
 │
 ├── /portfolio                     Proyectos en producción, con filtros   (/en/portfolio)
 ├── /gobierno                      Portales municipales: flota, módulos, calidad, alianza
@@ -49,7 +49,7 @@ northadigital.com
 │
 └── Sistema
     ├── /sitemap.xml  /robots.txt  /manifest.webmanifest  /icon.svg  /apple-icon.png
-    └── /api/chat  (Nort)   /api/leads  (formularios)   /api/og  (imágenes para redes)
+    └── /api/chat  (Nort)   /api/leads  (formularios)   /api/og  (imágenes para redes)   /api/clima  (clima de Hermosillo)
 ```
 
 **Fuera del sitemap:** `/privacidad` (sí se indexa, pero con prioridad baja) y todo `/amplia/portal` (`noindex` y bloqueado en `robots.txt`).
@@ -58,10 +58,10 @@ northadigital.com
 
 | Zona | Contenido |
 |---|---|
-| **Header** (fijo, transparente sobre el hero) | Logo animado · **Servicios** (mega menú con los 6 servicios, "Ver todos" y la tarjeta de Gobierno) · Portafolio · Proceso · Gobierno · Blog · selector **Northa ⇄ Amplía** · idioma · tema · botón WhatsApp |
+| **Header** (fijo, transparente sobre el hero) | Logo animado · **Servicios** (mega menú con los 10 servicios, "Ver todos" y la tarjeta de Gobierno) · Portafolio · Gobierno · Blog · selector **Northa ⇄ Amplía** · idioma · tema · botón WhatsApp |
 | **Celular** | Botón de menú que abre un diálogo de pantalla completa con foco atrapado, los mismos enlaces, las preferencias y WhatsApp |
-| **Nort** | Botón flotante en todas las páginas públicas (no en la intranet). Además, botones "Pregúntale a Nort" dentro del contenido |
-| **Footer** (bloque azul marino) | Servicios · Northa (Portafolio, Proceso, Gobierno, Blog, Amplía, Contacto) · Contacto · preferencias (pausar animaciones, idioma, tema) · aviso de privacidad |
+| **Nort** | Botón flotante en todas las páginas públicas (no en la intranet); en celular se esconde mientras se ve el Cerro del inicio. Además, botones "Pregúntale a Nort" dentro del contenido |
+| **Footer** (bloque azul marino) | Servicios · Northa (Portafolio, Arma tu proyecto, Gobierno, Blog, Amplía, Contacto) · Contacto · preferencias (pausar animaciones, idioma, tema) · aviso de privacidad |
 | **Intranet** | Barra lateral: Inicio, Comunicados, Directorio, Recursos, Solicitudes, Proyectos, Usuarios (admin). Barra superior: usuario, tema y salir. Enlace de vuelta a la página pública de Amplía |
 
 ## 3. Flujos de usuario
@@ -126,11 +126,11 @@ flowchart LR
 
 | Página | 1.º (lo que se ve primero) | 2.º | 3.º |
 |---|---|---|---|
-| Inicio | Propuesta de valor + WhatsApp y Nort | Servicios + configurador | Prueba: trabajo, proceso, principios, Cerro 3D → gobierno, planes, FAQ, blog, contacto |
-| Servicio | Qué es + para quién + WhatsApp del servicio | Qué incluye y proceso | Stack, FAQ, servicios relacionados, CTA |
+| Inicio | Cerro en vivo + propuesta en una línea + WhatsApp | Servicios + "Cuéntanos qué necesitas" | Portafolio corto, 4 preguntas y contacto |
+| Servicio | Qué es (una línea) + WhatsApp y Nort | Qué incluye (4 puntos) | "También hacemos" y liga a "Cuéntanos qué necesitas" |
 | Portafolio | Trabajo en producción, no maquetas | Caso destacado: la plataforma de 14 portales | Grid filtrable de proyectos → CTA |
 | Gobierno | 14 portales en vivo | Qué construimos, módulos y calidad | Alianza con Amplía → WhatsApp de gobierno |
-| Amplía | Qué es Amplía (enso y promesa) | Metodología y servicios | Contacto (teléfono y correo) y acceso del equipo |
+| Amplía | Qué es Amplía (ensō animado y promesa) | Quiénes somos, enfoque y metodología | Contacto (WhatsApp y teléfono de Northa) y acceso del equipo |
 | Blog | Últimos artículos | Filtro por tema | — |
 | Artículo | Título, fecha y lectura | Cuerpo | Traducción y CTA |
 | Contacto | WhatsApp | Formulario | FAQ |
@@ -147,13 +147,13 @@ northa-digital/
 │   │   ├── servicios/  portfolio/  gobierno/  amplia/  blog/  contacto/  privacidad/
 │   │   └── not-found.tsx · error.tsx · [...rest]/
 │   ├── amplia/portal/       INTRANET: otro layout raíz, solo español, dinámico (sesión)
-│   ├── api/                 chat · leads · og
+│   ├── api/                 chat · leads · og · clima
 │   └── sitemap.ts · robots.ts · manifest.ts · icon.svg · apple-icon.png
-├── components/              brand · ui · layout · hero · sections · chat · forms · three · amplia · portal · blog
+├── components/              brand · ui · layout · hero · cerro · sections · chat · forms · amplia · portal · blog
 ├── content/                 Textos y datos del sitio (TS) + blog en MDX (es/ y en/)
-├── lib/                     i18n · seo · jsonld · ai · leads · supabase · three · hooks · utils
-├── public/                  video/ · portfolio/ · escudos/ · brand/ · amplia/
-├── scripts/                 render del video · activos de marca · alta del primer admin · auditoría
+├── lib/                     i18n · seo · jsonld · ai · leads · supabase · three · cerro · hooks · utils
+├── public/                  cerro/ · portfolio/ · escudos/ · brand/ · amplia/
+├── scripts/                 pósters del Cerro · activos de marca · alta del primer admin · auditoría
 ├── supabase/migrations/     SQL para el proyecto NUEVO de Supabase de la landing
 ├── docs/                    Estos documentos
 ├── proxy.ts                 Idiomas + sesión de la intranet
@@ -171,7 +171,7 @@ northa-digital/
 | **Intranet con otro layout raíz** | No carga el header de marketing ni Nort. Es dinámica por la sesión, mientras el sitio público sigue 100 % estático |
 | **Deploy con `git push`** | La repo es personal (`r0b3rt0g1l/northa-landing`), así que Vercel despliega solo con Git conectado. `deploy.yml` (GitHub Actions + Vercel CLI) queda listo y apagado por si la repo pasa a una organización privada, donde Hobby no despliega solo |
 | **Analítica sin cookies** (Vercel) | Congruente con la promesa de privacidad. GA4 es opcional y queda documentado |
-| **JS pesado bajo demanda** | GSAP, Motion (Framer Motion) y Three.js no viajan en la carga inicial: se descargan cuando su sección se acerca a la pantalla (`lib/gsap.ts`, `ScopeStepMotion`, `CerroStage`) |
+| **JS pesado bajo demanda** | GSAP, Motion (Framer Motion) y Three.js no viajan en la carga inicial. GSAP y Motion se descargan cuando su sección se acerca a la pantalla (`lib/gsap.ts`, `ScopeStepMotion`); Three.js, después del `load` y de un momento ocioso, detrás del póster del Cerro (`CerroBackdrop`) |
 | **`content-visibility` en secciones de abajo** | El primer cuadro solo calcula lo que se ve (`deferRender` en `lib/utils.ts`). `HashAlign` corrige los saltos a anclas cuando las alturas reales llegan |
 | **Apariciones con CSS** (`animation-timeline: view()`) | No esperan a la hidratación ni cuestan JavaScript; sin soporte, el contenido simplemente aparece |
 

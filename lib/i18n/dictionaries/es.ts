@@ -57,11 +57,15 @@ const es = {
   hero: {
     eyebrow: "Northa Digital · Hermosillo, Sonora",
     title: "El norte digital de Sonora.",
-    subtitle: "Software que se queda en producción.",
-    lead: "Diseñamos y desarrollamos páginas web, sistemas a la medida, apps e inteligencia artificial para empresas e instituciones de Sonora.",
-    scrollCue: "Desliza para explorar",
-    videoLabel:
-      "Animación del Cerro de la Campana al anochecer, con la estrella del norte de Northa sobre la cima.",
+    lead: "Páginas web, sistemas, apps e inteligencia artificial.",
+    secondaryCta: "Cuéntanos qué necesitas",
+    timeline: {
+      city: "Hermosillo",
+      live: "En vivo",
+      backToNow: "Ahora",
+      group: "Ver el Cerro a otra hora del día",
+      phases: { dawn: "Amanecer", day: "Día", dusk: "Atardecer", night: "Noche" },
+    },
   },
   sections: {
     trust: {
@@ -70,8 +74,8 @@ const es = {
     },
     services: {
       eyebrow: "Servicios",
-      title: "Lo que la gente busca, hecho para durar.",
-      lead: "Cada servicio tiene su propia página con qué incluye, cómo trabajamos y preguntas frecuentes.",
+      title: "Lo que hacemos.",
+      lead: "Todo lo digital que tu negocio necesita, en un solo equipo.",
       cardCta: "Ver detalle",
     },
     scope: {
@@ -85,11 +89,15 @@ const es = {
       step4: "Listo. Así se lo mandamos al equipo:",
       needs: {
         web: "Página web",
-        system: "Sistema o panel",
+        dev: "Desarrollo web",
         app: "App",
-        ai: "Chatbot / IA",
+        portal: "Portal administrador",
+        chatbot: "Chatbot con IA",
+        ai: "Solución con IA",
+        digital: "Digitalización",
+        vpn: "Seguridad y VPN",
         care: "Mantenimiento",
-        consulting: "Consultoría",
+        training: "Capacitación",
         gov: "Portal de gobierno",
       },
       stages: {
@@ -118,9 +126,9 @@ const es = {
       selectAtLeastOne: "Elige al menos una opción para continuar.",
     },
     work: {
-      eyebrow: "Trabajo en producción",
-      title: "No mostramos maquetas. Mostramos lo que está en línea.",
-      lead: "Proyectos que hoy reciben visitas reales, con dominio, usuarios y alguien responsable de que sigan funcionando.",
+      eyebrow: "Portafolio",
+      title: "En línea, no en maqueta.",
+      lead: "Catorce portales municipales de Sonora corren hoy sobre nuestra plataforma.",
       tryNort: "Probar a Nort",
       seeFleet: "Ver los 14 portales",
       seeCerro: "Ver el Cerro en 3D",
@@ -187,6 +195,7 @@ const es = {
       eyebrow: "Contacto",
       title: "Hablemos de tu proyecto.",
       lead: "La forma más rápida es WhatsApp. Si prefieres, déjanos tus datos o agenda una videollamada.",
+      compactLead: "La forma más rápida es WhatsApp.",
       or: "o",
       emailLabel: "Correo",
       whatsappLabel: "WhatsApp",

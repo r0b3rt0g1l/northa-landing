@@ -236,7 +236,7 @@ export default function NortPanel({
     >
       {/* Encabezado */}
       <header className="flex items-center gap-3 border-b border-line px-4 py-3">
-        <span className="relative grid size-10 place-items-center rounded-full bg-[radial-gradient(circle_at_50%_35%,#1a3270,#060a16)]">
+        <span className="relative grid size-10 place-items-center rounded-full bg-[radial-gradient(circle_at_50%_35%,#2a3d72,#0a1124)]">
           <StarGlyph className="size-5 text-white" />
           <span className="absolute bottom-0 right-0 size-2.5 rounded-full border-2 border-surface bg-emerald-400" aria-hidden />
         </span>
@@ -422,7 +422,7 @@ function Bubble({ role, children }: { role: "user" | "assistant"; children: Reac
   }
   return (
     <div className="mr-6 flex gap-2.5">
-      <span className="mt-1 grid size-7 shrink-0 place-items-center rounded-full bg-[radial-gradient(circle_at_50%_35%,#1a3270,#060a16)]">
+      <span className="mt-1 grid size-7 shrink-0 place-items-center rounded-full bg-[radial-gradient(circle_at_50%_35%,#2a3d72,#0a1124)]">
         <StarGlyph className="size-3.5 text-white" />
       </span>
       <div className="min-w-0 space-y-3 text-[0.93rem] leading-relaxed text-dim [&_p]:text-ink/90">{children}</div>

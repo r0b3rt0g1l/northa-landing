@@ -15,11 +15,14 @@ export function Contact({
   locale,
   headingLevel = "h2",
   defer = false,
+  compact = false,
 }: {
   locale: Locale;
   headingLevel?: "h1" | "h2";
   /** true cuando la sección va al final de una página larga (home). */
   defer?: boolean;
+  /** Sin formulario: solo WhatsApp, correo y ubicación (el formulario vive en /contacto). */
+  compact?: boolean;
 }) {
   const dict = getDictionary(locale);
   const c = dict.sections.contact;
@@ -29,20 +32,20 @@ export function Contact({
     <section
       id="contacto"
       aria-labelledby="contacto-title"
-      className="relative overflow-hidden py-24 md:py-32"
-      {...(defer ? deferRender(1710, 980) : {})}
+      className={compact ? "relative overflow-hidden py-16 md:py-20" : "relative overflow-hidden py-24 md:py-32"}
+      {...(defer ? deferRender(compact ? 760 : 1710, compact ? 560 : 980) : {})}
     >
       <div
         aria-hidden
         className="pointer-events-none absolute -left-40 top-10 size-[50rem] bg-[radial-gradient(closest-side,var(--color-accent),transparent)] opacity-[0.07]"
       />
-      <div className="container-x relative grid gap-14 lg:grid-cols-[0.9fr_1.1fr] lg:gap-20">
+      <div className={compact ? "container-x relative" : "container-x relative grid gap-14 lg:grid-cols-[0.9fr_1.1fr] lg:gap-20"}>
         <Reveal>
           <p className="eyebrow mb-5">{c.eyebrow}</p>
           <Heading id="contacto-title" className="text-[length:var(--text-h1)] text-ink">
             {c.title}
           </Heading>
-          <p className="mt-5 max-w-md text-[length:var(--text-lead)] text-dim">{c.lead}</p>
+          <p className="mt-5 max-w-md text-[length:var(--text-lead)] text-dim">{compact ? c.compactLead : c.lead}</p>
           <div className="mt-10 flex flex-wrap gap-3">
             <TrackedLink
               href={wa}
@@ -67,7 +70,7 @@ export function Contact({
               </TrackedLink>
             )}
           </div>
-          <dl className="mt-12 grid gap-5 border-t border-line pt-8">
+          <dl className={compact ? "mt-12 grid gap-5 border-t border-line pt-8 md:grid-cols-3" : "mt-12 grid gap-5 border-t border-line pt-8"}>
             <div className="flex items-center gap-4">
               <dt className="grid size-10 place-items-center rounded-full border border-line text-accent-ink">
                 <WhatsAppIcon className="size-4" />
@@ -100,6 +103,7 @@ export function Contact({
           </dl>
         </Reveal>
 
+        {!compact && (
         <Reveal delay={0.1} className="self-start rounded-[2rem] border border-line bg-surface/70 p-6 md:p-10">
           <h3 className="mb-8 font-display text-2xl font-bold text-ink">{c.formTitle}</h3>
           <ContactForm
@@ -111,6 +115,7 @@ export function Contact({
             fallbackWhatsapp={wa}
           />
         </Reveal>
+        )}
       </div>
     </section>
   );

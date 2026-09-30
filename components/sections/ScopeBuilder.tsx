@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useId, useMemo, useRef, useState } from "react";
-import { ArrowLeft, ArrowRight, Check, RotateCcw } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, CheckCheck, RotateCcw } from "lucide-react";
+import { CerroMark } from "@/components/brand/CerroMark";
 import { whatsappUrl } from "@/lib/whatsapp";
 import { track } from "@/lib/analytics";
 import { useCalmMotion, useInView } from "@/lib/hooks";
@@ -93,6 +94,23 @@ export function ScopeBuilder({
 
   const canNext = step === 0 ? needs.length > 0 : step === 1 ? !!stage : step === 2 ? !!timing : true;
 
+  // Con el mouse o el dedo, elegir etapa o tiempo avanza solo; con teclado no
+  // (las flechas cambian la opción y la persona decide cuándo seguir).
+  const advanceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(() => () => {
+    if (advanceTimer.current) clearTimeout(advanceTimer.current);
+  }, []);
+  const pickAndAdvance = (apply: () => void, viaPointer: boolean, onAdvance?: () => void) => {
+    apply();
+    setHint(false);
+    if (!viaPointer) return;
+    if (advanceTimer.current) clearTimeout(advanceTimer.current);
+    advanceTimer.current = setTimeout(() => {
+      onAdvance?.();
+      setStep((s) => Math.min(total - 1, s + 1));
+    }, 380);
+  };
+
   const next = () => {
     if (!canNext) {
       setHint(true);
@@ -116,7 +134,7 @@ export function ScopeBuilder({
   const titles = [dict.step1, dict.step2, dict.step3, dict.step4];
 
   return (
-    <div className="grid gap-10 rounded-[2rem] border border-line bg-surface/70 p-6 md:p-10 lg:grid-cols-[14rem_1fr] lg:gap-14">
+    <div className="grid gap-10 rounded-[2rem] border border-line bg-[color-mix(in_oklab,var(--surface)_72%,transparent)] p-6 shadow-[var(--shadow)] backdrop-blur-xl md:p-10 lg:grid-cols-[14rem_1fr] lg:gap-14">
         {/* Brújula de progreso */}
         <div className="flex items-center gap-5 lg:flex-col lg:items-start">
           <svg viewBox="0 0 120 120" className="size-20 shrink-0 lg:size-40" aria-hidden>
@@ -194,7 +212,7 @@ export function ScopeBuilder({
                     label={dict.step2}
                     options={(Object.keys(dict.stages) as StageKey[]).map((key) => ({ key, label: dict.stages[key] }))}
                     value={stage}
-                    onChange={setStage}
+                    onChange={(key, viaPointer) => pickAndAdvance(() => setStage(key), viaPointer)}
                   />
                 )}
 
@@ -203,7 +221,11 @@ export function ScopeBuilder({
                     label={dict.step3}
                     options={(Object.keys(dict.timing) as TimingKey[]).map((key) => ({ key, label: dict.timing[key] }))}
                     value={timing}
-                    onChange={setTiming}
+                    onChange={(key, viaPointer) =>
+                      pickAndAdvance(() => setTiming(key), viaPointer, () =>
+                        track("scope_completed", { needs: needs.join(","), stage: stage ?? "", timing: key }),
+                      )
+                    }
                   />
                 )}
 
@@ -222,9 +244,23 @@ export function ScopeBuilder({
                         className="h-12 w-full max-w-sm rounded-xl border border-line-2 bg-bg/60 px-4 text-ink outline-none placeholder:text-faint focus:border-accent-line"
                       />
                     </div>
-                    <pre className="whitespace-pre-wrap rounded-2xl border border-line bg-bg/70 p-5 font-sans text-[0.95rem] leading-relaxed text-ink">
-                      {message}
-                    </pre>
+                    <div className="max-w-lg overflow-hidden rounded-2xl border border-line bg-bg/70">
+                      <div className="flex items-center gap-3 border-b border-line px-4 py-3">
+                        <CerroMark id="scope-chat" size={30} />
+                        <span className="leading-tight">
+                          <span className="block text-sm font-semibold text-ink">Northa Digital</span>
+                          <span className="block text-xs text-faint">WhatsApp</span>
+                        </span>
+                      </div>
+                      <div className="flex justify-end p-4">
+                        <div className="relative max-w-[92%] rounded-2xl rounded-tr-md bg-accent-soft px-4 pb-2 pt-3 text-ink ring-1 ring-accent-line">
+                          <p className="whitespace-pre-wrap text-[0.95rem] leading-relaxed">{message}</p>
+                          <span className="mt-1 flex items-center justify-end gap-1 text-[0.7rem] text-faint" aria-hidden>
+                            <CheckCheck className="size-3.5 text-accent-ink" />
+                          </span>
+                        </div>
+                      </div>
+                    </div>
                     <div className="flex flex-wrap gap-3">
                       <a
                         href={whatsappUrl(message)}
@@ -322,7 +358,7 @@ function RadioChips<K extends string>({
   label: string;
   options: { key: K; label: string }[];
   value: K | null;
-  onChange: (key: K) => void;
+  onChange: (key: K, viaPointer: boolean) => void;
 }) {
   const refs = useRef<(HTMLButtonElement | null)[]>([]);
   const current = Math.max(
@@ -331,7 +367,7 @@ function RadioChips<K extends string>({
   );
   const move = (i: number) => {
     const n = (i + options.length) % options.length;
-    onChange(options[n].key);
+    onChange(options[n].key, false);
     refs.current[n]?.focus();
   };
   return (
@@ -365,7 +401,7 @@ function RadioChips<K extends string>({
           role="radio"
           tabIndex={i === current ? 0 : -1}
           active={value === o.key}
-          onClick={() => onChange(o.key)}
+          onClick={(viaPointer) => onChange(o.key, viaPointer)}
         >
           {o.label}
         </Chip>
@@ -383,7 +419,7 @@ function Chip({
   ref,
 }: {
   active: boolean;
-  onClick: () => void;
+  onClick: (viaPointer: boolean) => void;
   children: React.ReactNode;
   role: "checkbox" | "radio";
   tabIndex?: number;
@@ -396,7 +432,7 @@ function Chip({
       role={role}
       aria-checked={active}
       tabIndex={tabIndex}
-      onClick={onClick}
+      onClick={(e) => onClick(e.detail > 0)}
       className={cn(
         "inline-flex min-h-11 items-center gap-2 rounded-full border px-4 py-2 text-[0.95rem] transition-[background-color,border-color,color,transform] duration-300 active:scale-[0.98]",
         active

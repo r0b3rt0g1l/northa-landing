@@ -9,16 +9,15 @@ Todo el contenido vive en el código y se publica con un commit a `main` (Vercel
 | Qué | Archivo |
 |---|---|
 | Textos de la interfaz (menús, botones, títulos de sección, formularios, Nort) | `lib/i18n/dictionaries/es.ts` y `en.ts` |
-| Servicios (6), con su página, FAQ y mensaje de WhatsApp | `content/services.ts` |
-| Planes de referencia ("Cotización a la medida") | `content/plans.ts` |
+| Servicios (10): nombre, línea corta, qué incluye, grupo y relacionados (cada uno con su página) | `content/services.ts` |
+| Planes de referencia (pendientes: no se muestran) | `content/plans.ts` |
 | Preguntas frecuentes del inicio y de /contacto | `content/faq.ts` |
-| Proceso (brújula de 5 etapas) | `content/process.ts` |
-| Reglas de trabajo (valores) | `content/principles.ts` |
-| Cifras del inicio y stack | `content/stats.ts` |
-| Trabajo destacado del inicio y proyectos de /portfolio | `content/portfolio.ts` |
-| Flota de portales municipales, módulos y calidad | `content/gov.ts` |
+| Proceso y reglas de trabajo (ya no salen en el inicio; Nort los usa) | `content/process.ts`, `content/principles.ts` |
+| Cifras y stack (sin uso desde el 30-sep-2026: la franja de herramientas se quitó) | `content/stats.ts` |
+| Proyectos de /portfolio | `content/portfolio.ts` |
+| Flota de portales municipales (también la cinta del inicio), módulos y calidad | `content/gov.ts` |
 | Amplía Consultoría (textos del material de Fabiola) | `content/amplia.ts` |
-| Datos del Cerro de la Campana | `content/hermosillo.ts` |
+| Cerro en vivo: colores por hora, encuadre y textos de la barra | `lib/three/cerro-live.ts` y `hero.timeline` en los diccionarios (ver `04-cerro-en-vivo.md`) |
 | Contacto, WhatsApp, correo y redes de Northa | `lib/site.ts` (y variables `NEXT_PUBLIC_*`) |
 | Mensajes prellenados de WhatsApp | `lib/whatsapp.ts` |
 | Lo que Nort sabe y cómo responde | `lib/ai/instructions.ts` (sale del mismo contenido del sitio) |

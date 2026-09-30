@@ -32,8 +32,8 @@ export function FaviconAnimator() {
       // Faro de la cima (mismo punto que en el SVG: 32, 26.3)
       ctx.beginPath();
       ctx.arc(32, 26.3, on ? 2.6 : 1.4, 0, Math.PI * 2);
-      ctx.fillStyle = on ? "#ff2e7e" : "#5a1030";
-      ctx.shadowColor = "#ff2e7e";
+      ctx.fillStyle = on ? "#ffae82" : "#5a3a2c";
+      ctx.shadowColor = "#ffae82";
       ctx.shadowBlur = on ? 8 : 0;
       ctx.fill();
       ctx.shadowBlur = 0;

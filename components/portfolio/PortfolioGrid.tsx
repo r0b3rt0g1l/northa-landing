@@ -149,7 +149,7 @@ function ProjectCard({ item, labels }: { item: PortfolioCard; labels: PortfolioL
         ) : (
           <div className="absolute inset-0 grid place-items-center bg-[radial-gradient(90%_90%_at_50%_0%,var(--navy-2),var(--bg-2)_70%)]">
             {item.id === "nort" ? (
-              <span className="grid size-24 place-items-center rounded-full bg-[radial-gradient(circle_at_50%_35%,#1a3270,#060a16)] shadow-[0_0_60px_-10px_var(--accent)]">
+              <span className="grid size-24 place-items-center rounded-full bg-[radial-gradient(circle_at_50%_35%,#2a3d72,#0a1124)] shadow-[0_0_60px_-10px_var(--accent)]">
                 <StarGlyph className="size-11 text-white" />
               </span>
             ) : (

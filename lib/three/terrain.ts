@@ -74,59 +74,193 @@ export function fbm(noise: (x: number, y: number) => number, x: number, y: numbe
 }
 
 export const CERRO = {
-  /** Prominencia sobre la ciudad (estilizada: más alta que la real para leerse como campana). */
-  H: 16,
+  /** Prominencia sobre la ciudad (estilizada: un poco más alta que la real para leerse como campana). */
+  H: 15.5,
   /** Radio de la campana. */
-  R: 12.5,
+  R: 11.5,
   /** Alargamiento norte–sur. */
-  elong: 1.28,
+  elong: 1.16,
   /** Rugosidad rocosa sobre las laderas. */
-  rough: 1.35,
+  rough: 1.15,
+  /** Radio de la explanada de la cima (mirador y antenas). */
+  plateauR: 1.35,
+  /** Ancho del camino empedrado en espiral (1964). */
+  roadWidth: 0.27,
+  /** Vueltas del "caracol" hasta la cima. */
+  roadTurns: 2.55,
   seed: 1968,
 } as const;
 
 export interface Terrain {
+  /** Altura final: laderas, explanada de la cima y el corte del camino. */
   height: (x: number, z: number) => number;
+  /** Altura natural, sin camino ni explanada. */
+  baseHeight: (x: number, z: number) => number;
   /** 0 en la llanura, 1 en la cima: útil para colorear y excluir luces. */
   hillMask: (x: number, z: number) => number;
+  /** 0 = tierra con matorral · 1 = roca expuesta. */
+  rockiness: (x: number, z: number) => number;
+  /** Distancia al eje del camino (Infinity si está lejos). */
+  roadDistance: (x: number, z: number) => number;
+  /** Eje del camino, de la base a la cima. */
+  road: [number, number, number][];
   summit: { x: number; y: number; z: number };
 }
 
 export function createTerrain(seed: number = CERRO.seed): Terrain {
   const rock = createNoise2D(seed);
+  const ridgeNoise = createNoise2D(seed + 3);
   const plain = createNoise2D(seed + 17);
+  const detail = createNoise2D(seed + 29);
 
-  const bell = (x: number, z: number) => {
-    const r = Math.hypot(x, z / CERRO.elong);
-    return Math.exp(-Math.pow(r / CERRO.R, 2.7));
-  };
-  const shoulder = (x: number, z: number) => {
-    const r = Math.hypot(x - 10, (z - 14) / 1.1);
-    return Math.exp(-Math.pow(r / 7, 2.2));
-  };
+  const radial = (x: number, z: number) => Math.hypot(x, z / CERRO.elong);
+  const bell = (x: number, z: number) => Math.exp(-Math.pow(radial(x, z) / CERRO.R, 2.25));
+  // Cono superior: la campana vista desde el poniente se afila hacia la cima.
+  const cone = (x: number, z: number) => Math.exp(-Math.pow(radial(x, z) / (CERRO.R * 0.46), 1.9));
+  // Hombro al sureste y lomas bajas alrededor: rompen la simetría como en las fotos.
+  const shoulder = (x: number, z: number) => Math.exp(-Math.pow(Math.hypot(x - 9, (z - 12) / 1.1) / 6.5, 2.2));
+  const knoll = (x: number, z: number) =>
+    0.9 * Math.exp(-Math.pow(Math.hypot(x - 24, z + 20) / 5, 2)) + 0.6 * Math.exp(-Math.pow(Math.hypot(x + 6, z - 30) / 4, 2));
 
   const hillMask = (x: number, z: number) => Math.min(1, bell(x, z) * 1.25 + shoulder(x, z) * 0.35);
 
-  const height = (x: number, z: number) => {
-    const b = bell(x, z);
-    const s = shoulder(x, z);
-    const hill = CERRO.H * b + 2.4 * s;
-    const ridges = fbm(rock, x * 0.11 + 3.1, z * 0.11 - 1.7, 4);
-    const ground = fbm(plain, x * 0.022, z * 0.022, 3);
-    const onHill = Math.min(1, b * 1.6 + s * 0.4);
-    return hill + ridges * CERRO.rough * onHill + ground * 0.45 * (1 - Math.min(1, b * 1.8));
+  const ridged = (x: number, z: number) => {
+    // Ridged multifractal corto: crestas de granito que bajan de la cima.
+    let sum = 0;
+    let amp = 0.55;
+    let freq = 1;
+    for (let i = 0; i < 3; i++) {
+      const n = 1 - Math.abs(ridgeNoise(x * 0.17 * freq + 11.3, z * 0.17 * freq - 4.1));
+      sum += amp * n * n;
+      amp *= 0.5;
+      freq *= 2.1;
+    }
+    return sum;
   };
 
-  // Busca la cima numéricamente cerca del centro.
-  let summit = { x: 0, y: -Infinity, z: 0 };
-  for (let x = -4; x <= 4; x += 0.25) {
-    for (let z = -4; z <= 4; z += 0.25) {
-      const y = height(x, z);
-      if (y > summit.y) summit = { x, y, z };
+  const baseHeight = (x: number, z: number) => {
+    const b = bell(x, z);
+    const s = shoulder(x, z);
+    const hill = CERRO.H * (0.8 * b + 0.2 * cone(x, z)) + 2.3 * s + knoll(x, z);
+    const onHill = Math.min(1, b * 1.6 + s * 0.4);
+    const rocks = (ridged(x, z) - 0.32) * 1.9 + fbm(rock, x * 0.11 + 3.1, z * 0.11 - 1.7, 4) * 0.9;
+    const fine = fbm(detail, x * 0.5, z * 0.5, 2) * 0.22;
+    const ground = fbm(plain, x * 0.022, z * 0.022, 3);
+    return hill + (rocks + fine) * CERRO.rough * onHill + ground * 0.45 * (1 - Math.min(1, b * 1.8));
+  };
+
+  // Cima natural (antes de la explanada).
+  let peak = { x: 0, y: -Infinity, z: 0 };
+  for (let x = -3; x <= 3; x += 0.2) {
+    for (let z = -3; z <= 3; z += 0.2) {
+      const y = baseHeight(x, z);
+      if (y > peak.y) peak = { x, y, z };
     }
   }
+  const plateauY = peak.y - 0.35;
 
-  return { height, hillMask, summit };
+  const withPlateau = (x: number, z: number) => {
+    const h = baseHeight(x, z);
+    const d = Math.hypot(x - peak.x, z - peak.z);
+    const k = 1 - smoothstep(CERRO.plateauR * 0.7, CERRO.plateauR * 1.5, d);
+    return h + (plateauY - h) * k;
+  };
+
+  // --- Camino en espiral: sube con pendiente constante desde el suroeste. ---
+  const samples = 900;
+  const start = -Math.PI * 0.62;
+  const raw: [number, number][] = [];
+  for (let i = 0; i < samples; i++) {
+    const t = i / (samples - 1);
+    const ease = 1 - Math.pow(1 - t, 1.35);
+    const ang = start + t * CERRO.roadTurns * Math.PI * 2;
+    // El trazo real sigue el terreno: el radio ondula un poco en cada vuelta.
+    const wobble = 1 + (0.05 * Math.sin(ang * 2.3 + 1.1) + 0.03 * Math.sin(ang * 5.2 + 0.4)) * (1 - ease * 0.7);
+    const r = (CERRO.R * 1.32 * (1 - ease) + CERRO.plateauR * 0.95 * ease) * wobble;
+    raw.push([Math.cos(ang) * r, Math.sin(ang) * r * CERRO.elong]);
+  }
+  // Altura del camino: la ladera suavizada y siempre en ascenso.
+  const roadY: number[] = raw.map(([x, z]) => withPlateau(x, z));
+  // Suavizado ligero: el camino sigue la ladera (poco corte y poco relleno).
+  for (let pass = 0; pass < 3; pass++) {
+    for (let i = 1; i < roadY.length - 1; i++) roadY[i] = (roadY[i - 1] + roadY[i] * 2 + roadY[i + 1]) / 4;
+  }
+  roadY[roadY.length - 1] = Math.min(roadY[roadY.length - 1], plateauY);
+  const road: [number, number, number][] = raw.map(([x, z], i) => [x, roadY[i], z]);
+
+  // Índice espacial del camino para medir distancias rápido.
+  const cell = 1.2;
+  const grid = new Map<string, number[]>();
+  const key = (ix: number, iz: number) => `${ix},${iz}`;
+  for (let i = 0; i < road.length - 1; i++) {
+    const [x, , z] = road[i];
+    const k = key(Math.floor(x / cell), Math.floor(z / cell));
+    const arr = grid.get(k);
+    if (arr) arr.push(i);
+    else grid.set(k, [i]);
+  }
+  const nearestRoad = (x: number, z: number): { d: number; y: number } => {
+    const ix = Math.floor(x / cell);
+    const iz = Math.floor(z / cell);
+    let best = Infinity;
+    let bestY = 0;
+    for (let dx = -1; dx <= 1; dx++) {
+      for (let dz = -1; dz <= 1; dz++) {
+        const arr = grid.get(key(ix + dx, iz + dz));
+        if (!arr) continue;
+        for (const i of arr) {
+          const [ax, ay, az] = road[i];
+          const [bx, by, bz] = road[i + 1];
+          const vx = bx - ax;
+          const vz = bz - az;
+          const len2 = vx * vx + vz * vz || 1e-9;
+          const t = Math.min(1, Math.max(0, ((x - ax) * vx + (z - az) * vz) / len2));
+          const px = ax + vx * t;
+          const pz = az + vz * t;
+          const d = Math.hypot(x - px, z - pz);
+          if (d < best) {
+            best = d;
+            bestY = ay + (by - ay) * t;
+          }
+        }
+      }
+    }
+    return { d: best, y: bestY };
+  };
+
+  const W = CERRO.roadWidth;
+  const height = (x: number, z: number) => {
+    const h = withPlateau(x, z);
+    const { d, y } = nearestRoad(x, z);
+    if (d > W * 2.2) return h;
+    // Plataforma del camino + talud (corte arriba, relleno abajo).
+    const k = smoothstep(W * 0.5, W * 2.2, d);
+    return y + (h - y) * k;
+  };
+
+  const rockiness = (x: number, z: number) => {
+    const m = hillMask(x, z);
+    const up = smoothstep(0.25, 0.9, m);
+    const n = ridged(x * 1.6, z * 1.6);
+    return Math.min(1, Math.max(0, up * 0.55 + smoothstep(0.35, 0.75, n) * 0.6 * m));
+  };
+
+  const summit = { x: peak.x, y: height(peak.x, peak.z), z: peak.z };
+
+  return {
+    height,
+    baseHeight,
+    hillMask,
+    rockiness,
+    roadDistance: (x, z) => nearestRoad(x, z).d,
+    road,
+    summit,
+  };
+}
+
+function smoothstep(a: number, b: number, v: number) {
+  const t = Math.min(1, Math.max(0, (v - a) / (b - a)));
+  return t * t * (3 - 2 * t);
 }
 
 /* ------------------------------------------------------------------ */
@@ -271,19 +405,49 @@ export function joinSegments(segments: number[], precision = 1000): number[][] {
 /* Camino en espiral a la cima (construido en 1964)                    */
 /* ------------------------------------------------------------------ */
 
-export function spiralRoad(terrain: Terrain, samples = 420, turns = 2.35): [number, number, number][] {
-  const pts: [number, number, number][] = [];
-  const start = -Math.PI * 0.62; // arranca al suroeste, de cara a la ciudad
-  for (let i = 0; i < samples; i++) {
-    const t = i / (samples - 1);
-    const ease = t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
-    const ang = start + t * turns * Math.PI * 2;
-    const r = CERRO.R * 1.55 * (1 - ease) + 1.4 * ease;
-    const x = Math.cos(ang) * r;
-    const z = Math.sin(ang) * r * CERRO.elong;
-    pts.push([x, terrain.height(x, z) + 0.2, z]);
-  }
-  return pts;
+export function spiralRoad(terrain: Terrain): [number, number, number][] {
+  return terrain.road.map(([x, y, z]) => [x, y + 0.06, z] as [number, number, number]);
+}
+
+/* ------------------------------------------------------------------ */
+/* Ciudad: retícula de calles (compartida por shader, casas y luces)   */
+/* ------------------------------------------------------------------ */
+
+/**
+ * Retícula girada del centro de Hermosillo. Manzanas alargadas de 2.8 × 1.7
+ * (a la escala visual del cerro), calles de ~0.3 y una avenida cada 5 cuadras.
+ * El shader del suelo usa LOS MISMOS números (ver cityGLSL en cerro-live.ts).
+ */
+export const CITY = {
+  rot: 0.32,
+  /** Largo de la manzana (eje x de la retícula). */
+  bx: 2.8,
+  /** Ancho de la manzana (eje z de la retícula). */
+  bz: 1.7,
+  /** Medio ancho de calle. */
+  street: 0.15,
+  /** Una avenida cada N cuadras. */
+  avenue: 5,
+  /** Lotes por manzana: 6 a lo largo, 2 filas. */
+  lots: 6,
+  /** Separación entre postes de luz. */
+  lamp: 0.7,
+} as const;
+
+/** Mundo (x, z) → retícula (en manzanas). */
+export function toCity(x: number, z: number): [number, number] {
+  const c = Math.cos(CITY.rot);
+  const s = Math.sin(CITY.rot);
+  return [(x * c - z * s) / CITY.bx, (x * s + z * c) / CITY.bz];
+}
+
+/** Retícula (en manzanas) → mundo (x, z). */
+export function fromCity(gx: number, gz: number): [number, number] {
+  const lx = gx * CITY.bx;
+  const lz = gz * CITY.bz;
+  const c = Math.cos(CITY.rot);
+  const s = Math.sin(CITY.rot);
+  return [lx * c + lz * s, -lx * s + lz * c];
 }
 
 /* ------------------------------------------------------------------ */
@@ -298,45 +462,53 @@ export interface CityLight {
   /** 0 cálida, 1 blanca, 2 fría */
   tone: 0 | 1 | 2;
   phase: number;
-  /** Frecuencia entera de parpadeo dentro del ciclo del video (loop perfecto). */
+  /** Frecuencia entera de parpadeo. */
   freq: number;
 }
 
+/**
+ * Luces sueltas sobre los postes de las calles (las mismas posiciones que pinta
+ * el shader), más densas cerca del cerro y por colonias. Son los puntos que
+ * titilan; la retícula completa de alumbrado la dibuja el shader.
+ */
 export function cityLights(terrain: Terrain, count: number, seed = 64): CityLight[] {
   const rand = mulberry32(seed);
   const hood = createNoise2D(seed + 5);
   const lights: CityLight[] = [];
-  const block = 4.2; // misma retícula que las calles del shader
-  const rot = 0.32;
   let guard = 0;
   while (lights.length < count && guard < count * 60) {
     guard++;
+    // Centro de la ciudad al poniente del cerro (hacia donde mira la cámara).
     const ang = rand() * Math.PI * 2;
-    const dist = 17 + Math.pow(rand(), 0.9) * 150;
-    const x0 = Math.cos(ang) * dist;
+    const dist = 13 + Math.pow(rand(), 1.15) * 150;
+    const x0 = Math.cos(ang) * dist - 18;
     const z0 = Math.sin(ang) * dist;
     // Colonias: el ruido decide dónde hay más o menos luz.
     const density = fbm(hood, x0 * 0.03, z0 * 0.03, 3) * 0.5 + 0.5;
-    if (rand() > Math.pow(density, 1.6) * 1.35) continue;
-    // Coordenadas de la retícula (girada) y "snap" a una calle.
-    const qx = (x0 * Math.cos(rot) - z0 * Math.sin(rot)) / block;
-    const qz = (x0 * Math.sin(rot) + z0 * Math.cos(rot)) / block;
-    const alongX = rand() < 0.5;
-    const sx = alongX ? qx : Math.round(qx);
-    const sz = alongX ? Math.round(qz) : qz;
-    const ox = (rand() - 0.5) * 0.08;
-    const lx = (sx + (alongX ? 0 : ox)) * block;
-    const lz = (sz + (alongX ? ox : 0)) * block;
-    const x = lx * Math.cos(-rot) - lz * Math.sin(-rot);
-    const z = lx * Math.sin(-rot) + lz * Math.cos(-rot);
-    if (terrain.hillMask(x, z) > 0.08) continue;
+    if (rand() > Math.pow(density, 1.4) * 1.4) continue;
+    const [qx, qz] = toCity(x0, z0);
+    // A un poste de la calle más cercana (a lo largo o a lo ancho).
+    const alongX = rand() < 0.62;
+    let gx: number;
+    let gz: number;
+    if (alongX) {
+      const step = CITY.lamp / CITY.bx;
+      gx = (Math.round(qx / step) + 0.5 * (Math.round(qz) & 1)) * step;
+      gz = Math.round(qz);
+    } else {
+      const step = CITY.lamp / CITY.bz;
+      gx = Math.round(qx);
+      gz = Math.round(qz / step) * step;
+    }
+    const [x, z] = fromCity(gx, gz);
+    if (terrain.hillMask(x, z) > 0.06) continue;
     const r = rand();
     lights.push({
       x,
-      y: terrain.height(x, z) + 0.2,
+      y: terrain.height(x, z) + 0.12,
       z,
-      size: 0.7 + Math.pow(rand(), 2) * 1.6,
-      tone: r < 0.74 ? 0 : r < 0.93 ? 1 : 2,
+      size: 0.55 + Math.pow(rand(), 2.2) * 1.5,
+      tone: r < 0.72 ? 0 : r < 0.93 ? 1 : 2,
       phase: rand(),
       freq: 1 + Math.floor(rand() * 3),
     });
