@@ -1,0 +1,71 @@
+# Deploy a producción con GitHub Actions + Vercel CLI. OPCIONAL: apagado por defecto.
+#
+# Esta repo (r0b3rt0g1l/northa-landing) es de una cuenta personal, así que Vercel
+# despliega solo si el proyecto tiene Git conectado: preview por rama y producción
+# al mezclar a main. Ese es el camino normal.
+#
+# Este Action es para cuando la repo viva en una organización y sea privada: en el
+# plan Hobby, Vercel no despliega solo esas repos. Para usarlo:
+#   1. En Vercel, desconecta Git del proyecto (para no desplegar dos veces).
+#   2. En GitHub → Settings → Secrets and variables → Actions:
+#        secretos  VERCEL_TOKEN, VERCEL_ORG_ID, VERCEL_PROJECT_ID (de .vercel/project.json)
+#        variable  DEPLOY_WITH_ACTIONS = true
+# Guía completa: docs/05-lanzamiento.md (2.4).
+name: Deploy a producción
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# Un deploy a la vez; si llegan dos pushes seguidos, el segundo espera.
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+env:
+  VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+  VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
+jobs:
+  deploy:
+    # Solo corre si se activó a propósito (o a mano desde la pestaña Actions).
+    if: vars.DEPLOY_WITH_ACTIONS == 'true' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    environment:
+      name: production
+      url: ${{ steps.deploy.outputs.url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - run: npm ci
+
+      # Si algo de esto falla, no se publica nada.
+      - name: Revisiones
+        run: |
+          npm run lint
+          npm run typecheck
+          npm run test:db
+
+      - name: Instalar Vercel CLI
+        run: npm install --global vercel@latest
+
+      # Baja la configuración del proyecto y las variables de Production.
+      - name: vercel pull
+        run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+
+      - name: vercel build
+        run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
+
+      - name: vercel deploy
+        id: deploy
+        run: |
+          url=$(vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }})
+          echo "url=$url" >> "$GITHUB_OUTPUT"
+          echo "Publicado: $url" >> "$GITHUB_STEP_SUMMARY"
