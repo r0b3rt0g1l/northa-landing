@@ -1,0 +1,41 @@
+# Revisión automática de cada Pull Request y de cada push a main.
+# No despliega nada: solo confirma que el proyecto compila y pasa las pruebas.
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Tipos
+        run: npm run typecheck
+
+      # Pruebas de las reglas RLS de Supabase sobre Postgres en memoria (PGlite).
+      - name: Base de datos (RLS)
+        run: npm run test:db
+
+      # Sin variables de entorno: comprueba que el sitio compila "en frío"
+      # (Nort en modo guiado, formularios a WhatsApp).
+      - name: Build
+        run: npm run build

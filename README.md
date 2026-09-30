@@ -1,157 +1,88 @@
 # Northa Digital
 
-**El norte de tu gobierno digital.** Estudio de software e inteligencia artificial en
-Sonora, México. Construimos y operamos sistemas para organizaciones que ya tienen el
-proceso resuelto en papel y lo necesitan resuelto en software.
+Sitio de **Northa Digital** (Hermosillo, Sonora) con **Amplía Consultoría** como sitio hermano y su intranet. Next.js 16, bilingüe (ES/EN), modo oscuro y claro, accesible (WCAG 2.2 AA) y con Nort, un asistente con IA que responde, captura leads y pasa a WhatsApp.
 
-No entregamos prototipos: lo que sale de aquí queda en producción, con dominio propio,
-usuarios reales y alguien responsable de que siga funcionando el año que viene.
-
----
-
-## Qué hacemos
-
-**Plataformas y portales.** Sitios institucionales y de producto, con su panel de
-administración para que el cliente publique sin depender de nosotros. Cuando hay muchos
-clientes sobre la misma base, arquitectura multi-inquilino con aislamiento verificado:
-cada cuenta ve lo suyo y solo lo suyo.
-
-**Automatización con agentes.** Procesos que hoy alguien repite a mano —clasificar,
-capturar, responder, dar seguimiento— convertidos en agentes que corren solos y escalan
-al humano cuando toca. La medida de éxito es cuántas veces deja de hacerse el trabajo
-dos veces.
-
-**Asistentes y búsqueda sobre información propia.** Atención 24/7 que responde con los
-datos reales de la organización, y búsqueda que encuentra por lo que el documento dice,
-no por las palabras exactas que alguien recordó teclear.
-
-**Documentos y archivos.** Resúmenes de expedientes largos, redacción asistida en el tono
-de la casa, clasificación y nombrado automáticos, edición y optimización de imágenes en
-lote.
-
-**Operación.** Monitoreo, respaldos, migraciones y el mantenimiento aburrido que decide
-si un sistema dura tres años o tres meses.
-
----
-
-## Lo que está en producción
-
-**Catorce portales municipales de transparencia**, en Sonora, sobre una sola plataforma:
-
-- 14 ayuntamientos, cada uno con su dominio `.com.mx` y su certificado
-- Un backend compartido (`cmsmunicipal`) y un panel único (`cms-admin`)
-- Aislamiento entre municipios verificado por suite automatizada
-- Herramienta de alta que da de vida a un municipio nuevo de punta a punta
-
-Es el caso que enseñamos porque prueba lo difícil: no hacer un sitio, sino operar catorce
-a la vez sin que se contaminen entre sí.
-
-### El ecosistema
-
-| Repositorio | Qué es |
+| | |
 |---|---|
-| `northa-landing` | Este repo — el sitio de Northa Digital |
-| `cmsmunicipal` | Backend (Express + Prisma) y herramientas de operación de la flota |
-| `cms-admin` | Panel de administración que usan los clientes |
-| `plantilla-municipal` | Molde del que nace cada portal nuevo |
-| 14 repos por municipio | Un frontend por ayuntamiento, parametrizado desde el molde |
+| Producción | `https://northadigital.com` (ver `docs/05-lanzamiento.md`) |
+| Repo | `github.com/r0b3rt0g1l/northa-landing` (el sitio nuevo entra por la rama `v2`) |
+| Deploy | `git push`: Vercel con Git conectado (proyecto `northa-landing`); GitHub Actions como alternativa |
+| Lighthouse (local, HTTP/2) | Rendimiento 96–99 móvil y 100 escritorio · Accesibilidad, Buenas prácticas y SEO 100 |
 
----
+## Qué incluye
 
-## Con quién colaboramos
+- **Páginas:** inicio, `/servicios` (+ 6 servicios), `/portfolio`, `/gobierno`, `/amplia`, `/blog` (+ artículos en MDX), `/contacto` y `/privacidad`, en español (raíz) y en inglés (`/en`).
+- **Identidad del Cerro de la Campana:** logo animado, favicon SVG animado, loader, curvas de nivel, video del hero y escena 3D interactiva (Three.js), todo del mismo modelo.
+- **Nort:** chat con Vercel AI SDK y AI Gateway, con herramientas (WhatsApp con resumen, guardar lead, agendar) e historial de 7 días en el navegador. Sin IA disponible, entra en modo guiado.
+- **Leads:** formulario, "Arma tu proyecto" y Nort → Supabase + correo (Resend) + HubSpot, con WhatsApp de respaldo si ningún destino responde.
+- **Intranet de Amplía** (`/amplia/portal`): comunicados, directorio, recursos, solicitudes, proyectos y usuarios, con roles y reglas RLS en Supabase.
+- **SEO:** metadatos por página e idioma, `hreflang` recíproco, sitemap, robots, imágenes OG generadas y JSON-LD (Organization, WebSite, Service, FAQPage, BreadcrumbList, BlogPosting, CollectionPage).
 
-Northa no cubre todo lo que un proyecto grande necesita, y no fingimos que sí. Trabajamos
-con despachos especializados que aportan lo que a nosotros nos falta.
+## Empezar
 
-**Amplía Consultoría** — asesoría jurídica y gestión pública para ayuntamientos del Estado
-de Sonora: entrega-recepción, Plan Municipal de Desarrollo, normatividad, atención a entes
-fiscalizadores y obligaciones de transparencia. En la vertical de gobierno el reparto es
-claro: Amplía ordena la gestión, Northa la publica. **Diez de los catorce municipios de la
-flota trabajan con las dos.**
-
-*Contacto: Lic. Fabiola Kitazawa Galaz · ampliaconsul@gmail.com · 662 205 5021*
-
----
-
-## Cómo trabajamos
-
-Cuatro reglas que no se negocian, ganadas a base de equivocarnos:
-
-**Nada se inventa.** Un dato lleva fuente verificable o el campo se queda vacío. Aplica a
-escudos, redes sociales, cronologías, correos y cifras. Un portal de gobierno que publica
-un dato falso hace más daño que uno incompleto.
-
-**La verificación se hace sobre lo servido.** No sobre el código, no sobre la API que lo
-alimenta, no sobre la suite en verde: sobre la URL exacta donde el usuario vería el
-problema. Verde en una capa no dice nada de las otras.
-
-**Un piloto antes de la flota.** Lo que se va a repetir en catorce lugares se hace bien
-una vez, se verifica completo, y hasta entonces se replica.
-
-**Aprobación explícita en lo compartido.** Todo lo que toca una base de datos con varios
-clientes encima se muestra antes de ejecutarse. Nunca un "no vuelvas a preguntar".
-
----
-
-## Este repositorio
-
-Sitio de Northa Digital. Next.js 16 (App Router) · React 19 · Tailwind CSS 4 ·
-framer-motion · lucide-react · `sharp` para imágenes.
+Requisitos: Node 22 (`.nvmrc`) y npm.
 
 ```bash
-npm install
-npm run dev      # http://localhost:3000
-npm run build
-npm run lint
+npm ci
+cp .env.example .env.local   # todo es opcional; sin variables el sitio funciona
+npm run dev                  # http://localhost:3000
 ```
 
-### Estructura
+## Scripts
 
+| Comando | Qué hace |
+|---|---|
+| `npm run dev` | Servidor de desarrollo |
+| `npm run build` / `npm start` | Build de producción y servidor |
+| `npm run lint` · `npm run typecheck` · `npm run check` | ESLint, tipos (con `next typegen`) y los dos juntos |
+| `npm run test:db` | Pruebas de las reglas RLS de Supabase en Postgres en memoria (PGlite) |
+| `npm run render:video` | Vuelve a renderizar el video del hero desde la escena 3D (`docs/04-video.md`) |
+| `npm run brand:assets` | Regenera favicon, íconos y curvas de nivel |
+| `npm run capture:portfolio` | Actualiza las capturas de los portales para `/portfolio` |
+| `npm run audit:sites` | Auditoría rápida de sitios (propios o de la competencia) |
+| `npm run amplia:admin` | Crea el primer admin de la intranet (`docs/07-portal-amplia.md`) |
+
+## Estructura
+
+```text
+app/
+  [locale]/          sitio público ES/EN (estático)
+  amplia/portal/     intranet (otro layout raíz, dinámica)
+  api/               chat (Nort) · leads · og (imágenes para redes)
+components/          brand · hero · sections · chat · forms · three · portfolio · portal · layout · ui
+content/             textos y datos del sitio + blog en MDX
+lib/                 i18n · seo · jsonld · ai · leads · supabase · portal · three · gsap · hooks
+public/              video · portfolio · escudos · brand · amplia
+scripts/             video · activos de marca · capturas · auditoría · alta de admin
+supabase/            migraciones SQL y pruebas de RLS
+docs/                análisis, arquitectura, wireframes, video, lanzamiento, contenido, portal, mantenimiento
+proxy.ts             idiomas + sesión de la intranet
+.github/workflows/   ci.yml (PR y main) · deploy.yml (opcional)
 ```
-app/            rutas, metadatos, sitemap, robots, opengraph
-components/     secciones de la página y primitivas de UI
-lib/content/    contenido editable (la flota, servicios, textos)
-lib/site.js     identidad, contacto y URLs
-public/escudos/ escudos de los municipios, optimizados
-```
 
-El contenido vive en `lib/content/`, separado de los componentes: para cambiar lo que
-dice la página no hace falta tocar JSX.
+## Deploy
 
-### Hero con video
+- **Git conectado en Vercel** (proyecto `northa-landing`): cada rama sale en preview y cada merge a `main` va a producción. Las variables están en `.env.example`.
+- **GitHub Actions** (alternativa para repos privadas de una organización en Hobby): secretos `VERCEL_TOKEN`, `VERCEL_ORG_ID` y `VERCEL_PROJECT_ID`, y la variable `DEPLOY_WITH_ACTIONS=true`. Corre lint, tipos y pruebas, y publica con `vercel deploy --prebuilt --prod`.
 
-La home sigue el brief de conversión: hero (video) → servicios → por qué Northa → planes → contacto, con un titular y un botón por bloque; la navegación aparece hasta que se pasa el hero.
+Paso a paso, dominio y lista de verificación: `docs/05-lanzamiento.md`.
 
-El inicio es un video de fondo (día → noche) generado con Higgsfield a partir de las
-placas limpias en `assets/hero-plates/` (sin logotipo: el texto va en HTML encima).
-El componente `components/hero/Hero.jsx` busca `public/hero/hero.webm` y
-`public/hero/hero.mp4`; mientras no existan, muestra la imagen fija
-`public/hero/noche.jpg`. El clip no hace loop: termina en el cuadro nocturno, que
-coincide con la imagen fija. Con `prefers-reduced-motion` no se carga el video.
+## Documentación
 
-Para publicar el video: exportar 1920×1080 (o 2560×1024 si se conserva 2.5:1),
-sin audio, y convertir:
+| | |
+|---|---|
+| `docs/00-decisiones.md` | Decisiones confirmadas, supuestos y pendientes |
+| `docs/01-analisis-competitivo.md` | Comparativa con Imagina Studio, Creapptivo y Hecho en Sonora, y las 15 mejoras |
+| `docs/02-arquitectura.md` | Mapa del sitio, navegación, flujos y arquitectura técnica |
+| `docs/03-wireframes.md` | Wireframes de alta fidelidad en texto |
+| `docs/04-video.md` | Video del hero: formatos, carga y cómo reemplazarlo |
+| `docs/05-lanzamiento.md` | Configuración, deploy, mediciones y checklist de lanzamiento |
+| `docs/06-contenido.md` | Cómo editar textos, blog, portafolio y calendario editorial |
+| `docs/07-portal-amplia.md` | Intranet: puesta en marcha, operación y seguridad |
+| `docs/08-mantenimiento.md` | Checklist mensual, trimestral y anual |
 
-```bash
-ffmpeg -i hero-src.mp4 -an -vf "scale=1920:-2" -c:v libx264 -crf 24 -preset slow -movflags +faststart -pix_fmt yuv420p public/hero/hero.mp4
-ffmpeg -i hero-src.mp4 -an -vf "scale=1920:-2" -c:v libvpx-vp9 -crf 34 -b:v 0 -row-mt 1 public/hero/hero.webm
-```
+## Reglas del proyecto
 
-### Despliegue
-
-Vercel, team `northa-digital1`, rama de producción `main`.
-
-> **Ojo:** la GitHub App de Vercel no tiene acceso concedido a este repositorio, así que
-> **un push a `main` no dispara deploy**. Hasta que se conceda ese acceso, cada cambio
-> requiere `vercel --prod` a mano — y conviene comparar el `HEAD` de GitHub contra el
-> commit del último deployment antes de dar por hecho que producción está al día.
-
-La URL canónica se controla con `NEXT_PUBLIC_SITE_URL`; alimenta el canonical, el sitemap,
-el robots y el OpenGraph. Si no está definida, el sitio anuncia un dominio que puede no
-existir.
-
----
-
-## Contacto
-
-**Roberto Gil** · rgilh@hotmail.com · +52 662 386 6834 · Sonora, México
+- **Nada se inventa:** sin testimonios, cifras ni clientes que no estén verificados y autorizados.
+- **Base de datos aislada:** leads e intranet viven en un proyecto **nuevo** de Supabase. El código se niega a usar el de los municipios (`qpilnqzgsndymktgodoq`).
+- **Commits con rutas explícitas** (nunca `git add -A`) y revisión en el iPhone antes de mezclar a `main`.

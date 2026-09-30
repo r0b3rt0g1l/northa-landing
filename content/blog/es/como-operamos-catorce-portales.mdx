@@ -1,0 +1,42 @@
+Hacer un sitio web es la parte fácil. Lo difícil empieza al día siguiente: mantenerlo al día, seguro y funcionando mientras alguien más publica contenido. Ahora multiplícalo por catorce.
+
+Hoy operamos **catorce portales municipales de transparencia en Sonora**, cada uno con su dominio `.com.mx`, su certificado y su propio equipo publicando noticias y documentos. Esto es lo que aprendimos al pasar de *hacer* sitios a *operarlos* todos los días.
+
+## Una plataforma, catorce sitios
+
+En lugar de catorce sistemas distintos, hay una sola plataforma:
+
+- **Un molde.** Cada portal nuevo nace de la misma plantilla, parametrizada con los datos de su municipio.
+- **Un backend compartido.** Una API (Node.js, Express y Prisma sobre PostgreSQL) que atiende a los catorce.
+- **Un panel único.** Cada ayuntamiento entra al mismo panel de administración y solo ve lo suyo.
+
+La ventaja es enorme: una mejora de seguridad o de velocidad se hace una vez y llega a todos. El riesgo también: un error compartido también llega a todos. Por eso lo que sigue importa tanto.
+
+## Cada quien ve lo suyo
+
+En una plataforma multi-cliente, la peor falla posible es que la cuenta de un cliente alcance los datos de otro. Lo cuidamos en tres capas:
+
+1. **El contexto sale del token firmado**, nunca de lo que manda el formulario. Aunque alguien manipule una petición, el servidor sabe a qué cliente pertenece la sesión.
+2. **Cada operación de escritura se valida** contra ese contexto antes de tocar la base de datos.
+3. **Los archivos viven en carpetas por cliente.** Una imagen de un municipio no puede terminar en la galería de otro.
+
+Y no nos quedamos con "debería funcionar": el aislamiento entre municipios se **verifica con una suite automatizada**.
+
+## Dar de alta un cliente nuevo
+
+Sumar un municipio no debería depender de la memoria de nadie. Tenemos una herramienta de alta que lo lleva de punta a punta: datos, dominio, portal y panel.
+
+Una lección pequeña que nos ahorró problemas grandes: los portales nuevos se **clonan desde el molde**, no se copian carpetas de un portal existente. Copiar a mano arrastra configuraciones y credenciales viejas que después apuntan a donde no deben.
+
+## Cuatro reglas que salieron de equivocarnos
+
+- **Nada se inventa.** Un dato lleva fuente verificable o el campo se queda vacío. Un portal de gobierno que publica un dato falso hace más daño que uno incompleto.
+- **Se verifica sobre lo publicado.** No sobre el código ni sobre la prueba en verde: sobre la URL exacta donde el ciudadano vería el problema.
+- **Un piloto antes de la flota.** Lo que se va a repetir en catorce lugares se hace bien una vez, se verifica completo, y hasta entonces se replica.
+- **Aprobación explícita en lo compartido.** Todo lo que toca una base de datos con varios clientes encima se muestra antes de ejecutarse.
+
+## Qué significa si no eres un municipio
+
+La misma arquitectura sirve para cualquier organización con varias sedes, sucursales o clientes: una sola plataforma, datos separados de verdad y un solo lugar para mejorar todo a la vez.
+
+Si tu operación se parece a esto, [platiquemos por WhatsApp](https://wa.me/526623866834) o pregúntale a Nort, el asistente de este sitio.
