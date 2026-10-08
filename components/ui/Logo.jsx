@@ -2,25 +2,19 @@ import { cn } from "@/lib/cn";
 import { StarIcon } from "./StarIcon";
 
 /**
- * Lockup de marca: símbolo de estrella en squircle + wordmark "Northa DIGITAL".
- * Componente compartido (sin estado) — válido en Server y Client.
+ * Lockup de marca: símbolo en squircle + "Northa Digital".
+ * Por debajo de 400 px se queda en "Northa" para no partirse en dos líneas.
  */
-export function Logo({ className, withWordmark = true }) {
+export function Logo({ className }) {
   return (
-    <span className={cn("inline-flex items-center gap-2.5", className)}>
-      <span className="grid h-9 w-9 shrink-0 place-items-center rounded-[11px] border border-[var(--color-line)] bg-gradient-to-b from-[#1a1a1d] to-[#101012]">
-        <StarIcon className="h-5 w-5" />
+    <span className={cn("inline-flex items-center gap-2.5 whitespace-nowrap", className)}>
+      <span className="grid h-8 w-8 shrink-0 place-items-center rounded-[10px] border border-line-strong bg-gradient-to-b from-[#171a20] to-[#0e1014]">
+        <StarIcon className="h-[18px] w-[18px]" />
       </span>
-      {withWordmark && (
-        <span className="flex flex-col leading-none">
-          <span className="font-display text-lg font-semibold tracking-tight text-[var(--color-text)]">
-            Northa
-          </span>
-          <span className="mt-0.5 text-[0.58rem] font-light tracking-[0.38em] text-[var(--color-bright)]">
-            DIGITAL
-          </span>
-        </span>
-      )}
+      <span className="font-display text-[17px] font-semibold tracking-[-0.01em] text-text">
+        Northa
+        <span className="font-medium text-muted max-[400px]:hidden"> Digital</span>
+      </span>
     </span>
   );
 }

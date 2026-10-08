@@ -1,37 +1,23 @@
 import { cn } from "@/lib/cn";
-import { GlowBadge } from "./GlowBadge";
 import { Reveal } from "./Reveal";
+import { Palabras } from "./Palabras";
 
 /**
- * Encabezado de sección estándar: eyebrow + título (h2) + descripción.
- * El `titleId` debe coincidir con el `labelledBy` de la Section.
+ * Encabezado de sección: etiqueta y título a la izquierda, una línea de
+ * contexto a la derecha; en móvil se apila. `titleId` = `labelledBy`.
+ * El título entra palabra por palabra.
  */
-export function SectionHeader({
-  eyebrow,
-  title,
-  titleId,
-  description,
-  align = "center",
-  className,
-}) {
-  const alignment = align === "left" ? "items-start text-left" : "items-center text-center mx-auto";
+export function SectionHeader({ eyebrow, title, titleId, description, className }) {
   return (
-    <Reveal
-      className={cn(
-        "flex max-w-2xl flex-col gap-5",
-        alignment,
-        className,
-      )}
-    >
-      {eyebrow ? <GlowBadge>{eyebrow}</GlowBadge> : null}
-      <h2
-        id={titleId}
-        className="text-[length:var(--text-h2)] font-semibold"
-      >
-        {title}
-      </h2>
+    <Reveal className={cn("grid gap-5 md:grid-cols-2 md:items-end md:gap-12", className)}>
+      <div className="flex flex-col gap-4">
+        {eyebrow ? <p className="eyebrow m-0">{eyebrow}</p> : null}
+        <h2 id={titleId} className="text-[length:var(--text-h2)]">
+          <Palabras>{title}</Palabras>
+        </h2>
+      </div>
       {description ? (
-        <p className="text-[length:var(--text-lead)] text-[var(--color-muted)]">
+        <p className="m-0 max-w-[46ch] text-[length:var(--text-lead)] text-muted md:justify-self-end">
           {description}
         </p>
       ) : null}

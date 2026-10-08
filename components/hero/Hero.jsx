@@ -1,28 +1,52 @@
-import { Reveal } from "@/components/ui/Reveal";
-import { CompassRose } from "@/components/ui/CompassRose";
+import { Button } from "@/components/ui/Button";
+import { HeroSenal } from "./HeroSenal";
+import { hero } from "@/lib/content/hero";
+import { ctaPrincipal } from "@/lib/content/nav";
 
+/**
+ * Hero: ¿qué hacemos? Una sola idea, centrada bajo una señal de luz.
+ * Entrada breve: halo y señal, etiqueta, titular, subtítulo y botones.
+ * El titular no espera: es el elemento principal de la primera pintura.
+ */
 export function Hero() {
   return (
     <section
+      id="inicio"
       aria-labelledby="hero-title"
-      className="relative isolate overflow-hidden px-6 pb-12 pt-16 sm:px-[60px] sm:pb-[66px] sm:pt-[88px]"
+      className="relative isolate flex min-h-[100svh] flex-col items-center justify-center overflow-hidden px-5 pb-24 pt-28 text-center sm:px-8 sm:pt-32"
     >
-      {/* Rosa de los vientos: pieza gráfica de fondo, no un ícono de marca */}
-      <CompassRose className="pointer-events-none absolute right-[-60px] top-1/2 -z-10 h-[380px] w-[380px] -translate-y-1/2 opacity-[0.22] sm:right-[20px] sm:h-[440px] sm:w-[440px]" />
+      <div
+        aria-hidden="true"
+        className="hero-glow pointer-events-none absolute left-1/2 top-[-10%] -z-10 h-[820px] w-[1100px] -translate-x-1/2 bg-[radial-gradient(closest-side,rgba(79,140,255,0.14),rgba(79,140,255,0)_70%)]"
+      />
 
-      <Reveal className="flex max-w-[900px] flex-col gap-6 sm:gap-[24px]">
+      <HeroSenal />
+
+      <div data-cielo-claro className="relative mt-6 flex w-full max-w-[940px] flex-col items-center gap-6 sm:mt-8">
+        <p className="hero-in eyebrow m-0">{hero.etiqueta}</p>
         <h1
           id="hero-title"
-          className="max-w-[15ch] text-[42px] font-extrabold leading-[0.98] tracking-[-0.03em] sm:text-[76px] sm:leading-[0.96] sm:tracking-[-0.045em]"
+          className="hero-in text-[length:var(--text-h1)] leading-[1.02] tracking-[-0.035em]"
+          style={{ "--d": "60ms" }}
         >
-          Un municipio, de principio a fin.
+          {hero.titulo}
         </h1>
-        <p className="max-w-[56ch] text-[16px] font-light leading-[1.55] text-[#A0A0AC] sm:text-[18.5px] sm:leading-[1.56]">
-          Dos empresas, una misma oficina y un solo recorrido: primero se
-          ordena la gestión, después se publica. Nadie entrega a medias
-          porque nadie se queda a medio camino.
+        <p
+          className="hero-in m-0 max-w-[44ch] text-[length:var(--text-lead)] leading-[1.55] text-text-2"
+          style={{ "--d": "200ms" }}
+        >
+          {hero.subtitulo}
         </p>
-      </Reveal>
+        <div
+          className="hero-in mt-2 flex w-full flex-col justify-center gap-3 sm:w-auto sm:flex-row"
+          style={{ "--d": "320ms" }}
+        >
+          <Button href={ctaPrincipal.href}>{ctaPrincipal.label}</Button>
+          <Button href={hero.ctaSecundario.href} variant="secondary">
+            {hero.ctaSecundario.label}
+          </Button>
+        </div>
+      </div>
     </section>
   );
 }
