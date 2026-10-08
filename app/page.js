@@ -1,14 +1,11 @@
 import { Hero } from "@/components/hero/Hero";
-import { Flota } from "@/components/flota/Flota";
-import { TechMarquee } from "@/components/marquee/TechMarquee";
 import { Servicios } from "@/components/servicios/Servicios";
-import { ServiciosIA } from "@/components/ia/ServiciosIA";
-import { Diferenciacion } from "@/components/diferenciacion/Diferenciacion";
-import { Pilares } from "@/components/pilares/Pilares";
-import { Proceso } from "@/components/proceso/Proceso";
-import { ContactoCTA } from "@/components/contacto/ContactoCTA";
+import { ContactoBloque } from "@/components/contacto/ContactoBloque";
+import { Portafolio } from "@/components/portafolio/Portafolio";
+import { Cierre } from "@/components/cierre/Cierre";
 import { organizationJsonLd, websiteJsonLd } from "@/lib/jsonld";
 
+// Orden de scroll: hero → servicios → contacto (30 s) → portafolio → cierre.
 export default function Home() {
   return (
     <>
@@ -23,14 +20,10 @@ export default function Home() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd()) }}
       />
       <Hero />
-      <Flota />
-      <TechMarquee />
       <Servicios />
-      <ServiciosIA />
-      <Diferenciacion />
-      <Pilares />
-      <Proceso />
-      <ContactoCTA />
+      <ContactoBloque />
+      <Portafolio />
+      <Cierre />
     </>
   );
 }

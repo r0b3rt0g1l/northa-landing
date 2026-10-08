@@ -1,6 +1,6 @@
 {
   "name": "northa-landing",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -12,11 +12,9 @@
     "@vercel/analytics": "^1.5.0",
     "@vercel/speed-insights": "^1.2.0",
     "clsx": "^2.1.1",
-    "framer-motion": "^11.18.2",
     "lucide-react": "^0.541.0",
     "next": "16.2.4",
     "react": "19.2.4",
-    "react-aria-components": "^1.13.0",
     "react-dom": "19.2.4",
     "sharp": "^0.34.5",
     "tailwind-merge": "^3.5.0"

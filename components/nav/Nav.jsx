@@ -6,125 +6,149 @@ import { cn } from "@/lib/cn";
 import { Logo } from "@/components/ui/Logo";
 import { Button } from "@/components/ui/Button";
 import { useScrollSpy } from "@/hooks/useScrollSpy";
-import { navSections } from "@/lib/content/nav";
+import { navSections, ctaPrincipal } from "@/lib/content/nav";
 
-const SPY_IDS = ["inicio", ...navSections.map((s) => s.id)];
+// "empezar" es el cierre: también responde a "¿cómo contactar?".
+const SPY_IDS = ["inicio", "servicios", "contacto", "portafolio", "empezar"];
+const ALIAS = { empezar: "contacto" };
 
+/**
+ * Barra fija en cápsula de vidrio: marca, tres enlaces y el CTA principal.
+ * Al hacer scroll gana contraste y blur. Menú móvil accesible: se cierra con
+ * Escape (devolviendo el foco al botón), al tocar fuera, al perder el foco,
+ * al desplazarse y al elegir un enlace.
+ */
 export function Nav() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
-  const activeId = useScrollSpy(SPY_IDS);
-  const panelRef = useRef(null);
+  const spy = useScrollSpy(SPY_IDS);
+  const activeId = ALIAS[spy] ?? spy;
+  const headerRef = useRef(null);
+  const toggleRef = useRef(null);
+  const firstLinkRef = useRef(null);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 8);
+    const onScroll = () => setScrolled(window.scrollY > 12);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Cerrar el menú móvil con Escape.
   useEffect(() => {
     if (!open) return;
-    const onKey = (e) => {
-      if (e.key === "Escape") setOpen(false);
+    firstLinkRef.current?.focus();
+    const startY = window.scrollY;
+    const close = (returnFocus = false) => {
+      setOpen(false);
+      if (returnFocus) toggleRef.current?.focus();
     };
+    const onKey = (e) => {
+      if (e.key === "Escape") close(true);
+    };
+    const onPointer = (e) => {
+      if (!headerRef.current?.contains(e.target)) close();
+    };
+    const onFocus = (e) => {
+      if (!headerRef.current?.contains(e.target)) close();
+    };
+    const onScroll = () => {
+      if (Math.abs(window.scrollY - startY) > 40) close();
+    };
+    const mq = window.matchMedia("(min-width: 768px)");
+    const onMq = () => mq.matches && close();
+
     document.addEventListener("keydown", onKey);
-    return () => document.removeEventListener("keydown", onKey);
+    document.addEventListener("pointerdown", onPointer);
+    document.addEventListener("focusin", onFocus);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    mq.addEventListener?.("change", onMq);
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.removeEventListener("pointerdown", onPointer);
+      document.removeEventListener("focusin", onFocus);
+      window.removeEventListener("scroll", onScroll);
+      mq.removeEventListener?.("change", onMq);
+    };
   }, [open]);
 
   return (
-    <header
-      className={cn(
-        "fixed inset-x-0 top-0 z-50 transition-colors duration-300",
-        scrolled || open
-          ? "glass shadow-[var(--shadow-nav)]"
-          : "border-b border-transparent bg-transparent",
-      )}
-    >
+    <header ref={headerRef} className="fixed inset-x-0 top-0 z-50 px-3 pt-3 sm:px-6 sm:pt-4">
       <nav
         aria-label="Navegación principal"
-        className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between gap-4 px-6"
+        className={cn(
+          "mx-auto flex h-[60px] w-full max-w-[1200px] items-center justify-between gap-3 rounded-full pl-4 pr-2 transition-[background-color,box-shadow] duration-300 sm:pl-5",
+          scrolled || open ? "glass-strong" : "glass",
+        )}
       >
-        <a
-          href="#inicio"
-          className="rounded-lg"
-          aria-label="Northa Digital — inicio"
-        >
+        {/* Ancla dentro de la página; desde la 404 lleva al inicio. */}
+        {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
+        <a href="/#inicio" className="inline-flex min-h-11 items-center rounded-full" aria-label="Northa Digital, inicio">
           <Logo />
         </a>
 
-        {/* Enlaces de escritorio */}
-        <ul className="hidden items-center gap-1 lg:flex">
+        <ul className="m-0 hidden list-none items-center gap-1 p-0 md:flex">
           {navSections.map((s) => {
             const isActive = activeId === s.id;
             return (
               <li key={s.id}>
                 <a
-                  href={`#${s.id}`}
+                  href={s.href}
                   aria-current={isActive ? "true" : undefined}
                   className={cn(
-                    "relative rounded-full px-3.5 py-2 text-sm transition-colors",
-                    isActive
-                      ? "text-[var(--color-text)]"
-                      : "text-[var(--color-muted)] hover:text-[var(--color-text)]",
+                    "relative inline-flex h-11 items-center rounded-full px-4 text-sm font-medium transition-colors",
+                    isActive ? "text-text" : "text-text-2 hover:text-text",
                   )}
                 >
                   {s.label}
-                  {isActive ? (
-                    <span
-                      aria-hidden="true"
-                      className="absolute inset-x-3.5 -bottom-px h-px gradient-brand"
-                    />
-                  ) : null}
+                  <span
+                    aria-hidden="true"
+                    className={cn(
+                      "absolute bottom-1 left-1/2 h-1 w-1 -translate-x-1/2 rounded-full bg-accent transition-opacity",
+                      isActive ? "opacity-100" : "opacity-0",
+                    )}
+                  />
                 </a>
               </li>
             );
           })}
         </ul>
 
-        <div className="hidden lg:block">
-          <Button href="#contacto" className="px-5 py-2.5">
-            Solicitar propuesta
+        <div className="flex items-center gap-1.5">
+          <Button href={ctaPrincipal.href} size="sm" className="hidden sm:inline-flex">
+            {ctaPrincipal.label}
           </Button>
+          <Button href={ctaPrincipal.href} size="sm" magnetic={false} className="px-4 sm:hidden">
+            {ctaPrincipal.short}
+          </Button>
+          <button
+            ref={toggleRef}
+            type="button"
+            className="grid h-11 w-11 place-items-center rounded-full border border-line-strong bg-white/[0.04] text-text transition-colors hover:bg-white/[0.08] md:hidden"
+            aria-expanded={open}
+            aria-controls="menu-movil"
+            aria-label={open ? "Cerrar menú" : "Abrir menú"}
+            onClick={() => setOpen((v) => !v)}
+          >
+            {open ? <X className="h-5 w-5" aria-hidden="true" /> : <Menu className="h-5 w-5" aria-hidden="true" />}
+          </button>
         </div>
-
-        {/* Botón de menú móvil */}
-        <button
-          type="button"
-          className="grid h-10 w-10 place-items-center rounded-lg border border-[var(--color-line)] bg-white/5 text-[var(--color-text)] lg:hidden"
-          aria-expanded={open}
-          aria-controls="menu-movil"
-          aria-label={open ? "Cerrar menú" : "Abrir menú"}
-          onClick={() => setOpen((v) => !v)}
-        >
-          {open ? (
-            <X className="h-5 w-5" aria-hidden="true" />
-          ) : (
-            <Menu className="h-5 w-5" aria-hidden="true" />
-          )}
-        </button>
       </nav>
 
-      {/* Panel móvil */}
       {open ? (
-        <div
-          id="menu-movil"
-          ref={panelRef}
-          className="glass border-t border-[var(--color-glass-border)] lg:hidden"
-        >
-          <ul className="mx-auto flex w-full max-w-6xl flex-col gap-1 px-6 py-4">
-            {navSections.map((s) => (
+        <div id="menu-movil" className="glass-strong mx-auto mt-2 w-full max-w-[1200px] rounded-[24px] p-3 md:hidden">
+          <ul className="m-0 flex list-none flex-col gap-1 p-0">
+            {navSections.map((s, i) => (
               <li key={s.id}>
                 <a
-                  href={`#${s.id}`}
+                  ref={i === 0 ? firstLinkRef : undefined}
+                  href={s.href}
                   onClick={() => setOpen(false)}
                   aria-current={activeId === s.id ? "true" : undefined}
                   className={cn(
-                    "block rounded-lg px-3 py-3 text-base transition-colors",
+                    "flex min-h-[52px] items-center rounded-2xl px-4 text-base font-medium transition-colors",
                     activeId === s.id
-                      ? "bg-white/5 text-[var(--color-text)]"
-                      : "text-[var(--color-muted)] hover:bg-white/5 hover:text-[var(--color-text)]",
+                      ? "bg-white/[0.06] text-text"
+                      : "text-text-2 hover:bg-white/[0.05] hover:text-text",
                   )}
                 >
                   {s.label}
@@ -132,12 +156,8 @@ export function Nav() {
               </li>
             ))}
             <li className="mt-2">
-              <Button
-                href="#contacto"
-                className="w-full"
-                onClick={() => setOpen(false)}
-              >
-                Solicitar propuesta
+              <Button href={ctaPrincipal.href} className="w-full" magnetic={false} onClick={() => setOpen(false)}>
+                {ctaPrincipal.label}
               </Button>
             </li>
           </ul>

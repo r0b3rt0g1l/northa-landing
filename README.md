@@ -1,102 +1,85 @@
-# Northa Digital
+# Northa Digital — landing
 
-**El norte de tu gobierno digital.** Estudio de software e inteligencia artificial en
-Sonora, México. Construimos y operamos sistemas para organizaciones que ya tienen el
-proceso resuelto en papel y lo necesitan resuelto en software.
+Sitio de Northa Digital: diseño, sistemas y presencia digital para organizaciones.
+Una sola página en español, construida con el método "una idea por sección":
+cada bloque responde una sola pregunta.
 
-No entregamos prototipos: lo que sale de aquí queda en producción, con dominio propio,
-usuarios reales y alguien responsable de que siga funcionando el año que viene.
-
----
-
-## Qué hacemos
-
-**Plataformas y portales.** Sitios institucionales y de producto, con su panel de
-administración para que el cliente publique sin depender de nosotros. Cuando hay muchos
-clientes sobre la misma base, arquitectura multi-inquilino con aislamiento verificado:
-cada cuenta ve lo suyo y solo lo suyo.
-
-**Automatización con agentes.** Procesos que hoy alguien repite a mano —clasificar,
-capturar, responder, dar seguimiento— convertidos en agentes que corren solos y escalan
-al humano cuando toca. La medida de éxito es cuántas veces deja de hacerse el trabajo
-dos veces.
-
-**Asistentes y búsqueda sobre información propia.** Atención 24/7 que responde con los
-datos reales de la organización, y búsqueda que encuentra por lo que el documento dice,
-no por las palabras exactas que alguien recordó teclear.
-
-**Documentos y archivos.** Resúmenes de expedientes largos, redacción asistida en el tono
-de la casa, clasificación y nombrado automáticos, edición y optimización de imágenes en
-lote.
-
-**Operación.** Monitoreo, respaldos, migraciones y el mantenimiento aburrido que decide
-si un sistema dura tres años o tres meses.
-
----
-
-## Lo que está en producción
-
-**Catorce portales municipales de transparencia**, en Sonora, sobre una sola plataforma:
-
-- 14 ayuntamientos, cada uno con su dominio `.com.mx` y su certificado
-- Un backend compartido (`cmsmunicipal`) y un panel único (`cms-admin`)
-- Aislamiento entre municipios verificado por suite automatizada
-- Herramienta de alta que da de vida a un municipio nuevo de punta a punta
-
-Es el caso que enseñamos porque prueba lo difícil: no hacer un sitio, sino operar catorce
-a la vez sin que se contaminen entre sí.
-
-### El ecosistema
-
-| Repositorio | Qué es |
+| Sección | Pregunta que responde |
 |---|---|
-| `northa-landing` | Este repo — el sitio de Northa Digital |
-| `cmsmunicipal` | Backend (Express + Prisma) y herramientas de operación de la flota |
-| `cms-admin` | Panel de administración que usan los clientes |
-| `plantilla-municipal` | Molde del que nace cada portal nuevo |
-| 14 repos por municipio | Un frontend por ayuntamiento, parametrizado desde el molde |
+| Hero | ¿Qué hacen? |
+| Servicios | ¿Qué ofrecen? |
+| Cuéntanos qué necesitas en 30 segundos | ¿Cómo empiezo una conversación? |
+| Portafolio | ¿Qué trabajo real han hecho? |
+| Cierre y footer | ¿Cómo los contacto? |
 
----
+## Concepto visual: "Signal in the dark"
 
-## Con quién colaboramos
+- **Fondo:** grafito profundo con un cielo de tres capas en canvas. Brilla en el
+  hero y el cierre y baja al 40 % detrás del contenido. Solo se anima cuando el hero
+  o el cierre están en pantalla.
+- **Señal:** el hero gira alrededor de un punto de luz con destello de ocho puntas,
+  la estrella polar de la marca.
+- **Vidrio:** solo en navbar, menú, panel de contacto, tarjeta de sistemas y
+  asistente. El resto son superficies mate.
+- **Tipografía:** Sora para títulos, Manrope para texto y JetBrains Mono para
+  etiquetas cortas.
+- **Movimiento:** revelados suaves, cursor con halo e imán en escritorio. Todo
+  respeta `prefers-reduced-motion` y funciona sin JavaScript.
 
-Northa no cubre todo lo que un proyecto grande necesita, y no fingimos que sí. Trabajamos
-con despachos especializados que aportan lo que a nosotros nos falta.
+Los valores viven en `app/globals.css` (tokens en `@theme`) y en `lib/fonts.js`.
 
-**Amplía Consultoría** — asesoría jurídica y gestión pública para ayuntamientos del Estado
-de Sonora: entrega-recepción, Plan Municipal de Desarrollo, normatividad, atención a entes
-fiscalizadores y obligaciones de transparencia. En la vertical de gobierno el reparto es
-claro: Amplía ordena la gestión, Northa la publica. **Diez de los catorce municipios de la
-flota trabajan con las dos.**
+## Contacto: dos vías funcionales
 
-*Contacto: Lic. Fabiola Kitazawa Galaz · ampliaconsul@gmail.com · 662 205 5021*
+El bloque de 30 segundos y el asistente comparten el mismo destino.
 
----
+- **Con `NEXT_PUBLIC_WEB3FORMS_KEY`:** "Enviar mensaje" llega por correo vía
+  Web3Forms, con respuesta directa al visitante si dejó un correo. WhatsApp queda
+  como segunda opción con el mismo mensaje.
+- **Sin la clave:** el botón principal abre WhatsApp con el mensaje armado.
+- **Sin JavaScript:** el formulario hace un POST directo a Web3Forms o abre
+  WhatsApp. Los datos nunca quedan en la URL del sitio.
 
-## Cómo trabajamos
+Para activar el correo: crea la clave en https://web3forms.com con el buzón que
+recibirá los mensajes, cárgala en Vercel en Production y Preview, y vuelve a
+desplegar. La clave se incrusta al compilar.
 
-Cuatro reglas que no se negocian, ganadas a base de equivocarnos:
+## Asistente del sitio
 
-**Nada se inventa.** Un dato lleva fuente verificable o el campo se queda vacío. Aplica a
-escudos, redes sociales, cronologías, correos y cifras. Un portal de gobierno que publica
-un dato falso hace más daño que uno incompleto.
+Botón discreto abajo a la derecha. Responde con información predefinida, ofrece
+sugerencias ("palabras predeterminadas"), entiende texto libre por palabras clave y
+deriva al equipo por WhatsApp o al formulario lo que no sabe responder. El panel se
+descarga solo cuando alguien lo abre y la conversación se guarda durante la sesión.
 
-**La verificación se hace sobre lo servido.** No sobre el código, no sobre la API que lo
-alimenta, no sobre la suite en verde: sobre la URL exacta donde el usuario vería el
-problema. Verde en una capa no dice nada de las otras.
+Para cambiar respuestas, sugerencias o palabras clave edita
+`lib/content/asistente.js`. El motor está en `lib/asistente.js`. Regla: nada de
+precios, plazos, clientes o métricas inventadas.
 
-**Un piloto antes de la flota.** Lo que se va a repetir en catorce lugares se hace bien
-una vez, se verifica completo, y hasta entonces se replica.
+## Estructura del proyecto
 
-**Aprobación explícita en lo compartido.** Todo lo que toca una base de datos con varios
-clientes encima se muestra antes de ejecutarse. Nunca un "no vuelvas a preguntar".
+```
+app/                 rutas, metadatos, sitemap, robots, imagen para redes, estilos
+components/
+  nav/ hero/ servicios/ contacto/ portafolio/ cierre/ footer/   secciones
+  asistente/         lanzador y panel del asistente
+  fondo/             cielo de estrellas y reflejo del vidrio
+  cursor/            halo e imán del cursor
+  ui/                botón, logo, sección, encabezado, revelado
+lib/
+  content/           textos editables: hero, servicios, contacto, proyectos, asistente
+  asistente.js       motor del asistente
+  acciones.js        puente entre bloques (abrir asistente, precargar el formulario)
+  site.js            identidad, contacto y URL principal
+public/portafolio/   captura del portal de Mazatán (con crédito del escudo)
+```
 
----
+### Añadir un proyecto al portafolio
 
-## Este repositorio
+Agrega una entrada en `lib/content/proyectos.js`. El primero con `destacado: true`
+es el caso principal; el resto aparece en una cuadrícula secundaria solo cuando
+existe. Solo enlaces y cifras verificables. Las imágenes de terceros, como los
+escudos municipales, llevan su crédito.
 
-Sitio de Northa Digital. Next.js 16 (App Router) · React 19 · Tailwind CSS 4 ·
-framer-motion · lucide-react · `sharp` para imágenes.
+## Desarrollo
 
 ```bash
 npm install
@@ -105,34 +88,19 @@ npm run build
 npm run lint
 ```
 
-### Estructura
+Variables de entorno, ver `.env.example`:
 
-```
-app/            rutas, metadatos, sitemap, robots, opengraph
-components/     secciones de la página y primitivas de UI
-lib/content/    contenido editable (la flota, servicios, textos)
-lib/site.js     identidad, contacto y URLs
-public/escudos/ escudos de los municipios, optimizados
-```
+- `NEXT_PUBLIC_SITE_URL`: dirección canónica. Sin definir, usa
+  https://northa-landing.vercel.app.
+- `NEXT_PUBLIC_WEB3FORMS_KEY`: clave pública de Web3Forms.
 
-El contenido vive en `lib/content/`, separado de los componentes: para cambiar lo que
-dice la página no hace falta tocar JSX.
+## Despliegue
 
-### Despliegue
-
-Vercel, team `northa-digital1`, rama de producción `main`.
-
-> **Ojo:** la GitHub App de Vercel no tiene acceso concedido a este repositorio, así que
-> **un push a `main` no dispara deploy**. Hasta que se conceda ese acceso, cada cambio
-> requiere `vercel --prod` a mano — y conviene comparar el `HEAD` de GitHub contra el
-> commit del último deployment antes de dar por hecho que producción está al día.
-
-La URL canónica se controla con `NEXT_PUBLIC_SITE_URL`; alimenta el canonical, el sitemap,
-el robots y el OpenGraph. Si no está definida, el sitio anuncia un dominio que puede no
-existir.
-
----
+Vercel, proyecto `northa-landing`, desde el repositorio `northa-landing`. La GitHub
+App de Vercel no tiene acceso al repositorio, así que cada cambio se publica con
+`vercel --prod`. Antes de publicar, conviene revisar una Preview y hacer un envío
+real del formulario.
 
 ## Contacto
 
-**Roberto Gil** · rgilh@hotmail.com · +52 662 386 6834 · Sonora, México
+**Roberto Gil** · rgilh@hotmail.com · +52 662 386 6834
