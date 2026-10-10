@@ -1,3 +1,6 @@
+"use client";
+
+import { useEffect, useRef } from "react";
 import { KeyRound, Laptop, Lock, LockKeyhole, ShieldCheck, UserRound } from "lucide-react";
 
 /**
@@ -8,10 +11,45 @@ import { KeyRound, Laptop, Lock, LockKeyhole, ShieldCheck, UserRound } from "luc
  * Es una ilustración: no tiene campos, botones ni enlaces reales, no imita
  * pantallas de terceros (ni verificaciones ni CAPTCHA) y no muestra datos,
  * direcciones ni accesos. Se anuncia como una sola imagen.
+ *
+ * La animación (paquetes por el túnel, contraseña que se escribe, gráfica
+ * que se traza, escaneo) se reproduce una vez, en menos de 5 s, al entrar en
+ * pantalla, y otra vez al pasar el cursor encima (WCAG 2.2.2). En reposo
+ * queda en su estado final. Con movimiento reducido no se anima.
  */
 export function DemoAcceso() {
+  const ref = useRef(null);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const reproducir = () => {
+      el.classList.remove("is-viva");
+      void el.offsetWidth; // reinicia las animaciones
+      el.classList.add("is-viva");
+    };
+    let fuera = true;
+    const io = new IntersectionObserver(
+      ([e]) => {
+        if (e.isIntersecting && fuera) {
+          fuera = false;
+          reproducir();
+        } else if (!e.isIntersecting) fuera = true;
+      },
+      { threshold: 0.4 },
+    );
+    io.observe(el);
+    const alEntrar = (e) => e.pointerType === "mouse" && reproducir();
+    el.addEventListener("pointerenter", alEntrar);
+    return () => {
+      io.disconnect();
+      el.removeEventListener("pointerenter", alEntrar);
+    };
+  }, []);
+
   return (
     <div
+      ref={ref}
       className="acceso"
       role="img"
       aria-label="Ilustración: un equipo se conecta por un túnel VPN cifrado, inicia sesión de forma segura y llega a un panel administrativo protegido y monitoreado."

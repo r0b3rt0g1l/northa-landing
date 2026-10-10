@@ -1283,7 +1283,6 @@
     border-radius: 99px;
     background: var(--verde);
     box-shadow: 0 0 0 0 rgba(52, 211, 153, 0.6);
-    animation: acceso-latido 2.4s ease-out infinite;
   }
   .acceso-cuerpo {
     display: grid;
@@ -1368,7 +1367,7 @@
     vector-effect: non-scaling-stroke;
     stroke-linejoin: round;
     stroke-dasharray: 340;
-    animation: acceso-trazo 5s var(--ease-out) infinite;
+    stroke-dashoffset: 0;
   }
   .acceso-pulso {
     position: absolute;
@@ -1377,7 +1376,7 @@
     left: 0;
     width: 30%;
     background: linear-gradient(90deg, transparent, rgba(127, 211, 255, 0.12), transparent);
-    animation: acceso-barrido 3.6s linear infinite;
+    opacity: 0;
   }
   .acceso-registro {
     display: flex;
@@ -1388,8 +1387,6 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    animation: acceso-aparece 6s ease-in-out infinite;
-    animation-delay: calc(var(--i) * 0.5s);
   }
   .acceso-registro i {
     width: 7px;
@@ -1404,7 +1401,7 @@
     height: 46px;
     background: linear-gradient(180deg, transparent, rgba(127, 211, 255, 0.1), transparent);
     pointer-events: none;
-    animation: acceso-escaneo 4.8s ease-in-out infinite;
+    opacity: 0;
   }
 
   .acceso-login {
@@ -1471,8 +1468,6 @@
     height: 6px;
     border-radius: 99px;
     background: var(--color-text);
-    animation: acceso-tecla 4.8s steps(1, end) infinite;
-    animation-delay: calc(var(--i) * 0.16s);
   }
   .acceso-entrar {
     display: grid;
@@ -1529,13 +1524,41 @@
     border-radius: 99px;
     background: var(--color-accent-2);
     box-shadow: 0 0 8px rgba(127, 211, 255, 0.9);
-    animation: acceso-paquete 1.8s linear infinite;
   }
-  .acceso-tunel i:nth-child(2) {
-    animation-delay: 0.6s;
+  .acceso-tunel i:first-child {
+    left: 40%;
   }
-  .acceso-tunel i:nth-child(3) {
-    animation-delay: 1.2s;
+  /* Una reproducción de menos de 5 s al entrar en pantalla o con el cursor
+     encima (clase is-viva, ver DemoAcceso). En reposo: estado final. */
+  .acceso.is-viva .acceso-estado i {
+    animation: acceso-latido 2.4s ease-out 2;
+  }
+  .acceso.is-viva .acceso-linea {
+    animation: acceso-trazo 4.6s var(--ease-out) both;
+  }
+  .acceso.is-viva .acceso-pulso {
+    animation: acceso-barrido 3.6s linear both;
+  }
+  .acceso.is-viva .acceso-registro span {
+    animation: acceso-aparece 2.2s ease-in-out 2 backwards;
+    animation-delay: calc(var(--i) * 0.2s);
+  }
+  .acceso.is-viva .acceso-escaneo {
+    animation: acceso-escaneo 4.6s ease-in-out both;
+  }
+  .acceso.is-viva .acceso-puntos i {
+    animation: acceso-tecla 1.4s steps(1, end) both;
+    animation-delay: calc(var(--i) * 0.16s);
+  }
+  .acceso.is-viva .acceso-tunel i {
+    left: -8px;
+    animation: acceso-paquete 1.6s linear 2 backwards;
+  }
+  .acceso.is-viva .acceso-tunel i:nth-child(2) {
+    animation-delay: 0.5s;
+  }
+  .acceso.is-viva .acceso-tunel i:nth-child(3) {
+    animation-delay: 1s;
   }
   .acceso-vpn-texto {
     display: flex;
@@ -1601,12 +1624,23 @@
     }
   }
   @keyframes acceso-paquete {
+    from {
+      transform: translateX(0);
+      opacity: 1;
+    }
+    95% {
+      opacity: 1;
+    }
     to {
       transform: translateX(80px);
+      opacity: 0;
     }
   }
   @keyframes acceso-escaneo {
-    0%,
+    0% {
+      transform: translateY(-50px);
+      opacity: 0;
+    }
     100% {
       transform: translateY(-50px);
       opacity: 0;
@@ -1622,9 +1656,11 @@
   @keyframes acceso-barrido {
     from {
       transform: translateX(-100%);
+      opacity: 1;
     }
     to {
       transform: translateX(340%);
+      opacity: 1;
     }
   }
   @keyframes acceso-trazo {
@@ -1638,15 +1674,12 @@
   }
   @keyframes acceso-tecla {
     0%,
-    8% {
+    60% {
       opacity: 0;
     }
-    10%,
-    92% {
-      opacity: 1;
-    }
+    61%,
     100% {
-      opacity: 0;
+      opacity: 1;
     }
   }
   @keyframes acceso-aparece {
@@ -1966,7 +1999,7 @@
       font-size: 10px;
     }
     .widget-enlace {
-      min-height: 40px;
+      min-height: 44px;
       margin-top: 4px;
       padding: 0 14px;
       font-size: 13.5px;
