@@ -25,6 +25,8 @@ export function BotonWhatsapp({ texto = MENSAJE_WHATSAPP, children = "Escríbeno
         <WhatsAppIcon className="h-4 w-4" />
       </span>
       {children}
+      {/* El ícono es decorativo: el nombre del botón dice a dónde lleva. */}
+      {typeof children === "string" && /whatsapp/i.test(children) ? null : <span className="sr-only"> por WhatsApp</span>}
     </Button>
   );
 }

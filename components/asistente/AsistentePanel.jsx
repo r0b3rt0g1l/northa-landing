@@ -424,6 +424,11 @@ export default function AsistentePanel({ onCerrar, peticion, onPeticionUsada }) 
         });
         return;
       }
+      // Contacto: no hay llamadas; se aclara y se pide elegir WhatsApp o correo.
+      if (paso === "contacto" && /llam|marc|telef|celular/i.test(limpio) && !/whats|wasap|wpp|correo|mail/i.test(limpio)) {
+        avisar(limpio, consulta.sinLlamadas);
+        return;
+      }
       // Pasos de solo opciones: se entienden sinónimos («por WhatsApp», «es para mi negocio»).
       const opcion = !pasoActual.texto ? opcionDesdeTexto(paso, limpio) : null;
       if (opcion) {
