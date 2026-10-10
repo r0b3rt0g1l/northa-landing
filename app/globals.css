@@ -192,7 +192,7 @@
         rgba(255, 255, 255, 0) 60%,
         rgba(255, 255, 255, 0.04)
       ),
-      rgba(16, 19, 25, 0.72);
+      rgba(16, 19, 25, 0.8);
     -webkit-backdrop-filter: blur(24px) saturate(170%);
     backdrop-filter: blur(24px) saturate(170%);
   }
@@ -239,7 +239,7 @@
       linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0) 32%),
       radial-gradient(
         calc(180px + var(--luz) * 60px) calc(120px + var(--luz) * 50px) at var(--mx, 18%) var(--my, -4%),
-        rgba(255, 255, 255, calc(0.1 + var(--luz) * 0.08)),
+        rgba(255, 255, 255, calc(0.06 + var(--luz) * 0.04)),
         rgba(255, 255, 255, 0) 70%
       ),
       radial-gradient(
@@ -261,11 +261,22 @@
     .glass-strong:hover {
       --luz: 1;
     }
+    /* El vidrio anidado se enciende solo bajo el cursor, y el de fuera se
+       apaga mientras tanto: la luz está siempre donde está el puntero. */
+    .glass.glass-interior:hover,
+    .glass-strong.glass-interior:hover {
+      --luz: 1;
+    }
+    .glass:has(.glass-interior:hover),
+    .glass-strong:has(.glass-interior:hover) {
+      --luz: 0;
+    }
   }
   /* Vidrio dentro de otro vidrio: sin segundo desenfoque (el de fuera ya
      difumina el fondo) y un poco más de cuerpo. Menos trabajo para la GPU. */
   .glass.glass-interior,
   .glass-strong.glass-interior {
+    --luz: 0;
     -webkit-backdrop-filter: none;
     backdrop-filter: none;
     background:
@@ -283,11 +294,12 @@
       0 14px 34px -26px rgba(0, 0, 0, 0.7);
   }
 
-  /* Pantallas táctiles: menos blur, sin saturación (menos costo de GPU). */
-  @media (max-width: 768px) {
+  /* Celulares y tabletas táctiles: menos blur, sin saturación (menos costo de
+     GPU). */
+  @media (max-width: 768px), (hover: none) and (pointer: coarse) {
     .glass {
-      -webkit-backdrop-filter: blur(18px) saturate(150%);
-      backdrop-filter: blur(18px) saturate(150%);
+      -webkit-backdrop-filter: blur(16px);
+      backdrop-filter: blur(16px);
     }
     .glass-strong {
       -webkit-backdrop-filter: blur(16px);
@@ -1426,6 +1438,16 @@
     box-shadow: 0 10px 24px -12px rgba(79, 140, 255, 0.9);
   }
 
+  /* Flotan sobre el panel (no sobre el cielo): llevan su propio esmerilado
+     para que la gráfica no se vea nítida a través. */
+  .glass-strong.glass-interior.acceso-login,
+  .glass.glass-interior.acceso-vpn {
+    background:
+      linear-gradient(135deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0) 55%),
+      rgba(16, 19, 25, 0.74);
+    -webkit-backdrop-filter: blur(14px) saturate(140%);
+    backdrop-filter: blur(14px) saturate(140%);
+  }
   .acceso-vpn {
     position: absolute;
     top: 0;
@@ -1535,7 +1557,7 @@
   }
   @media (max-width: 520px) {
     .acceso {
-      min-height: 400px;
+      min-height: 434px;
       padding: 56px 0 0 0;
     }
     .acceso-panel {
@@ -1550,15 +1572,15 @@
     .acceso-login {
       width: 74%;
       left: 0;
-      bottom: 0;
+      bottom: 34px;
     }
     .acceso-titulo {
       display: none;
     }
+    /* Debajo de la tarjeta de login, sin tapar nada. */
     .acceso-etiqueta {
-      top: 66px;
-      right: 12px;
-      bottom: auto;
+      right: 6px;
+      bottom: 2px;
     }
   }
   @keyframes acceso-latido {
@@ -1703,14 +1725,16 @@
     color: rgba(255, 255, 255, 0.5);
   }
   .portal-cuerpo {
+    position: relative;
     display: flex;
     min-width: 0;
     flex-direction: column;
     gap: 2px;
-    padding: 10px 34px 12px 12px;
+    padding: 10px 12px 12px;
   }
   .portal-nombre {
     min-width: 0;
+    padding-right: 22px;
     overflow-wrap: break-word;
     hyphens: auto;
     font-size: 15px;
@@ -1719,18 +1743,18 @@
     letter-spacing: -0.01em;
     color: var(--color-text);
   }
+  /* Completo: si no cabe, pasa a otra línea por «transparencia» o «.com.mx». */
   .portal-dominio {
     max-width: 100%;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    overflow-wrap: anywhere;
     font-size: 11.5px;
-    color: var(--color-faint);
+    line-height: 1.35;
+    color: var(--color-muted);
   }
   .portal-flecha {
     position: absolute;
+    top: 12px;
     right: 12px;
-    bottom: 14px;
     width: 16px;
     height: 16px;
     color: var(--color-muted);
@@ -1781,7 +1805,10 @@
     }
     .portal-cuerpo {
       flex: 1;
-      padding: 8px 40px 8px 6px;
+      padding: 8px 34px 8px 6px;
+    }
+    .portal-nombre {
+      padding-right: 0;
     }
     .portal-flecha {
       top: 50%;

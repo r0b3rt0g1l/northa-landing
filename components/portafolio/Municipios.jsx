@@ -1,3 +1,4 @@
+import { Fragment } from "react";
 import Image from "next/image";
 import { ArrowUpRight } from "lucide-react";
 import { StarIcon } from "@/components/ui/StarIcon";
@@ -6,6 +7,8 @@ import { slugMunicipio } from "@/lib/content/slug";
 
 const sinGuion = (t) => t.replace(/­/g, "");
 const dominio = (url) => new URL(url).hostname.replace(/^www\./, "");
+// Puntos naturales de corte: «aconchi|transparencia|.com.mx».
+const partesDominio = (d) => d.split(/(?=transparencia|\.com\.mx$)/);
 const capturaDe = (m) => capturas[slugMunicipio(m.nombre)] ?? null;
 
 /**
@@ -69,9 +72,16 @@ export function Municipios({ enlaces }) {
                 </span>
                 <span className="portal-cuerpo">
                   <span className="portal-nombre">{e.nombre}</span>
-                  <span className="portal-dominio">{dominio(e.url)}</span>
+                  <span className="portal-dominio">
+                    {partesDominio(dominio(e.url)).map((p, i) => (
+                      <Fragment key={p}>
+                        {i > 0 && <wbr />}
+                        {p}
+                      </Fragment>
+                    ))}
+                  </span>
+                  <ArrowUpRight className="portal-flecha" aria-hidden="true" />
                 </span>
-                <ArrowUpRight className="portal-flecha" aria-hidden="true" />
                 <span className="sr-only"> (abre el portal de {nombre} en una pestaña nueva)</span>
               </a>
             </li>
