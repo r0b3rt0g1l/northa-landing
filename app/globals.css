@@ -1179,8 +1179,9 @@
     padding: 14px;
     border-radius: 18px;
   }
-  /* Capturas reales del acceso al panel (AccesoReal): tres pasos con su
-     explicación arriba. En pantallas angostas, tarjetas que se deslizan. */
+  /* Capturas reales del acceso al panel (AccesoReal): tres pasos de la misma
+     altura con su explicación arriba. Por debajo de 1200 px, una franja de
+     tarjetas que se deslizan de lado. */
   .ingreso {
     display: flex;
     flex-direction: column;
@@ -1191,7 +1192,6 @@
   .ingreso-pasos {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    align-items: start;
     gap: 14px;
     margin: 0;
     padding: 0;
@@ -1222,31 +1222,56 @@
     outline-offset: 4px;
     border-radius: 24px;
   }
-  /* La franja llega al borde del marco (que tiene 24 px de relleno en celular
-     y 40 px desde 640 px): la siguiente tarjeta asoma sin cortarse a medias. */
-  @media (max-width: 1023px) {
+  /* Franja: llega hasta 12 px del borde del marco (cuyo relleno es 24 px en
+     celular, 40 px desde 640 px y 48 px desde 1024 px), así la siguiente
+     tarjeta asoma, la barra y el anillo de foco quedan dentro del vidrio, y
+     al final queda el mismo margen que al principio. */
+  @media (max-width: 1199px) {
     .ingreso-ventana {
       --borde: 24px;
-      margin-inline: calc(var(--borde) * -1);
-      padding: 4px var(--borde);
+      --sangria: calc(var(--borde) - 12px);
+      container-type: inline-size;
+      margin-inline: calc(var(--sangria) * -1);
+      padding: 4px var(--sangria) 10px;
       overflow-x: auto;
       overscroll-behavior-x: contain;
       scroll-snap-type: x mandatory;
-      scroll-padding-inline: var(--borde);
+      scroll-padding-inline: var(--sangria);
       scrollbar-width: thin;
+      scrollbar-color: rgba(255, 255, 255, 0.22) transparent;
+    }
+    .ingreso-ventana::-webkit-scrollbar {
+      height: 6px;
+    }
+    .ingreso-ventana::-webkit-scrollbar-thumb {
+      border-radius: 99px;
+      background: rgba(255, 255, 255, 0.22);
+    }
+    .ingreso-ventana:focus-visible {
+      outline-offset: -2px;
+      border-radius: 20px;
     }
     .ingreso-pasos {
+      width: max-content;
       grid-template-columns: none;
       grid-auto-flow: column;
-      grid-auto-columns: min(78%, 340px);
+      grid-auto-columns: min(92cqw, 340px);
     }
     .glass.ingreso-paso {
       scroll-snap-align: start;
     }
+    .glass.ingreso-paso:last-child {
+      scroll-snap-align: end;
+    }
   }
-  @media (min-width: 640px) and (max-width: 1023px) {
+  @media (min-width: 640px) and (max-width: 1199px) {
     .ingreso-ventana {
       --borde: 40px;
+    }
+  }
+  @media (min-width: 1024px) and (max-width: 1199px) {
+    .ingreso-ventana {
+      --borde: 48px;
     }
   }
 

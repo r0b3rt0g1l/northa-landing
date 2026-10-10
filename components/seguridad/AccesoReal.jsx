@@ -9,9 +9,10 @@ import { DesplazableAccesible } from "@/components/ui/DesplazableAccesible";
  * no se puede escribir ni pulsar nada. El dominio privado y el código están
  * tapados, y el correo es el de Northa.
  *
- *  - Escritorio: tres columnas, con la explicación de cada paso arriba.
- *  - Tableta y celular: tarjetas que se deslizan de lado (con teclado, la
- *    franja recibe el foco y se recorre con las flechas).
+ *  - Desde 1200 px: tres columnas de la misma altura, con la explicación de
+ *    cada paso arriba.
+ *  - Más angosto: tarjetas que se deslizan de lado (con teclado, la franja
+ *    recibe el foco y las flechas avanzan una tarjeta).
  */
 export function AccesoReal() {
   const { titulo, texto, pasos } = seguridad.acceso;
@@ -41,7 +42,7 @@ export function AccesoReal() {
                   alt={p.alt}
                   width={p.width}
                   height={p.height}
-                  sizes="(min-width: 1024px) 340px, (min-width: 640px) 340px, 78vw"
+                  sizes="(min-width: 1200px) 340px, (min-width: 640px) 320px, 70vw"
                   loading="lazy"
                   className="ingreso-captura"
                 />
