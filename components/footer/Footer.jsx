@@ -1,8 +1,9 @@
-import { Mail, Phone } from "lucide-react";
+import { Mail } from "lucide-react";
 import { Logo } from "@/components/ui/Logo";
-import { WhatsAppIcon } from "@/components/ui/WhatsAppIcon";
 import { BotonAsistente } from "@/components/ui/BotonAsistente";
-import { site, whatsappConTexto } from "@/lib/site";
+import { BotonWhatsapp } from "@/components/ui/BotonWhatsapp";
+import { PausaMovimiento } from "@/components/ui/PausaMovimiento";
+import { site } from "@/lib/site";
 import { navSections } from "@/lib/content/nav";
 
 const enlace =
@@ -11,16 +12,17 @@ const icono =
   "grid h-9 w-9 shrink-0 place-items-center rounded-full border border-line-strong bg-white/[0.04] transition-colors group-hover:border-white/25";
 
 /**
- * Pie con el contacto directo (#contacto): WhatsApp, teléfono y correo, más
- * el asistente. Todos los datos salen de lib/site.js.
+ * Pie con el contacto directo (#contacto): el botón de WhatsApp (abre el chat
+ * directo, sin mostrar el número), el correo y el asistente. Todos los datos
+ * salen de lib/site.js.
  */
 export function Footer() {
   const year = new Date().getFullYear();
   const { contact } = site;
 
   return (
-    <footer id="contacto" aria-labelledby="contacto-title" className="relative z-10 border-t border-line px-5 pb-28 pt-14 sm:px-8 sm:pt-16">
-      <div className="mx-auto grid w-full max-w-[1200px] gap-10 md:grid-cols-[1fr_1.2fr_auto] md:gap-12">
+    <footer id="contacto" aria-labelledby="contacto-title" className="relative z-10 px-5 pb-28 pt-10 sm:px-8 sm:pt-12">
+      <div className="glass mx-auto grid w-full max-w-[1200px] gap-10 rounded-[32px] p-6 sm:p-10 md:grid-cols-[1fr_1.2fr_auto] md:gap-12">
         <div className="flex flex-col gap-4">
           {/* Ancla dentro de la página; desde la 404 lleva al inicio. */}
           {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
@@ -34,28 +36,12 @@ export function Footer() {
           <h2 id="contacto-title" className="eyebrow m-0 text-[13px] font-normal tracking-[0.08em]">
             Contacto
           </h2>
+          <div>
+            <BotonWhatsapp size="sm" magnetic={false} className="pl-2.5">
+              Escríbenos por WhatsApp
+            </BotonWhatsapp>
+          </div>
           <ul className="m-0 flex list-none flex-col gap-1 p-0">
-            <li>
-              <a href={whatsappConTexto()} target="_blank" rel="noopener noreferrer" className={enlace}>
-                <span className={icono}>
-                  <WhatsAppIcon className="h-4 w-4 text-[#25D366]" />
-                </span>
-                <span>
-                  WhatsApp <span className="text-text">{contact.phoneDisplay}</span>
-                </span>
-                <span className="sr-only"> (se abre en una pestaña nueva)</span>
-              </a>
-            </li>
-            <li>
-              <a href={contact.phoneHref} className={enlace}>
-                <span className={icono}>
-                  <Phone className="h-4 w-4" aria-hidden="true" />
-                </span>
-                <span>
-                  Teléfono <span className="text-text">{contact.phoneDisplay}</span>
-                </span>
-              </a>
-            </li>
             <li>
               <a href={contact.emailHref} className={enlace}>
                 <span className={icono}>
@@ -85,9 +71,12 @@ export function Footer() {
           </ul>
         </nav>
       </div>
-      <p className="mx-auto mt-10 w-full max-w-[1200px] border-t border-line pt-6 text-[13px] text-faint">
-        © {year} {site.name}
-      </p>
+      <div className="mx-auto mt-4 flex w-full max-w-[1200px] flex-wrap items-center justify-between gap-x-6 px-2">
+        <p className="m-0 text-[13px] text-faint">
+          © {year} {site.name}
+        </p>
+        <PausaMovimiento className="-mr-2" />
+      </div>
     </footer>
   );
 }

@@ -6,13 +6,14 @@ import { proyectoDestacado } from "@/lib/content/proyectos";
 
 /**
  * ¿Qué trabajo real han hecho? Todos los municipios con portal publicado, en
- * un widget que pasa solo por cada uno, y la lista con el enlace a cada portal.
- * Añadir un municipio = una entrada en lib/content/proyectos.js.
+ * un solo contenedor compacto con la página de inicio real de cada uno y su
+ * enlace. Añadir un municipio = una entrada en lib/content/proyectos.js y su
+ * captura (scripts/capturar-portales.mjs).
  */
 export function Portafolio() {
   const proyecto = proyectoDestacado;
   if (!proyecto) return null;
-  const { imagen, enlaces = [] } = proyecto;
+  const { enlaces = [] } = proyecto;
 
   return (
     <Section id="portafolio" labelledBy="portafolio-title">
@@ -23,7 +24,7 @@ export function Portafolio() {
         description="Portales municipales en línea, diseñados y construidos por Northa Digital."
       />
       <Reveal className="mt-12 sm:mt-16">
-        <Municipios enlaces={enlaces} imagen={imagen} />
+        <Municipios enlaces={enlaces} />
       </Reveal>
     </Section>
   );

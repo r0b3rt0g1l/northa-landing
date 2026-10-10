@@ -37,6 +37,14 @@
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
+/* Intensidad de la luz que sigue al cursor en el vidrio: 0 en reposo, 1 con
+   el puntero encima. Registrada para poder animarse con una transición. */
+@property --luz {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 0;
+}
+
 @layer base {
   *,
   *::before,
@@ -142,30 +150,37 @@
 
 @layer components {
   /* ---------- Liquid glass ----------
-     Solo en navbar, menú, panel de contacto, tarjeta de sistemas, asistente
-     y controles. Material: fondo translúcido saturado, borde con luz que
-     recorre el contorno (::before) y reflejo especular que sigue al
-     puntero (::after con --mx/--my, ver GlassPointer). */
+     Un solo material en todo el sitio: barra, menús, tarjetas, botones
+     secundarios, banners, secciones destacadas, asistente y controles.
+     Fondo translúcido con desenfoque real y saturación, borde luminoso
+     (::before) y reflejo especular (::after). Con el puntero encima, el borde
+     se enciende justo donde está el cursor y el reflejo lo sigue como un
+     líquido (--mx/--my de GlassPointer, --luz con transición). */
   .glass,
   .glass-strong {
     position: relative;
     isolation: isolate;
     border: 1px solid transparent;
+    /* Translúcido y ligero: deja ver el cielo difuminado detrás. */
     background:
       linear-gradient(
         135deg,
-        rgba(255, 255, 255, 0.08),
-        rgba(255, 255, 255, 0.02) 38%,
-        rgba(255, 255, 255, 0) 60%,
+        rgba(255, 255, 255, 0.085),
+        rgba(255, 255, 255, 0.022) 40%,
+        rgba(255, 255, 255, 0) 62%,
         rgba(255, 255, 255, 0.035)
       ),
-      rgba(14, 17, 22, 0.55);
+      rgba(17, 21, 29, 0.4);
+    /* Brillo interno sutil: filo de luz arriba, resplandor suave dentro y una
+       sombra amplia y ligera. */
     box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.14),
-      inset 0 -1px 0 rgba(255, 255, 255, 0.03),
-      0 30px 70px -36px rgba(0, 0, 0, 0.9);
-    -webkit-backdrop-filter: blur(20px) saturate(160%);
-    backdrop-filter: blur(20px) saturate(160%);
+      inset 0 1px 0 rgba(255, 255, 255, 0.2),
+      inset 0 0 0 1px rgba(255, 255, 255, 0.025),
+      inset 0 14px 28px -20px rgba(255, 255, 255, 0.12),
+      inset 0 -1px 0 rgba(255, 255, 255, 0.04),
+      0 24px 60px -34px rgba(0, 0, 0, 0.7);
+    -webkit-backdrop-filter: blur(26px) saturate(175%);
+    backdrop-filter: blur(26px) saturate(175%);
   }
 
   .glass-strong {
@@ -177,7 +192,7 @@
         rgba(255, 255, 255, 0) 60%,
         rgba(255, 255, 255, 0.04)
       ),
-      rgba(16, 19, 25, 0.72);
+      rgba(16, 19, 25, 0.8);
     -webkit-backdrop-filter: blur(24px) saturate(170%);
     backdrop-filter: blur(24px) saturate(170%);
   }
@@ -189,13 +204,20 @@
     inset: -1px;
     border-radius: inherit;
     padding: 1px;
-    background: linear-gradient(
-      135deg,
-      rgba(255, 255, 255, 0.22),
-      rgba(255, 255, 255, 0.06) 32%,
-      rgba(255, 255, 255, 0.02) 58%,
-      rgba(127, 211, 255, 0.16)
-    );
+    background:
+      radial-gradient(
+        240px circle at var(--mx, 50%) var(--my, 0%),
+        rgba(255, 255, 255, calc(var(--luz) * 0.9)),
+        rgba(127, 211, 255, calc(var(--luz) * 0.35)) 40%,
+        rgba(255, 255, 255, 0) 70%
+      ),
+      linear-gradient(
+        150deg,
+        rgba(255, 255, 255, 0.26),
+        rgba(255, 255, 255, 0.07) 30%,
+        rgba(255, 255, 255, 0.02) 55%,
+        rgba(127, 211, 255, 0.16)
+      );
     -webkit-mask:
       linear-gradient(#000 0 0) content-box,
       linear-gradient(#000 0 0);
@@ -211,10 +233,13 @@
     position: absolute;
     inset: 0;
     border-radius: inherit;
+    /* Reflejos delicados: una franja de luz arriba, el brillo que sigue al
+       cursor y un rebote frío abajo. */
     background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0) 32%),
       radial-gradient(
-        180px 120px at var(--mx, 18%) var(--my, -4%),
-        rgba(255, 255, 255, 0.12),
+        calc(180px + var(--luz) * 60px) calc(120px + var(--luz) * 50px) at var(--mx, 18%) var(--my, -4%),
+        rgba(255, 255, 255, calc(0.06 + var(--luz) * 0.04)),
         rgba(255, 255, 255, 0) 70%
       ),
       radial-gradient(
@@ -222,17 +247,59 @@
         rgba(127, 211, 255, 0.08),
         rgba(127, 211, 255, 0) 70%
       );
-    opacity: 0.75;
+    opacity: 0.8;
     pointer-events: none;
     z-index: -1;
     transition: opacity 0.4s var(--ease-out);
   }
+  .glass,
+  .glass-strong {
+    transition: --luz 0.45s var(--ease-out);
+  }
+  @media (hover: hover) {
+    .glass:hover,
+    .glass-strong:hover {
+      --luz: 1;
+    }
+    /* El vidrio anidado se enciende solo bajo el cursor, y el de fuera se
+       apaga mientras tanto: la luz está siempre donde está el puntero. */
+    .glass.glass-interior:hover,
+    .glass-strong.glass-interior:hover {
+      --luz: 1;
+    }
+    .glass:has(.glass-interior:hover),
+    .glass-strong:has(.glass-interior:hover) {
+      --luz: 0;
+    }
+  }
+  /* Vidrio dentro de otro vidrio: sin segundo desenfoque (el de fuera ya
+     difumina el fondo) y un poco más de cuerpo. Menos trabajo para la GPU. */
+  .glass.glass-interior,
+  .glass-strong.glass-interior {
+    --luz: 0;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    background:
+      linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.075),
+        rgba(255, 255, 255, 0.02) 40%,
+        rgba(255, 255, 255, 0) 62%,
+        rgba(255, 255, 255, 0.03)
+      ),
+      rgba(20, 24, 32, 0.42);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.16),
+      inset 0 12px 22px -18px rgba(255, 255, 255, 0.1),
+      0 14px 34px -26px rgba(0, 0, 0, 0.7);
+  }
 
-  /* Pantallas táctiles: menos blur, sin saturación (menos costo de GPU). */
-  @media (max-width: 768px) {
+  /* Celulares y tabletas táctiles: menos blur, sin saturación (menos costo de
+     GPU). */
+  @media (max-width: 768px), (hover: none) and (pointer: coarse) {
     .glass {
-      -webkit-backdrop-filter: blur(14px);
-      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(16px);
+      backdrop-filter: blur(16px);
     }
     .glass-strong {
       -webkit-backdrop-filter: blur(16px);
@@ -262,7 +329,32 @@
   .glass-hover {
     transition:
       transform 0.35s var(--ease-out),
-      box-shadow 0.35s var(--ease-out);
+      box-shadow 0.35s var(--ease-out),
+      --luz 0.45s var(--ease-out);
+  }
+  /* Botón principal: un destello recorre la píldora al pasar el cursor. */
+  .btn-luz {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+  }
+  .btn-luz::after {
+    content: "";
+    position: absolute;
+    top: -30%;
+    bottom: -30%;
+    left: 0;
+    z-index: -1;
+    width: 40%;
+    background: linear-gradient(100deg, transparent, rgba(79, 140, 255, 0.22) 50%, transparent);
+    transform: translateX(-140%) skewX(-14deg);
+    pointer-events: none;
+  }
+  @media (hover: hover) {
+    .btn-luz:hover::after {
+      transform: translateX(320%) skewX(-14deg);
+      transition: transform 0.9s var(--ease-out);
+    }
   }
   .glass-hover:hover {
     transform: translateY(-2px);
@@ -533,7 +625,9 @@
   }
   .is-paused,
   .is-paused *,
-  .is-paused *::before {
+  .is-paused *::before,
+  :root[data-movimiento-pausado] .senal *,
+  :root[data-movimiento-pausado] .senal *::before {
     animation-play-state: paused !important;
   }
   @keyframes senal-respira {
@@ -729,7 +823,7 @@
   .card-hover[data-tilt]:hover,
   .glass-hover[data-tilt]:hover {
     transform: perspective(1000px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg))
-      translateY(-3px);
+      translateY(-4px);
   }
 
   /* ---------- Indicador para seguir explorando (hero) ----------
@@ -883,18 +977,12 @@
     height: 100%;
     padding: 18px 18px 18px 16px;
     border-radius: 20px;
-    border: 1px solid var(--color-line);
-    background:
-      linear-gradient(180deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.012)),
-      rgba(14, 17, 22, 0.62);
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
     transition:
-      border-color 0.3s ease,
-      translate 0.4s var(--ease-out);
+      translate 0.4s var(--ease-out),
+      --luz 0.45s var(--ease-out);
   }
   .beneficio:hover {
-    border-color: rgba(127, 211, 255, 0.28);
-    translate: 0 -2px;
+    translate: 0 -3px;
   }
   .beneficio-icono {
     display: grid;
@@ -908,25 +996,27 @@
     color: var(--color-accent-2);
   }
 
-  /* ---------- Banda de servicios: recorrido continuo con rebote ----------
-     La pista lleva cuatro copias de la fila y avanza una copia (25 %) en
-     bucle; cada botón rebota con un retraso propio, como una ola. Se detiene
-     con el botón de pausa, al pasar el puntero, al enfocar un botón o al
-     tocarla. Solo transform, translate y scale: fluido en todos los
-     navegadores. */
+  /* ---------- Banner de servicios: hacia la derecha, con brinco ----------
+     Franja de vidrio con cuatro copias de la fila: la pista avanza una copia
+     (25 %) hacia la derecha y vuelve a empezar sin corte. Cada servicio da un
+     brinco lento y rítmico con su propio retraso, como conejos en fila. Se
+     detiene con el botón de pausa, al pasar el puntero, al enfocar un botón,
+     al tocarla o fuera de pantalla. Solo transform, translate y scale. */
   .banda {
-    --duracion: 44s;
-    position: relative;
+    --duracion: 56s;
     display: flex;
     align-items: center;
+    overflow: hidden;
+    border-radius: 28px;
   }
   .banda-ventana {
     flex: 1;
     min-width: 0;
     overflow: hidden;
-    padding-block: 18px 14px;
-    -webkit-mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
-    mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
+    padding-block: 26px 18px;
+    scroll-padding-inline: 24px;
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+    mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
   }
   .banda-pista {
     display: flex;
@@ -936,61 +1026,57 @@
   .banda-grupo {
     display: flex;
     flex-shrink: 0;
-    gap: 12px;
+    gap: 14px;
     margin: 0;
-    padding: 0 12px 0 0;
+    padding: 0 14px 0 0;
     list-style: none;
   }
-  .banda-pieza {
+  .glass.banda-pieza {
     display: inline-flex;
     align-items: center;
-    gap: 9px;
-    min-height: 48px;
-    padding: 0 20px 0 15px;
+    gap: 10px;
+    min-height: 54px;
+    padding: 0 22px 0 17px;
     border-radius: 999px;
-    border: 1px solid var(--color-line-strong);
-    background:
-      linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02)),
-      rgba(16, 19, 25, 0.9);
-    box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.09),
-      0 12px 26px -16px rgba(0, 0, 0, 0.9);
     color: var(--color-text);
-    font-size: 15px;
+    font-size: 15.5px;
     font-weight: 600;
     letter-spacing: -0.01em;
     white-space: nowrap;
-    animation: banda-rebote 2.8s cubic-bezier(0.3, 0.7, 0.4, 1) infinite;
-    animation-delay: calc(var(--i) * 0.32s);
-    transition:
-      border-color 0.3s ease,
-      background-color 0.3s ease;
-  }
-  .banda-pieza:hover {
-    border-color: rgba(127, 211, 255, 0.5);
+    transform-origin: 50% 100%;
+    animation: banda-brinco 2.6s cubic-bezier(0.45, 0, 0.35, 1) infinite;
+    animation-delay: calc(var(--i) * 0.3s);
+    transition: --luz 0.45s var(--ease-out);
   }
   .banda-pieza svg {
     color: var(--color-accent-2);
   }
-  .banda-pieza--seguridad {
-    border-color: rgba(79, 140, 255, 0.45);
+  .glass.banda-pieza--seguridad {
     background:
-      linear-gradient(180deg, rgba(79, 140, 255, 0.2), rgba(79, 140, 255, 0.06)),
-      rgba(16, 19, 25, 0.9);
+      linear-gradient(160deg, rgba(79, 140, 255, 0.28), rgba(79, 140, 255, 0.06) 70%),
+      rgba(16, 20, 27, 0.6);
   }
-  /* Pausa: botón, toque, fuera de pantalla, foco o puntero en la ventana. El
-     botón de pausa queda fuera de la ventana para que «Reanudar» reanude. */
+  /* Pausa: botón, toque, fuera de pantalla o puntero en la ventana. El botón
+     de pausa queda fuera de la ventana para que «Reanudar» reanude. Un clic
+     no la detiene: tras cerrar el asistente, la banda sigue avanzando. */
   .banda.is-pausada .banda-pista,
   .banda.is-pausada .banda-pieza,
   .banda.is-fuera .banda-pista,
-  .banda.is-fuera .banda-pieza,
-  .banda-ventana:focus-within .banda-pista,
-  .banda-ventana:focus-within .banda-pieza {
+  .banda.is-fuera .banda-pieza {
     animation-play-state: paused;
   }
-  /* Con teclado, la pista vuelve al inicio: el botón enfocado se ve. */
-  .banda:has(.banda-pieza:focus-visible) .banda-pista {
+  /* Con teclado, la pista vuelve al inicio y los servicios se quedan quietos,
+     sin difuminado y con aire en los bordes: el botón enfocado y su anillo de
+     foco se ven completos. */
+  .banda:has(.banda-pieza:focus-visible) .banda-pista,
+  .banda:has(.banda-pieza:focus-visible) .banda-pieza {
     animation: none;
+  }
+  .banda:has(.banda-pieza:focus-visible) .banda-ventana {
+    -webkit-mask-image: none;
+    mask-image: none;
+    padding-inline: 10px;
+    scroll-padding-inline: 16px;
   }
   @media (hover: hover) {
     .banda-ventana:hover .banda-pista,
@@ -1004,10 +1090,10 @@
     flex-shrink: 0;
     width: 44px;
     height: 44px;
-    margin: 0 20px 0 6px;
+    margin: 0 16px 0 4px;
     border-radius: 999px;
     border: 1px solid var(--color-line-strong);
-    background: rgba(255, 255, 255, 0.04);
+    background: rgba(255, 255, 255, 0.05);
     color: var(--color-text-2);
     transition:
       color 0.2s ease,
@@ -1015,325 +1101,720 @@
   }
   .banda-pausa:hover {
     color: var(--color-text);
-    background: rgba(255, 255, 255, 0.09);
+    background: rgba(255, 255, 255, 0.1);
   }
+  /* El icono cambia al pulsar: que el puntero quede siempre sobre el botón. */
+  .banda-pausa svg {
+    pointer-events: none;
+  }
+  /* Hacia la derecha: la pista empieza una copia a la izquierda y llega a 0. */
   @keyframes banda-recorrido {
-    to {
+    from {
       transform: translateX(-25%);
     }
+    to {
+      transform: translateX(0);
+    }
   }
-  @keyframes banda-rebote {
+  /* Brinco de conejo: se agacha, salta despacio, aterriza y descansa. */
+  @keyframes banda-brinco {
     0%,
-    44%,
     100% {
       translate: 0 0;
       scale: 1 1;
     }
-    8% {
+    12% {
       translate: 0 1px;
-      scale: 1.05 0.93;
+      scale: 1.04 0.95;
     }
-    18% {
-      translate: 0 -12px;
-      scale: 0.97 1.04;
+    32% {
+      translate: 0 -11px;
+      scale: 0.98 1.03;
     }
-    28% {
+    46% {
+      translate: 0 -13px;
+      scale: 1 1;
+    }
+    66% {
       translate: 0 0;
-      scale: 1.03 0.97;
+      scale: 1.04 0.96;
     }
-    36% {
-      translate: 0 -3px;
+    78% {
+      translate: 0 0;
       scale: 1 1;
     }
   }
   /* En móvil: más lenta y con botones más pequeños. */
   @media (max-width: 640px) {
     .banda {
-      --duracion: 60s;
+      --duracion: 70s;
+      border-radius: 22px;
+    }
+    .banda-ventana {
+      padding-block: 22px 14px;
     }
     .banda-grupo {
       gap: 10px;
       padding-right: 10px;
     }
-    .banda-pieza {
-      gap: 7px;
-      min-height: 44px;
-      padding: 0 15px 0 12px;
-      font-size: 13.5px;
+    .glass.banda-pieza {
+      gap: 8px;
+      min-height: 46px;
+      padding: 0 16px 0 13px;
+      font-size: 14px;
     }
     .banda-pausa {
-      margin-right: 14px;
+      margin-right: 10px;
     }
   }
 
-  /* ---------- Seguridad: una pieza de confianza ---------- */
-  .confianza-escudo {
-    display: grid;
-    place-items: center;
-    width: 72px;
-    height: 72px;
-    flex-shrink: 0;
-    border-radius: 22px;
-    border: 1px solid rgba(127, 211, 255, 0.32);
-    background: radial-gradient(circle at 30% 20%, rgba(127, 211, 255, 0.25), rgba(79, 140, 255, 0.06) 70%);
-    box-shadow: 0 0 44px -10px rgba(79, 140, 255, 0.5);
+  /* ---------- Seguridad: puntos y demostración visual ----------
+     La demostración es una ilustración (role="img"): panel administrativo,
+     login seguro y túnel VPN. No tiene campos ni botones reales. Solo
+     transform y opacity en las animaciones. */
+  .seguridad-punto {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 14px;
+    border-radius: 18px;
+  }
+  .acceso {
+    --verde: #34d399;
+    position: relative;
+    min-height: 430px;
+    padding: 34px 0 0 12%;
+    font-family: var(--font-sans), system-ui, sans-serif;
+    user-select: none;
+  }
+  .acceso-panel {
+    position: relative;
+    overflow: hidden;
+    border-radius: 20px;
+    height: 330px;
+  }
+  .acceso-barra {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    height: 40px;
+    padding: 0 14px;
+    border-bottom: 1px solid var(--color-line);
+    background: rgba(255, 255, 255, 0.025);
+    font-size: 12px;
+  }
+  .acceso-luces {
+    display: inline-flex;
+    gap: 6px;
+  }
+  .acceso-luces i {
+    width: 9px;
+    height: 9px;
+    border-radius: 99px;
+    background: rgba(255, 255, 255, 0.16);
+  }
+  .acceso-titulo {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-inline: auto;
+    color: var(--color-text-2);
+    font-weight: 600;
+  }
+  .acceso-titulo svg {
     color: var(--color-accent-2);
   }
-
-  /* ---------- Portafolio: widget de municipios ----------
-     Una pila de tarjetas al estilo de los widgets de Apple: la siguiente sube
-     desde abajo mientras la anterior se va hacia arriba. */
-  .widget {
-    position: relative;
-    isolation: isolate;
-    aspect-ratio: 4 / 3.6;
-    overflow: hidden;
-    border-radius: 32px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    background: #0b0e13;
-    box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.08),
-      0 40px 90px -40px rgba(0, 0, 0, 0.95);
-    touch-action: pan-y;
+  .acceso-estado {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 3px 9px;
+    border-radius: 99px;
+    border: 1px solid rgba(52, 211, 153, 0.35);
+    background: rgba(52, 211, 153, 0.1);
+    color: #a7f3d0;
+    font-size: 11px;
+    font-weight: 600;
   }
-  @media (min-width: 640px) {
-    .widget {
-      aspect-ratio: 16 / 10.5;
+  .acceso-estado i {
+    width: 6px;
+    height: 6px;
+    border-radius: 99px;
+    background: var(--verde);
+    box-shadow: 0 0 0 0 rgba(52, 211, 153, 0.6);
+  }
+  .acceso-cuerpo {
+    display: grid;
+    grid-template-columns: 28% 1fr;
+    gap: 14px;
+    height: calc(100% - 40px);
+    padding: 14px;
+  }
+  .acceso-lateral {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 10px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.025);
+  }
+  .acceso-lateral span {
+    width: var(--w);
+    height: 8px;
+    border-radius: 99px;
+    background: rgba(255, 255, 255, 0.1);
+  }
+  .acceso-lateral span.is-activo {
+    background: linear-gradient(90deg, var(--color-accent), var(--color-accent-2));
+  }
+  .acceso-contenido {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .acceso-fichas {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+  }
+  .acceso-ficha {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 10px;
+    border-radius: 12px;
+    border: 1px solid var(--color-line);
+    background: rgba(255, 255, 255, 0.03);
+  }
+  .acceso-ficha i {
+    width: 18px;
+    height: 18px;
+    border-radius: 6px;
+    background: radial-gradient(circle at 30% 30%, rgba(127, 211, 255, 0.5), rgba(79, 140, 255, 0.15));
+  }
+  .acceso-ficha b,
+  .acceso-registro b,
+  .acceso-campo b {
+    display: block;
+    width: var(--w);
+    height: 7px;
+    border-radius: 99px;
+    background: rgba(255, 255, 255, 0.14);
+  }
+  .acceso-monitor {
+    position: relative;
+    flex: 1;
+    min-height: 70px;
+    overflow: hidden;
+    border-radius: 12px;
+    border: 1px solid var(--color-line);
+    background:
+      repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.035) 0 1px, transparent 1px 25%),
+      rgba(255, 255, 255, 0.02);
+  }
+  .acceso-monitor svg {
+    position: absolute;
+    inset: 12% 0 10%;
+    width: 100%;
+    height: 78%;
+  }
+  .acceso-linea {
+    fill: none;
+    stroke: var(--color-accent-2);
+    stroke-width: 2;
+    vector-effect: non-scaling-stroke;
+    stroke-linejoin: round;
+    stroke-dasharray: 340;
+    stroke-dashoffset: 0;
+  }
+  .acceso-pulso {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 30%;
+    background: linear-gradient(90deg, transparent, rgba(127, 211, 255, 0.12), transparent);
+    opacity: 0;
+  }
+  .acceso-registro {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .acceso-registro span {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .acceso-registro i {
+    width: 7px;
+    height: 7px;
+    flex-shrink: 0;
+    border-radius: 99px;
+    background: var(--verde);
+  }
+  .acceso-escaneo {
+    position: absolute;
+    inset: 40px 0 auto;
+    height: 46px;
+    background: linear-gradient(180deg, transparent, rgba(127, 211, 255, 0.1), transparent);
+    pointer-events: none;
+    opacity: 0;
+  }
+
+  .acceso-login {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    display: flex;
+    width: min(54%, 270px);
+    flex-direction: column;
+    gap: 10px;
+    padding: 16px;
+    border-radius: 20px;
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.16),
+      0 30px 60px -24px rgba(0, 0, 0, 0.95);
+    font-size: 12px;
+  }
+  .acceso-login-cabeza {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 2px;
+  }
+  .acceso-login-cabeza strong {
+    font-size: 13.5px;
+    color: var(--color-text);
+  }
+  .acceso-login-cabeza small {
+    font-size: 11.5px;
+    color: var(--color-muted);
+  }
+  .acceso-avatar {
+    display: grid;
+    place-items: center;
+    width: 34px;
+    height: 34px;
+    flex-shrink: 0;
+    border-radius: 99px;
+    border: 1px solid rgba(127, 211, 255, 0.35);
+    background: radial-gradient(circle at 30% 25%, rgba(127, 211, 255, 0.3), rgba(79, 140, 255, 0.08));
+    color: var(--color-accent-2);
+  }
+  .acceso-campo {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    height: 34px;
+    padding: 0 11px;
+    border-radius: 10px;
+    border: 1px solid var(--color-line-strong);
+    background: rgba(6, 8, 11, 0.55);
+    color: var(--color-muted);
+  }
+  .acceso-campo--clave {
+    border-color: rgba(127, 211, 255, 0.4);
+    box-shadow: 0 0 0 3px rgba(79, 140, 255, 0.12);
+  }
+  .acceso-puntos {
+    display: inline-flex;
+    gap: 5px;
+  }
+  .acceso-puntos i {
+    width: 6px;
+    height: 6px;
+    border-radius: 99px;
+    background: var(--color-text);
+  }
+  .acceso-entrar {
+    display: grid;
+    place-items: center;
+    height: 34px;
+    border-radius: 10px;
+    background: linear-gradient(180deg, #6ea2ff, var(--color-accent));
+    color: #fff;
+    box-shadow: 0 10px 24px -12px rgba(79, 140, 255, 0.9);
+  }
+
+  /* Flotan sobre el panel (no sobre el cielo): llevan su propio esmerilado
+     para que la gráfica no se vea nítida a través. */
+  .glass-strong.glass-interior.acceso-login,
+  .glass.glass-interior.acceso-vpn {
+    background:
+      linear-gradient(135deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0) 55%),
+      rgba(16, 19, 25, 0.74);
+    -webkit-backdrop-filter: blur(14px) saturate(140%);
+    backdrop-filter: blur(14px) saturate(140%);
+  }
+  .acceso-vpn {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px 8px 8px;
+    border-radius: 999px;
+    font-size: 12px;
+  }
+  .acceso-nodo {
+    display: grid;
+    place-items: center;
+    width: 30px;
+    height: 30px;
+    flex-shrink: 0;
+    border-radius: 99px;
+    border: 1px solid var(--color-line-strong);
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--color-text-2);
+  }
+  .acceso-nodo--escudo {
+    border-color: rgba(52, 211, 153, 0.45);
+    background: rgba(52, 211, 153, 0.12);
+    color: #a7f3d0;
+  }
+  .acceso-tunel {
+    position: relative;
+    width: 64px;
+    height: 10px;
+    overflow: hidden;
+    border-radius: 99px;
+    border: 1px solid rgba(127, 211, 255, 0.35);
+    background: linear-gradient(90deg, rgba(79, 140, 255, 0.12), rgba(52, 211, 153, 0.12));
+  }
+  .acceso-tunel i {
+    position: absolute;
+    top: 2px;
+    left: -8px;
+    width: 6px;
+    height: 4px;
+    border-radius: 99px;
+    background: var(--color-accent-2);
+    box-shadow: 0 0 8px rgba(127, 211, 255, 0.9);
+  }
+  .acceso-tunel i:first-child {
+    left: 40%;
+  }
+  /* Una reproducción de menos de 5 s al entrar en pantalla o con el cursor
+     encima (clase is-viva, ver DemoAcceso). En reposo: estado final. */
+  .acceso.is-viva .acceso-estado i {
+    animation: acceso-latido 2.4s ease-out 2;
+  }
+  .acceso.is-viva .acceso-linea {
+    animation: acceso-trazo 4.6s var(--ease-out) both;
+  }
+  .acceso.is-viva .acceso-pulso {
+    animation: acceso-barrido 3.6s linear both;
+  }
+  .acceso.is-viva .acceso-registro span {
+    animation: acceso-aparece 2.2s ease-in-out 2 backwards;
+    animation-delay: calc(var(--i) * 0.2s);
+  }
+  .acceso.is-viva .acceso-escaneo {
+    animation: acceso-escaneo 4.6s ease-in-out both;
+  }
+  .acceso.is-viva .acceso-puntos i {
+    animation: acceso-tecla 1.4s steps(1, end) both;
+    animation-delay: calc(var(--i) * 0.16s);
+  }
+  .acceso.is-viva .acceso-tunel i {
+    left: -8px;
+    animation: acceso-paquete 1.6s linear 2 backwards;
+  }
+  .acceso.is-viva .acceso-tunel i:nth-child(2) {
+    animation-delay: 0.5s;
+  }
+  .acceso.is-viva .acceso-tunel i:nth-child(3) {
+    animation-delay: 1s;
+  }
+  .acceso-vpn-texto {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.15;
+  }
+  .acceso-vpn-texto strong {
+    font-size: 12.5px;
+    color: var(--color-text);
+  }
+  .acceso-vpn-texto small {
+    font-size: 11px;
+    color: var(--color-muted);
+  }
+  .acceso-etiqueta {
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    padding: 3px 9px;
+    border-radius: 99px;
+    border: 1px solid var(--color-line);
+    background: rgba(9, 12, 17, 0.7);
+    font-family: var(--font-mono), ui-monospace, monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.04em;
+    color: var(--color-faint);
+  }
+  @media (max-width: 520px) {
+    .acceso {
+      min-height: 434px;
+      padding: 56px 0 0 0;
+    }
+    .acceso-panel {
+      height: 270px;
+    }
+    .acceso-cuerpo {
+      grid-template-columns: 1fr;
+    }
+    .acceso-lateral {
+      display: none;
+    }
+    .acceso-login {
+      width: 74%;
+      left: 0;
+      bottom: 34px;
+    }
+    .acceso-titulo {
+      display: none;
+    }
+    /* Debajo de la tarjeta de login, sin tapar nada. */
+    .acceso-etiqueta {
+      right: 6px;
+      bottom: 2px;
     }
   }
-  .widget-pila {
-    position: absolute;
-    inset: 0;
+  @keyframes acceso-latido {
+    0% {
+      box-shadow: 0 0 0 0 rgba(52, 211, 153, 0.6);
+    }
+    70%,
+    100% {
+      box-shadow: 0 0 0 7px rgba(52, 211, 153, 0);
+    }
   }
-  .widget-pieza {
-    position: absolute;
-    inset: 0;
-    opacity: 0;
-    transform: translateY(14%) scale(0.94);
+  @keyframes acceso-paquete {
+    from {
+      transform: translateX(0);
+      opacity: 1;
+    }
+    95% {
+      opacity: 1;
+    }
+    to {
+      transform: translateX(80px);
+      opacity: 0;
+    }
+  }
+  @keyframes acceso-escaneo {
+    0% {
+      transform: translateY(-50px);
+      opacity: 0;
+    }
+    100% {
+      transform: translateY(-50px);
+      opacity: 0;
+    }
+    15%,
+    85% {
+      opacity: 1;
+    }
+    50% {
+      transform: translateY(260px);
+    }
+  }
+  @keyframes acceso-barrido {
+    from {
+      transform: translateX(-100%);
+      opacity: 1;
+    }
+    to {
+      transform: translateX(340%);
+      opacity: 1;
+    }
+  }
+  @keyframes acceso-trazo {
+    0% {
+      stroke-dashoffset: 340;
+    }
+    55%,
+    100% {
+      stroke-dashoffset: 0;
+    }
+  }
+  @keyframes acceso-tecla {
+    0%,
+    60% {
+      opacity: 0;
+    }
+    61%,
+    100% {
+      opacity: 1;
+    }
+  }
+  @keyframes acceso-aparece {
+    0%,
+    100% {
+      opacity: 0.45;
+    }
+    20%,
+    70% {
+      opacity: 1;
+    }
+  }
+
+  /* ---------- Portafolio: todos los portales en un contenedor ----------
+     Un solo marco de vidrio del ancho del sitio. Escritorio: 5 columnas;
+     tableta: 3; celular: lista compacta con la miniatura a la izquierda. */
+  .portales-marco {
+    border-radius: 32px;
+    padding: 22px;
+  }
+  .portales-cabeza {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    padding: 4px 6px 18px;
+  }
+  .portales {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 12px;
+  }
+  .portales > li {
+    min-width: 0;
+  }
+  .glass.portal {
+    position: relative;
+    display: flex;
+    height: 100%;
+    flex-direction: column;
+    overflow: hidden;
+    border-radius: 20px;
     transition:
-      transform 0.7s var(--ease-out),
-      opacity 0.5s ease;
+      transform 0.45s var(--ease-out),
+      box-shadow 0.45s var(--ease-out),
+      --luz 0.45s var(--ease-out);
   }
-  .widget-pieza[data-estado="activo"] {
-    z-index: 2;
-    opacity: 1;
-    transform: none;
+  .portal-captura {
+    position: relative;
+    display: block;
+    flex-shrink: 0;
+    aspect-ratio: 16 / 10;
+    overflow: hidden;
+    margin: 5px 5px 0;
+    border-radius: 15px;
+    background: #0b0e13;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
   }
-  .widget-pieza[data-estado="saliente"] {
-    z-index: 1;
-    opacity: 0;
-    transform: translateY(-12%) scale(0.94);
-  }
-  .widget-foto {
-    position: absolute;
-    inset: 0;
+  .portal-captura img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    object-position: 72% center;
+    object-position: center top;
+    transition: transform 0.7s var(--ease-out);
   }
-  .widget-respaldo {
-    position: absolute;
-    inset: 0;
-    overflow: hidden;
-    background:
-      repeating-radial-gradient(circle at 86% 12%, rgba(255, 255, 255, 0.05) 0 1px, transparent 1px 44px),
-      linear-gradient(160deg, #11151c, #07090d);
-  }
-  .widget-respaldo::before,
-  .widget-respaldo::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-  }
-  .widget-respaldo::before {
-    background: radial-gradient(110% 90% at 88% 6%, var(--color), transparent 62%);
-    opacity: 0.62;
-  }
-  .widget-respaldo::after {
-    background: radial-gradient(80% 70% at 0% 100%, var(--color), transparent 70%);
-    opacity: 0.3;
-  }
-  .widget-inicial {
-    position: absolute;
-    right: -2%;
-    bottom: -16%;
-    z-index: 1;
+  .portal-respaldo {
+    display: grid;
+    height: 100%;
+    place-items: center;
+    background: radial-gradient(90% 90% at 80% 10%, var(--color), transparent 70%), #0b0e13;
     font-family: var(--font-display), system-ui, sans-serif;
-    font-size: clamp(12rem, 34vw, 21rem);
+    font-size: 2.2rem;
     font-weight: 700;
-    line-height: 1;
-    letter-spacing: -0.06em;
-    color: rgba(255, 255, 255, 0.07);
+    color: rgba(255, 255, 255, 0.5);
   }
-  .widget-estrella {
-    position: absolute;
-    top: 20%;
-    right: 16%;
-    z-index: 1;
-    width: 40px;
-    height: 40px;
-    filter: drop-shadow(0 0 16px rgba(255, 255, 255, 0.55));
-  }
-  .widget-velo {
-    position: absolute;
-    inset: 0;
-    z-index: 1;
-    background: linear-gradient(
-      180deg,
-      rgba(5, 7, 10, 0.55) 0%,
-      rgba(5, 7, 10, 0) 26%,
-      rgba(5, 7, 10, 0) 42%,
-      rgba(5, 7, 10, 0.88) 100%
-    );
-  }
-  .widget-sello {
-    position: absolute;
-    top: 16px;
-    left: 16px;
-    z-index: 2;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 5px 11px 5px 7px;
-    border-radius: 999px;
-    border: 1px solid rgba(127, 211, 255, 0.35);
-    background: rgba(9, 12, 17, 0.72);
-    color: var(--color-text);
-    font-size: 11.5px;
-    font-weight: 600;
-    max-width: calc(100% - 100px);
-    -webkit-backdrop-filter: blur(10px);
-    backdrop-filter: blur(10px);
-  }
-  .widget-cuenta {
-    position: absolute;
-    top: 18px;
-    right: 18px;
-    z-index: 2;
-    font-family: var(--font-mono), ui-monospace, monospace;
-    font-size: 11.5px;
-    color: var(--color-text);
-    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.85), 0 0 14px rgba(0, 0, 0, 0.55);
-  }
-  .widget-pie {
-    position: absolute;
-    inset: auto 70px 0 0;
-    z-index: 2;
+  .portal-cuerpo {
+    position: relative;
     display: flex;
+    min-width: 0;
     flex-direction: column;
-    align-items: flex-start;
-    gap: 6px;
-    padding: 0 0 22px 22px;
+    gap: 2px;
+    padding: 10px 12px 12px;
   }
-  .widget-etiqueta {
-    font-family: var(--font-mono), ui-monospace, monospace;
-    font-size: 11px;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--color-text);
-    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.85), 0 0 14px rgba(0, 0, 0, 0.55);
-  }
-  .widget-nombre {
-    font-family: var(--font-display), system-ui, sans-serif;
-    font-size: clamp(2rem, 3.6vw + 0.6rem, 3.4rem);
-    font-weight: 600;
-    line-height: 1.02;
-    letter-spacing: -0.035em;
-    color: #fff;
+  .portal-nombre {
+    min-width: 0;
+    padding-right: 22px;
     overflow-wrap: break-word;
     hyphens: auto;
-    text-shadow: 0 2px 24px rgba(0, 0, 0, 0.45);
-  }
-  .widget-enlace {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    min-height: 44px;
-    margin-top: 8px;
-    padding: 0 16px;
-    border-radius: 999px;
-    border: 1px solid rgba(255, 255, 255, 0.24);
-    background: rgba(255, 255, 255, 0.14);
-    color: #fff;
-    font-size: 14px;
+    font-size: 15px;
     font-weight: 600;
-    -webkit-backdrop-filter: blur(12px);
-    backdrop-filter: blur(12px);
-    transition: background-color 0.2s ease;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+    color: var(--color-text);
   }
-  .widget-enlace:hover {
-    background: rgba(255, 255, 255, 0.24);
+  /* Completo: si no cabe, pasa a otra línea por «transparencia» o «.com.mx». */
+  .portal-dominio {
+    max-width: 100%;
+    overflow-wrap: anywhere;
+    font-size: 11.5px;
+    line-height: 1.35;
+    color: var(--color-muted);
   }
-  .widget-puntos {
+  .portal-flecha {
     position: absolute;
-    top: 50%;
-    right: 16px;
-    z-index: 3;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 5px;
-    translate: 0 -50%;
-  }
-  .widget-puntos > span {
-    width: 5px;
-    height: 5px;
-    border-radius: 999px;
-    background: rgba(255, 255, 255, 0.32);
-    transition:
-      height 0.4s var(--ease-out),
-      background-color 0.4s ease;
-  }
-  .widget-puntos > span[data-activo] {
+    top: 12px;
+    right: 12px;
+    width: 16px;
     height: 16px;
-    background: #fff;
+    color: var(--color-muted);
+    transition:
+      color 0.3s ease,
+      translate 0.3s var(--ease-out);
   }
-  .widget-pausa {
-    position: absolute;
-    right: 14px;
-    bottom: 14px;
-    z-index: 3;
-    display: grid;
-    place-items: center;
-    width: 44px;
-    height: 44px;
-    border-radius: 999px;
-    border: 1px solid rgba(255, 255, 255, 0.22);
-    background: rgba(9, 12, 17, 0.6);
-    color: #fff;
-    -webkit-backdrop-filter: blur(10px);
-    backdrop-filter: blur(10px);
+  .glass.portal:hover,
+  .glass.portal:focus-visible {
+    transform: translateY(-3px);
   }
-  .widget-pausa:hover {
-    background: rgba(9, 12, 17, 0.8);
+  .portal:hover .portal-captura img,
+  .portal:focus-visible .portal-captura img {
+    transform: scale(1.05);
   }
-  /* El icono cambia al pulsar: que el puntero quede siempre sobre el botón. */
-  .widget-pausa svg,
-  .banda-pausa svg {
-    pointer-events: none;
+  .portal:hover .portal-flecha,
+  .portal:focus-visible .portal-flecha {
+    color: var(--color-accent-2);
+    translate: 2px -2px;
   }
-  @media (max-width: 420px) {
-    .widget-puntos {
-      display: none;
-    }
-    .widget-pie {
-      right: 62px;
+  @media (max-width: 1023px) {
+    .portales {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
     }
   }
-
-  /* Lista de municipios: el que se ve en el widget queda marcado. */
-  .municipio[data-activo] {
-    border-color: rgba(127, 211, 255, 0.45);
-    background: rgba(127, 211, 255, 0.07);
-  }
-  .municipio-color {
-    width: 10px;
-    height: 10px;
-    flex-shrink: 0;
-    border-radius: 999px;
-    background: var(--color);
-    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.06);
+  /* Celular: lista compacta, una fila por portal. */
+  @media (max-width: 639px) {
+    .portales-marco {
+      padding: 14px;
+      border-radius: 24px;
+    }
+    .portales-cabeza {
+      padding: 4px 4px 14px;
+    }
+    .portales {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 8px;
+    }
+    .glass.portal {
+      flex-direction: row;
+      align-items: center;
+      border-radius: 16px;
+    }
+    .portal-captura {
+      width: 112px;
+      margin: 5px;
+      border-radius: 11px;
+    }
+    .portal-cuerpo {
+      flex: 1;
+      padding: 8px 34px 8px 6px;
+    }
+    .portal-nombre {
+      padding-right: 0;
+    }
+    .portal-flecha {
+      top: 50%;
+      bottom: auto;
+      margin-top: -8px;
+    }
   }
 
   /* ---------- Escena final: la estrella del norte ---------- */
@@ -1490,10 +1971,22 @@
   .banda-pieza {
     animation: none !important;
   }
+  .banda-pista {
+    width: auto;
+  }
+  .banda-grupo {
+    flex-wrap: wrap;
+    flex-shrink: 1;
+    width: 100%;
+    min-width: 0;
+    row-gap: 10px;
+  }
+  .banda-ventana {
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
   .banda-grupo:not(:first-child),
-  .banda-pausa,
-  .widget-pausa,
-  .widget-puntos {
+  .banda-pausa {
     display: none !important;
   }
   .palabra > span {
@@ -1540,8 +2033,7 @@
     transform: none;
     transition: none;
   }
-  .banda-pista,
-  .banda-pieza,
+  .acceso *,
   .sello-anillo,
   .sello-centro svg,
   .final-estrella,
@@ -1550,15 +2042,23 @@
   .cargando {
     animation: none !important;
   }
-  /* Banda quieta: una sola fila centrada, sin recorrido, rebote ni pausa. */
+  /* Banda quieta: una sola fila centrada, sin recorrido, brinco ni pausa. */
+  .banda-pista,
+  .banda-pieza {
+    animation: none !important;
+  }
   .banda-pista {
     width: auto;
     justify-content: center;
   }
   .banda-grupo {
     flex-wrap: wrap;
+    flex-shrink: 1;
     justify-content: center;
+    width: 100%;
+    min-width: 0;
     padding-inline: 20px;
+    row-gap: 12px;
   }
   .banda-grupo:not(:first-child),
   .banda-pausa {
@@ -1568,13 +2068,22 @@
     -webkit-mask-image: none;
     mask-image: none;
   }
-  /* Widget: cambia sin desplazarse. */
-  .widget-pieza,
-  .widget-puntos > span,
-  .beneficio {
-    transition: none;
+  .acceso-escaneo,
+  .acceso-pulso {
+    display: none;
   }
-  .widget-pieza[data-estado] {
+  .acceso-puntos i,
+  .acceso-registro span {
+    opacity: 1;
+  }
+  .acceso-linea {
+    stroke-dashoffset: 0;
+  }
+  .beneficio,
+  .glass.portal,
+  .glass.portal:hover,
+  .portal-captura img {
+    transition: none;
     transform: none;
   }
   .indicador-raton::after {
@@ -1608,10 +2117,6 @@ html.cursor-propio :is(input:not([type="checkbox"]):not([type="radio"]):not([typ
     cursor: auto;
   }
   .cursor-halo {
-    display: none;
-  }
-  /* La inicial es decoración: con colores forzados se volvería opaca. */
-  .widget-inicial {
     display: none;
   }
 }

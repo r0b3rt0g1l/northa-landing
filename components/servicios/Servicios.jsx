@@ -6,14 +6,13 @@ import { beneficios } from "@/lib/content/servicios";
 
 /**
  * Lo que construimos: una frase directa, el sello de Northa, los beneficios
- * para el cliente en seis piezas cortas y la banda de servicios en movimiento,
- * a todo el ancho. La oferta completa vive en el menú «Servicios» y en el
- * asistente; aquí no se repiten tarjetas de servicios.
+ * para el cliente en seis piezas cortas y el banner de servicios que avanza
+ * hacia la derecha con un brinco lento. Cada servicio abre el asistente.
  */
 export function Servicios() {
   return (
-    <section id="servicios" aria-labelledby="servicios-title" className="relative py-24 sm:py-32">
-      <div className="mx-auto flex w-full max-w-[1200px] flex-col gap-12 px-5 sm:gap-16 sm:px-8">
+    <section id="servicios" aria-labelledby="servicios-title" className="relative px-5 py-24 sm:px-8 sm:py-32">
+      <div className="mx-auto flex w-full max-w-[1200px] flex-col gap-12 sm:gap-16">
         <Reveal className="flex flex-col items-start gap-8 md:flex-row md:items-center md:justify-between md:gap-12">
           <div className="flex max-w-[680px] flex-col gap-5">
             <p className="eyebrow m-0">Servicios</p>
@@ -30,7 +29,7 @@ export function Servicios() {
         <Reveal delay={80}>
           <ul className="beneficios m-0 grid list-none grid-cols-1 gap-3 p-0 min-[420px]:grid-cols-2 lg:grid-cols-3">
             {beneficios.map((b) => (
-              <li key={b.titulo} className="beneficio">
+              <li key={b.titulo} className="beneficio glass">
                 <span className="beneficio-icono" aria-hidden="true">
                   <b.Icon className="h-5 w-5" strokeWidth={1.6} />
                 </span>
@@ -42,11 +41,11 @@ export function Servicios() {
             ))}
           </ul>
         </Reveal>
-      </div>
 
-      <Reveal delay={120} className="mt-14 sm:mt-20">
-        <BarraServicios />
-      </Reveal>
+        <Reveal delay={120}>
+          <BarraServicios />
+        </Reveal>
+      </div>
     </section>
   );
 }
