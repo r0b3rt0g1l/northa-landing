@@ -25,7 +25,9 @@ menú «Servicios» de la barra superior y en el asistente.
   segundos, con una estela que se afina y se apaga con suavidad. Al hacer scroll
   las capas se desplazan a distinto ritmo (paralaje), con un leve retardo para que
   nunca sea brusco. Brilla al 100 % en el hero y la escena final y al 85 % detrás
-  del contenido.
+  del contenido. El lienzo mide el alto grande de la pantalla, así que la barra
+  del navegador del celular no mueve las estrellas, y las posiciones salen de una
+  semilla fija: al girar el teléfono conservan su sitio.
 - **Señal:** el hero gira alrededor de un punto de luz con destello de ocho puntas,
   la estrella polar de la marca. Debajo, un indicador «Explorar» invita a bajar. La
   página nunca se desplaza sola.
@@ -40,8 +42,8 @@ menú «Servicios» de la barra superior y en el asistente.
   administración) y un banner de servicios en una franja de vidrio: avanza
   siempre hacia la derecha en un bucle continuo, despacio para leerlo, y cada
   servicio da un brinco lento y rítmico, como conejos en fila. Tiene botón de
-  pausa y se detiene al pasar el puntero, al enfocarlo, al tocarlo o fuera de
-  pantalla. Cada servicio abre el asistente.
+  pausa y se detiene al pasar el puntero, al enfocarlo con teclado, al tocarlo o
+  fuera de pantalla. Cada servicio abre el asistente.
 - **Portafolio:** los 15 portales municipales en un solo contenedor de vidrio del
   ancho del sitio, todos a la vista: cuadrícula de 5 columnas en escritorio, 3 en
   tableta y una lista compacta en celular. Cada uno muestra su página de inicio
@@ -60,10 +62,12 @@ menú «Servicios» de la barra superior y en el asistente.
 - **Tipografía:** Sora para títulos, Manrope para texto y JetBrains Mono para
   etiquetas cortas.
 - Se mueven de forma continua el cielo, los destellos de la señal y el banner de
-  servicios (con botón de pausa; se detiene fuera de pantalla). La demostración de
-  Seguridad dura menos de 5 s y se detiene sola. Todo respeta
-  `prefers-reduced-motion`: el cielo queda quieto, el banner se muestra fijo y
-  centrado. El contenido funciona sin JavaScript.
+  servicios. El botón «Pausar animaciones» del pie los detiene todos y la
+  elección se recuerda en el navegador (`lib/movimiento.js`); el banner tiene
+  además su propio botón de pausa. La demostración de Seguridad dura menos de
+  5 s y se detiene sola. Todo respeta `prefers-reduced-motion`: el cielo queda
+  como un cuadro fijo (tampoco se mueve con el scroll) y el banner se muestra
+  fijo, centrado y en varias filas. El contenido funciona sin JavaScript.
 
 Los valores viven en `app/globals.css` (tokens en `@theme`) y en `lib/fonts.js`.
 
