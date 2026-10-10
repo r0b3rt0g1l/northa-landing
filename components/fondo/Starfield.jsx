@@ -186,6 +186,9 @@ export function Starfield() {
     let proximaFugaz = 0;
     let recorrido = 0; // px de deriva acumulados (capa de referencia)
     let scrollSuave = window.scrollY;
+    // Scroll hecho mientras el cielo estaba detenido (pausa, pestaña oculta):
+    // no se recupera de golpe al volver, las capas siguen desde donde estaban.
+    let desfase = 0;
     let mouse = { x: 0, y: 0 };
     let mouseObjetivo = { x: 0, y: 0 };
     let zonas = [];
@@ -450,13 +453,13 @@ export function Starfield() {
       ctx.clearRect(0, 0, width, height);
       const scroll = window.scrollY;
       // En el cuadro fijo (movimiento reducido) el scroll no mueve nada.
-      const sv = animar ? scrollSuave : 0;
+      const sv = animar ? scrollSuave - desfase : 0;
       // Al píxel de dispositivo: copia 1:1, sin remuestrear (la mitad de costo).
       const px = (v) => Math.round(v * dpr) / dpr;
 
       // Vía Láctea: paralaje mínimo y acotado.
       ctx.globalAlpha = intensidad;
-      const vy = px(-viaMargen - Math.min(sv * 0.012, viaMargen));
+      const vy = px(-viaMargen - Math.min(Math.max(sv * 0.012, 0), viaMargen));
       ctx.drawImage(via, 0, vy, width, height + viaMargen * 2);
 
       // Capas de estrellas: deriva + paralaje de scroll + ratón, en mosaico.
@@ -586,6 +589,8 @@ export function Starfield() {
       if (!animar || pausaUsuario || rafId != null || timerCuadro != null || document.hidden) return;
       ultimo = 0;
       previo = 0;
+      desfase += window.scrollY - scrollSuave;
+      scrollSuave = window.scrollY;
       rafId = requestAnimationFrame(tick);
     };
     function detener() {
