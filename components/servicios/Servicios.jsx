@@ -1,14 +1,13 @@
 import { Reveal } from "@/components/ui/Reveal";
 import { Palabras } from "@/components/ui/Palabras";
-import { BarajaServicios } from "./BarajaServicios";
+import { BarraServicios } from "./BarraServicios";
 import { SelloNortha } from "./SelloNortha";
 import { beneficios } from "@/lib/content/servicios";
 
 /**
  * Lo que construimos: una frase directa, el sello de Northa, los beneficios
- * para el cliente en seis piezas cortas y el banner de servicios en cartas,
- * que se reparten como al ganar en Solitario. Cada carta abre el asistente
- * con ese servicio.
+ * para el cliente en seis piezas cortas y el banner de servicios que avanza
+ * hacia la derecha con un brinco lento. Cada servicio abre el asistente.
  */
 export function Servicios() {
   return (
@@ -44,7 +43,7 @@ export function Servicios() {
         </Reveal>
 
         <Reveal delay={120}>
-          <BarajaServicios />
+          <BarraServicios />
         </Reveal>
       </div>
     </section>
