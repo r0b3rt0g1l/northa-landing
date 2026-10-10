@@ -5,6 +5,8 @@ import { Pause, Play } from "lucide-react";
 import { cn } from "@/lib/cn";
 import { servicios, seguridad } from "@/lib/content/servicios";
 import { abrirAsistente } from "@/lib/acciones";
+import { fijarMovimientoPausado } from "@/lib/movimiento";
+import { useMovimientoPausado } from "@/hooks/useMovimientoPausado";
 
 const piezas = [...servicios, seguridad];
 // Copias de la fila para que el recorrido no tenga huecos ni en pantallas muy
@@ -25,12 +27,15 @@ const COPIAS = 4;
  * copias de relleno responden al clic y al toque (son las que se ven casi
  * siempre), pero no se leen ni entran en el orden del teclado; al pulsarlas,
  * el foco pasa al botón real, que es al que vuelve al cerrar el asistente.
- * Con movimiento reducido, la banda queda quieta, centrada y en varias filas,
- * sin brinco ni pausa. En móvil va más lenta y con botones más pequeños. Cada
- * botón abre el asistente con ese servicio.
+ * «Pausar animaciones» (pie de página) también la detiene, y su «Reanudar»
+ * reanuda todo. Con movimiento reducido, la banda queda quieta, centrada y en
+ * varias filas, sin brinco ni pausa. En móvil va más lenta y con botones más
+ * pequeños. Cada botón abre el asistente con ese servicio.
  */
 export function BarraServicios() {
-  const [pausada, setPausada] = useState(false);
+  const [pausadaAqui, setPausada] = useState(false);
+  const pausaGlobal = useMovimientoPausado();
+  const pausada = pausadaAqui || pausaGlobal;
   const [tocada, setTocada] = useState(false);
   const [fuera, setFuera] = useState(false);
   const timer = useRef(null);
@@ -108,7 +113,11 @@ export function BarraServicios() {
         onClick={() => {
           clearTimeout(timer.current);
           setTocada(false);
-          setPausada((v) => !v);
+          if (!pausada) setPausada(true);
+          else {
+            setPausada(false);
+            if (pausaGlobal) fijarMovimientoPausado(false);
+          }
         }}
         aria-label={pausada ? "Reanudar el movimiento de los servicios" : "Pausar el movimiento de los servicios"}
       >
