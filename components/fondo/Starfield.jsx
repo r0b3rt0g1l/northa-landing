@@ -39,9 +39,9 @@ const DERIVA = { x: -0.96, y: -0.28 };
 // Capas: tamaño del mosaico (px CSS), estrellas por megapíxel, tamaños del
 // punto, brillo, velocidad de deriva (px/s), paralaje de scroll y de ratón.
 const CAPAS = [
-  { lado: 1024, densidad: 620, tam: [1.6, 3.2], alfa: [0.22, 0.7], vel: 2.4, scroll: 0.03, raton: 5 },
-  { lado: 896, densidad: 190, tam: [2.6, 4.6], alfa: [0.45, 0.92], vel: 5.2, scroll: 0.07, raton: 11 },
-  { lado: 1152, densidad: 36, tam: [3.8, 6.2], alfa: [0.7, 1], vel: 9, scroll: 0.12, raton: 18 },
+  { lado: 1024, densidad: 900, tam: [1.7, 3.3], alfa: [0.3, 0.78], vel: 2.4, scroll: 0.03, raton: 5 },
+  { lado: 896, densidad: 270, tam: [2.6, 4.6], alfa: [0.5, 0.95], vel: 5.2, scroll: 0.07, raton: 11 },
+  { lado: 1152, densidad: 48, tam: [3.8, 6.2], alfa: [0.72, 1], vel: 9, scroll: 0.12, raton: 18 },
 ];
 
 // Colores suaves con su peso: blanco, azul claro y amarillo pálido.
@@ -218,7 +218,8 @@ export function Starfield() {
       c.height = Math.round(lado * escala);
       const g = c.getContext("2d");
       g.setTransform(escala, 0, 0, escala, 0, 0);
-      const n = Math.round(((lado * lado) / 1e6) * capa.densidad * factor);
+      // En móvil, algo más densas: en una pantalla pequeña el cielo se ve vacío.
+      const n = Math.round(((lado * lado) / 1e6) * capa.densidad * factor * (m ? 1.2 : 1));
       for (let i = 0; i < n; i++) {
         const x = Math.random() * lado;
         const y = Math.random() * lado;
@@ -314,7 +315,7 @@ export function Starfield() {
       pintarVia(m);
       const area = (width * height) / 1e6;
       // Estrellas que centellean: viven en la ventana y derivan con la capa media.
-      const nTitilan = Math.round((m ? 70 : Math.min(170, Math.max(90, area * 90))) * factor);
+      const nTitilan = Math.round((m ? 90 : Math.min(220, Math.max(120, area * 120))) * factor);
       titilan = Array.from({ length: nTitilan }, () => {
         const b = Math.pow(Math.random(), 1.8);
         return {
@@ -327,7 +328,7 @@ export function Starfield() {
         };
       });
       // Brillantes: pocas, separadas, con destello fino; derivan con la cercana.
-      const nBrillantes = m ? 4 : Math.min(9, Math.max(5, Math.round(area * 5)));
+      const nBrillantes = m ? 5 : Math.min(9, Math.max(5, Math.round(area * 5)));
       brillantes = [];
       for (let intento = 0; brillantes.length < nBrillantes && intento < 200; intento++) {
         const x = Math.random();

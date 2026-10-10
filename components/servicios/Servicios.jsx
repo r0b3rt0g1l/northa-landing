@@ -11,8 +11,8 @@ import { beneficios } from "@/lib/content/servicios";
  */
 export function Servicios() {
   return (
-    <section id="servicios" aria-labelledby="servicios-title" className="relative py-24 sm:py-32">
-      <div className="mx-auto flex w-full max-w-[1200px] flex-col gap-12 px-5 sm:gap-16 sm:px-8">
+    <section id="servicios" aria-labelledby="servicios-title" className="relative px-5 py-24 sm:px-8 sm:py-32">
+      <div className="mx-auto flex w-full max-w-[1200px] flex-col gap-12 sm:gap-16">
         <Reveal className="flex flex-col items-start gap-8 md:flex-row md:items-center md:justify-between md:gap-12">
           <div className="flex max-w-[680px] flex-col gap-5">
             <p className="eyebrow m-0">Servicios</p>

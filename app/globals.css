@@ -1000,6 +1000,7 @@
     min-width: 0;
     overflow: hidden;
     padding-block: 26px 18px;
+    scroll-padding-inline: 24px;
     -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
     mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
   }
@@ -1051,9 +1052,15 @@
   .banda-ventana:focus-within .banda-pieza {
     animation-play-state: paused;
   }
-  /* Con teclado, la pista vuelve al inicio: el botón enfocado se ve. */
-  .banda:has(.banda-pieza:focus-visible) .banda-pista {
+  /* Con teclado, la pista vuelve al inicio y los servicios se quedan quietos
+     y sin difuminado en los bordes: el botón enfocado se ve completo. */
+  .banda:has(.banda-pieza:focus-visible) .banda-pista,
+  .banda:has(.banda-pieza:focus-visible) .banda-pieza {
     animation: none;
+  }
+  .banda:has(.banda-pieza:focus-visible) .banda-ventana {
+    -webkit-mask-image: none;
+    mask-image: none;
   }
   @media (hover: hover) {
     .banda-ventana:hover .banda-pista,
