@@ -1179,6 +1179,77 @@
     padding: 14px;
     border-radius: 18px;
   }
+  /* Capturas reales del acceso al panel (AccesoReal): tres pasos con su
+     explicación arriba. En pantallas angostas, tarjetas que se deslizan. */
+  .ingreso {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    padding-top: 28px;
+    border-top: 1px solid var(--color-line);
+  }
+  .ingreso-pasos {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    align-items: start;
+    gap: 14px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .glass.ingreso-paso {
+    display: block;
+    min-width: 0;
+    padding: 14px;
+    border-radius: 22px;
+  }
+  .ingreso-num {
+    font-family: var(--font-mono), ui-monospace, monospace;
+    font-size: 11.5px;
+    letter-spacing: 0.04em;
+    color: var(--color-accent-2);
+  }
+  .ingreso-captura {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    box-shadow: 0 18px 40px -26px rgba(0, 0, 0, 0.95);
+  }
+  .ingreso-ventana:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 4px;
+    border-radius: 24px;
+  }
+  /* La franja llega al borde del marco (que tiene 24 px de relleno en celular
+     y 40 px desde 640 px): la siguiente tarjeta asoma sin cortarse a medias. */
+  @media (max-width: 1023px) {
+    .ingreso-ventana {
+      --borde: 24px;
+      margin-inline: calc(var(--borde) * -1);
+      padding: 4px var(--borde);
+      overflow-x: auto;
+      overscroll-behavior-x: contain;
+      scroll-snap-type: x mandatory;
+      scroll-padding-inline: var(--borde);
+      scrollbar-width: thin;
+    }
+    .ingreso-pasos {
+      grid-template-columns: none;
+      grid-auto-flow: column;
+      grid-auto-columns: min(78%, 340px);
+    }
+    .glass.ingreso-paso {
+      scroll-snap-align: start;
+    }
+  }
+  @media (min-width: 640px) and (max-width: 1023px) {
+    .ingreso-ventana {
+      --borde: 40px;
+    }
+  }
+
   .acceso {
     --verde: #34d399;
     position: relative;
