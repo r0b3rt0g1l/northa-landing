@@ -1042,18 +1042,18 @@
       linear-gradient(160deg, rgba(79, 140, 255, 0.28), rgba(79, 140, 255, 0.06) 70%),
       rgba(16, 20, 27, 0.6);
   }
-  /* Pausa: botón, toque, fuera de pantalla, foco o puntero en la ventana. El
-     botón de pausa queda fuera de la ventana para que «Reanudar» reanude. */
+  /* Pausa: botón, toque, fuera de pantalla o puntero en la ventana. El botón
+     de pausa queda fuera de la ventana para que «Reanudar» reanude. Un clic
+     no la detiene: tras cerrar el asistente, la banda sigue avanzando. */
   .banda.is-pausada .banda-pista,
   .banda.is-pausada .banda-pieza,
   .banda.is-fuera .banda-pista,
-  .banda.is-fuera .banda-pieza,
-  .banda-ventana:focus-within .banda-pista,
-  .banda-ventana:focus-within .banda-pieza {
+  .banda.is-fuera .banda-pieza {
     animation-play-state: paused;
   }
-  /* Con teclado, la pista vuelve al inicio y los servicios se quedan quietos
-     y sin difuminado en los bordes: el botón enfocado se ve completo. */
+  /* Con teclado, la pista vuelve al inicio y los servicios se quedan quietos,
+     sin difuminado y con aire en los bordes: el botón enfocado y su anillo de
+     foco se ven completos. */
   .banda:has(.banda-pieza:focus-visible) .banda-pista,
   .banda:has(.banda-pieza:focus-visible) .banda-pieza {
     animation: none;
@@ -1061,6 +1061,8 @@
   .banda:has(.banda-pieza:focus-visible) .banda-ventana {
     -webkit-mask-image: none;
     mask-image: none;
+    padding-inline: 10px;
+    scroll-padding-inline: 16px;
   }
   @media (hover: hover) {
     .banda-ventana:hover .banda-pista,
@@ -1940,6 +1942,20 @@
   .banda-pieza {
     animation: none !important;
   }
+  .banda-pista {
+    width: auto;
+  }
+  .banda-grupo {
+    flex-wrap: wrap;
+    flex-shrink: 1;
+    width: 100%;
+    min-width: 0;
+    row-gap: 10px;
+  }
+  .banda-ventana {
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
   .banda-grupo:not(:first-child),
   .banda-pausa {
     display: none !important;
@@ -2008,7 +2024,10 @@
   }
   .banda-grupo {
     flex-wrap: wrap;
+    flex-shrink: 1;
     justify-content: center;
+    width: 100%;
+    min-width: 0;
     padding-inline: 20px;
     row-gap: 12px;
   }

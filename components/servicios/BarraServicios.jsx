@@ -20,12 +20,14 @@ const COPIAS = 4;
  * Windows, macOS, Android e iOS.
  *
  * Accesibilidad (WCAG 2.2.2): botón de pausa siempre visible, y la banda se
- * detiene al pasar el puntero, al enfocar un botón, al tocarla y fuera de
- * pantalla. Con teclado, la pista vuelve al inicio para que el foco se vea. Las copias
- * de relleno responden al clic y al toque (son las que se ven casi siempre),
- * pero no se leen ni entran en el orden del teclado. Con movimiento reducido, la banda
- * queda quieta y centrada, sin brinco ni pausa. En móvil va más lenta y con
- * botones más pequeños. Cada botón abre el asistente con ese servicio.
+ * detiene al pasar el puntero, al tocarla, fuera de pantalla y al enfocar un
+ * botón con teclado (la pista vuelve al inicio para que el foco se vea). Las
+ * copias de relleno responden al clic y al toque (son las que se ven casi
+ * siempre), pero no se leen ni entran en el orden del teclado; al pulsarlas,
+ * el foco pasa al botón real, que es al que vuelve al cerrar el asistente.
+ * Con movimiento reducido, la banda queda quieta, centrada y en varias filas,
+ * sin brinco ni pausa. En móvil va más lenta y con botones más pequeños. Cada
+ * botón abre el asistente con ese servicio.
  */
 export function BarraServicios() {
   const [pausada, setPausada] = useState(false);
@@ -53,7 +55,8 @@ export function BarraServicios() {
     if (!e.currentTarget.contains(e.relatedTarget)) e.currentTarget.scrollLeft = 0;
   };
 
-  // Un toque detiene la banda unos segundos para poder elegir con calma.
+  // Un toque en la ventana detiene la banda unos segundos para poder elegir
+  // con calma (el botón de pausa queda fuera, así «Reanudar» reanuda ya).
   const alTocar = (e) => {
     if (e.pointerType === "mouse") return;
     setTocada(true);
@@ -65,9 +68,8 @@ export function BarraServicios() {
     <div
       ref={raiz}
       className={cn("banda glass", (pausada || tocada) && "is-pausada", fuera && "is-fuera")}
-      onPointerDown={alTocar}
     >
-      <div className="banda-ventana" onFocus={alEnfocar} onBlur={alSalir}>
+      <div className="banda-ventana" onFocus={alEnfocar} onBlur={alSalir} onPointerDown={alTocar}>
         <div className="banda-pista">
           {Array.from({ length: COPIAS }, (_, copia) => (
             <ul
@@ -82,7 +84,12 @@ export function BarraServicios() {
                     type="button"
                     aria-haspopup="dialog"
                     tabIndex={copia > 0 ? -1 : undefined}
-                    onClick={() => abrirAsistente({ modo: "consulta", servicio: s.id })}
+                    onClick={() => {
+                      // Desde una copia, el foco pasa al botón real: el
+                      // asistente vuelve a él al cerrarse, no a uno oculto.
+                      if (copia > 0) raiz.current?.querySelectorAll(".banda-grupo:first-child .banda-pieza")[i]?.focus({ preventScroll: true });
+                      abrirAsistente({ modo: "consulta", servicio: s.id });
+                    }}
                     className={cn("banda-pieza glass glass-interior", s.id === seguridad.id && "banda-pieza--seguridad")}
                     style={{ "--i": i }}
                   >
@@ -98,7 +105,11 @@ export function BarraServicios() {
       <button
         type="button"
         className="banda-pausa"
-        onClick={() => setPausada((v) => !v)}
+        onClick={() => {
+          clearTimeout(timer.current);
+          setTocada(false);
+          setPausada((v) => !v);
+        }}
         aria-label={pausada ? "Reanudar el movimiento de los servicios" : "Pausar el movimiento de los servicios"}
       >
         {pausada ? <Play className="h-4 w-4" aria-hidden="true" /> : <Pause className="h-4 w-4" aria-hidden="true" />}
