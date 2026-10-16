@@ -60,7 +60,7 @@ export function Footer() {
             {navSections.map((s) => (
               <li key={s.id}>
                 <a
-                  href={s.href}
+                  href={s.id === "contacto" ? "/contacto-nuevo" : s.href}
                   className="inline-flex min-h-11 items-center text-muted transition-colors hover:text-text"
                 >
                   {s.label}
