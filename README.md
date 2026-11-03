@@ -105,45 +105,33 @@ menú «Servicios».
 
 ## Asistente del sitio: Nora
 
-Nora es la asistente virtual del sitio, con respuestas automáticas preparadas por el
-equipo. No es inteligencia artificial ni atención en tiempo real, y lo aclara si se
-le pregunta. Su tono es cercano y breve:
+Nora es la asistente virtual del sitio. Conversa solo con texto, con el aspecto de
+iMessage en modo oscuro: sin botones de servicios, menús ni tarjetas dentro del chat.
+Sus respuestas están escritas por el equipo (no es inteligencia artificial ni
+atención en tiempo real) y lo aclara si se le pregunta.
 
-- Saluda con una pregunta abierta («¿En qué puedo ayudarte hoy?») y escucha: no
-  muestra opciones ni la lista de servicios, que ya están en la página.
-- Responde a lo que se pregunta y, si sirve, hace una pregunta para seguir. Solo
-  habla de un servicio cuando es relevante para la duda.
-- No inventa precios, fechas ni disponibilidad: lo que no sabe lo pasa al equipo.
-- Ante algo urgente o si el visitante quiere hablar con alguien, ofrece WhatsApp.
+- Saluda con una pregunta abierta y escucha. No recita los servicios: solo menciona
+  uno si tiene que ver con la duda.
+- Responde en 2 a 5 líneas y, si ayuda, hace una pregunta para seguir. Si el
+  visitante responde a esa pregunta, lo toma como contexto y ofrece pasarlo al equipo.
+- Recuerda nombre, contacto e interés durante la sesión y no vuelve a pedirlos.
+- No inventa precios, fechas, garantías ni resultados. Pide no compartir
+  contraseñas ni datos de tarjeta. Ante groserías, mantiene la calma y ofrece al equipo.
+- Para cotizaciones, contrataciones, urgencias o hablar con alguien, pide nombre,
+  correo o teléfono y una breve descripción, y deja un enlace a WhatsApp con el
+  mensaje listo. Nada se envía hasta que el visitante lo manda; el sitio no guarda
+  los datos en ningún servidor (la conversación queda en la sesión del navegador).
+- Al enviar, aparece «Nora está escribiendo…» y la respuesta se escribe de forma
+  progresiva (al instante con movimiento reducido). Varios mensajes seguidos se
+  responden juntos.
+- Cualquier servicio de la página abre el chat con Nora ya en ese tema.
 
-Cuando el visitante quiere contar su proyecto («Quiero contarte mi proyecto», o
-desde cualquier servicio de la página), hace pocas preguntas, con opciones claras:
+Dónde está cada cosa:
 
-1. «¿Buscas un portal municipal, una página web o algún sistema digital?» (también
-   «Contenido y diseño» y «Chatbot»). Si el
-   visitante no sabe, pregunta si es para un municipio, un negocio o un proyecto
-   personal. También entiende texto libre (portal, turismo, trámites, formularios,
-   galería, transparencia…).
-2. ¿Para qué municipio u organización sería? (opcional)
-3. ¿Qué es lo principal que necesitas?
-4. ¿Cómo te llamas? (opcional)
-5. ¿Cómo prefieres que te contactemos? WhatsApp o correo (el correo es
-   opcional).
-
-Al final muestra un resumen que se puede cambiar línea por línea y «Continuar por
-WhatsApp» abre el chat con el mensaje listo. Nada se envía hasta que el visitante
-lo manda. Los datos solo viajan en ese mensaje; el sitio no los guarda en ningún
-servidor (la conversación queda en la sesión del navegador).
-
-También responde dudas frecuentes y ofrece hablar con una persona por WhatsApp o
-correo. Cualquier servicio de la página abre el asistente ya en ese servicio.
-
-- Preguntas, opciones y armado del mensaje: `lib/content/consulta.js`.
-- Dudas frecuentes y palabras clave: `lib/content/asistente.js`.
-- Motor de respuestas: `lib/asistente.js`.
-
-Regla: nada de precios, plazos, funciones, integraciones, clientes o métricas
-inventadas.
+- Temas, palabras clave y respuestas (es/en): `lib/content/asistente.js`.
+- Conversación (memoria, datos para el equipo, mensaje de WhatsApp): `lib/nora.js`.
+- Motor que elige el tema: `lib/asistente.js`.
+- Chat (estilo, escritura progresiva, accesibilidad): `components/asistente/AsistentePanel.jsx`.
 
 ## Idiomas (español e inglés)
 
@@ -170,14 +158,14 @@ Dónde está cada texto:
 - `lib/i18n/ui.js`: etiquetas, avisos y nombres accesibles de la interfaz.
 - `lib/content/*.js`: contenido (hero, servicios, seguridad, portafolio, navegación).
   Cada texto se escribe como `{ es: "…", en: "…" }`.
-- `lib/content/asistente.js`: temas, respuestas y palabras clave del asistente, por idioma.
-- `lib/content/consulta.js`: la consulta guiada. La lógica es una sola; cada idioma
-  tiene su «paquete» (`PACKS`) con textos, opciones y las expresiones que reconoce.
+- `lib/content/asistente.js`: temas, respuestas y palabras clave de Nora, por idioma.
+- `lib/nora.js`: la conversación de Nora; las expresiones que dependen de la lengua
+  (preguntas, nombres, datos sensibles) están en `LENGUA`.
 - `lib/site.js`: nombre, descripción y palabras clave por idioma; contacto compartido.
 
 Para añadir o cambiar un texto, edita las dos versiones (`es` y `en`). Para sumar un
 tercer idioma: agrega el código en `lib/i18n/config.js`, su diccionario en
-`lib/i18n/ui.js`, su traducción en cada `{ es, en }`, su paquete en `consulta.js` y
+`lib/i18n/ui.js`, su traducción en cada `{ es, en }`, sus expresiones en `lib/nora.js` y
 ajusta `proxy.js`.
 
 Pendiente: la tercera captura de «Así se entra a tu panel administrativo»
@@ -199,7 +187,8 @@ components/
   ui/                botón, logo, sección, encabezado, revelado, iconos
 lib/
   i18n/              idiomas, textos de la interfaz y resolución de traducciones
-  content/           textos editables: hero, servicios, consulta, proyectos, asistente
+  content/           textos editables: hero, servicios, proyectos, asistente (Nora)
+  nora.js            conversación de Nora
   asistente.js       motor del asistente
   acciones.js        puente entre bloques (abrir el asistente, ir a una sección)
   site.js            identidad, contacto y URL principal

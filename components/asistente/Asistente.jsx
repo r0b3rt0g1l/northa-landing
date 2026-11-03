@@ -16,8 +16,9 @@ const precargar = () => {
   cargarPanel().catch(() => {});
 };
 
+// Mismo marco que el chat (iMessage, modo oscuro).
 const marco =
-  "glass-strong panel-opaco fixed inset-x-3 bottom-3 z-[60] flex flex-col gap-4 rounded-[24px] p-5 sm:inset-x-auto sm:bottom-6 sm:right-6 sm:w-[420px]";
+  "fixed inset-x-3 bottom-3 z-[60] flex flex-col gap-4 rounded-[24px] border border-[#38383A] bg-[#1C1C1E] p-5 text-white sm:inset-x-auto sm:bottom-6 sm:right-6 sm:w-[400px]";
 
 /** Mientras se descarga el panel: un aviso breve en su lugar. */
 function PanelCargando() {
@@ -25,10 +26,10 @@ function PanelCargando() {
   return (
     <div className={marco} role="status" aria-live="polite" data-asistente="">
       <div className="flex items-center gap-3">
-        <span className="cargando grid h-10 w-10 place-items-center rounded-[12px] border border-line-strong">
+        <span className="cargando grid h-10 w-10 place-items-center rounded-full bg-[#2C2C2E]">
           <StarIcon className="h-5 w-5" />
         </span>
-        <p className="m-0 text-[14.5px] text-text-2">{ui.panel.cargando}</p>
+        <p className="m-0 text-[15px] text-[rgba(235,235,245,0.6)]">{ui.panel.cargando}</p>
       </div>
     </div>
   );
