@@ -2046,6 +2046,34 @@
     }
   }
 
+  /* ---------- Nora: chat estilo iMessage (modo oscuro) ---------- */
+  /* Tres puntos de «Nora está escribiendo…»: ciclo de 1,2 s, escalonados. */
+  .nora-punto {
+    width: 7px;
+    height: 7px;
+    border-radius: 999px;
+    background: #8e8e93;
+    animation: nora-punto 1.2s ease-in-out infinite;
+  }
+  .nora-punto:nth-child(2) {
+    animation-delay: 0.15s;
+  }
+  .nora-punto:nth-child(3) {
+    animation-delay: 0.3s;
+  }
+  @keyframes nora-punto {
+    0%,
+    60%,
+    100% {
+      opacity: 0.35;
+      transform: translateY(0);
+    }
+    30% {
+      opacity: 1;
+      transform: translateY(-3px);
+    }
+  }
+
 }
 
 /* Impresión: todo visible, sin fondo animado, cursor ni asistente. */
@@ -2136,7 +2164,8 @@
   .final-estrella,
   .final-halo,
   .mensaje-in,
-  .cargando {
+  .cargando,
+  .nora-punto {
     animation: none !important;
   }
   /* Banda quieta: una sola fila centrada, sin recorrido, brinco ni pausa. */
@@ -2215,5 +2244,15 @@ html.cursor-propio :is(input:not([type="checkbox"]):not([type="radio"]):not([typ
   }
   .cursor-halo {
     display: none;
+  }
+}
+
+/* Alto contraste del sistema: las burbujas del chat conservan su borde. */
+@media (forced-colors: active) {
+  .nora-burbuja {
+    border: 1px solid CanvasText;
+  }
+  .nora-punto {
+    background: CanvasText;
   }
 }
