@@ -1,6 +1,8 @@
 import { Reveal } from "@/components/ui/Reveal";
 import { BotonWhatsapp } from "@/components/ui/BotonWhatsapp";
-import { seguridad } from "@/lib/content/servicios";
+import { getSeguridad } from "@/lib/content/servicios";
+import { getUi } from "@/lib/i18n/ui";
+import { getNav } from "@/lib/content/nav";
 import { DemoAcceso } from "./DemoAcceso";
 import { AccesoReal } from "./AccesoReal";
 
@@ -12,13 +14,16 @@ import { AccesoReal } from "./AccesoReal";
  * Debajo, a todo el ancho, las capturas reales del acceso al panel de un
  * portal (AccesoReal), con los datos sensibles ocultos.
  */
-export function Seguridad() {
+export function Seguridad({ locale }) {
+  const seguridad = getSeguridad(locale);
+  const ui = getUi(locale).seguridad;
+  const { ctaPrincipal } = getNav(locale);
   return (
     <section id="seguridad" aria-labelledby="seguridad-title" className="relative px-5 py-20 sm:px-8 sm:py-28">
       <Reveal className="seguridad-marco glass mx-auto grid w-full max-w-[1200px] gap-10 rounded-[32px] p-6 sm:p-10 lg:grid-cols-[1fr_1.1fr] lg:items-center lg:gap-12 lg:p-12">
         <div className="flex min-w-0 flex-col gap-6">
           <div className="flex flex-col gap-3">
-            <p className="eyebrow m-0">Seguridad</p>
+            <p className="eyebrow m-0">{ui.eyebrow}</p>
             <h2 id="seguridad-title" className="text-[clamp(1.9rem,2.2vw+1.1rem,3rem)] tracking-[-0.03em]">
               {seguridad.titular}
             </h2>
@@ -38,12 +43,12 @@ export function Seguridad() {
             ))}
           </ul>
           <div>
-            <BotonWhatsapp className="shrink-0">Cuéntanos tu proyecto</BotonWhatsapp>
+            <BotonWhatsapp className="shrink-0">{ctaPrincipal.label}</BotonWhatsapp>
           </div>
         </div>
         <DemoAcceso />
         <div className="min-w-0 lg:col-span-2">
-          <AccesoReal />
+          <AccesoReal locale={locale} />
         </div>
       </Reveal>
     </section>

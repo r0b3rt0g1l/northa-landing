@@ -6,7 +6,8 @@ import { Mail } from "lucide-react";
 import { StarIcon } from "@/components/ui/StarIcon";
 import { WhatsAppIcon } from "@/components/ui/WhatsAppIcon";
 import { EVENTO_ASISTENTE } from "@/lib/acciones";
-import { site } from "@/lib/site";
+import { getSite } from "@/lib/site";
+import { useUi } from "@/components/i18n/LocaleProvider";
 import { EnlaceWhatsapp } from "@/components/ui/EnlaceWhatsapp";
 
 // El panel se descarga solo cuando alguien lo abre (o pasa por el botón).
@@ -20,13 +21,14 @@ const marco =
 
 /** Mientras se descarga el panel: un aviso breve en su lugar. */
 function PanelCargando() {
+  const { ui } = useUi();
   return (
     <div className={marco} role="status" aria-live="polite" data-asistente="">
       <div className="flex items-center gap-3">
         <span className="cargando grid h-10 w-10 place-items-center rounded-[12px] border border-line-strong">
           <StarIcon className="h-5 w-5" />
         </span>
-        <p className="m-0 text-[14.5px] text-text-2">Abriendo el asistente…</p>
+        <p className="m-0 text-[14.5px] text-text-2">{ui.panel.cargando}</p>
       </div>
     </div>
   );
@@ -38,6 +40,8 @@ function PanelCargando() {
  * la página. Vive en el mismo archivo para no depender de otra descarga.
  */
 function PanelRespaldo({ onCerrar }) {
+  const { locale, ui } = useUi();
+  const site = getSite(locale);
   useEffect(() => {
     const onKey = (e) => e.key === "Escape" && onCerrar(true);
     document.addEventListener("keydown", onKey);
@@ -55,24 +59,24 @@ function PanelRespaldo({ onCerrar }) {
     >
       <div className="flex items-start justify-between gap-3">
         <h2 id="asistente-respaldo-titulo" className="text-[15px]">
-          Asistente de Northa
+          {ui.panel.nombre}
         </h2>
         <button
           type="button"
           onClick={() => onCerrar(true)}
-          aria-label="Cerrar asistente"
+          aria-label={ui.panel.cerrar}
           className="-mr-2 -mt-2 grid h-11 w-11 place-items-center rounded-full text-muted hover:bg-white/[0.06] hover:text-text"
         >
           <span aria-hidden="true">✕</span>
         </button>
       </div>
       <p className="m-0 text-[14.5px] text-text-2" role="alert">
-        No pudimos cargar el asistente. Escríbenos y te respondemos directamente.
+        {ui.panel.respaldoError}
       </p>
       <div className="flex flex-wrap gap-2">
         <EnlaceWhatsapp className="inline-flex min-h-11 items-center gap-2 rounded-full bg-text px-4 text-sm font-semibold text-bg">
           <WhatsAppIcon className="h-4 w-4 text-[#128C7E]" />
-          Escribir por WhatsApp
+          {ui.panel.escribirWhatsapp}
         </EnlaceWhatsapp>
         <a
           href={site.contact.emailHref}
@@ -98,6 +102,7 @@ const AsistentePanel = dynamic(
  * cerrarse devuelve el foco al elemento que lo abrió.
  */
 export function Asistente() {
+  const { ui } = useUi();
   const [abierto, setAbierto] = useState(false);
   const [peticion, setPeticion] = useState(null);
   const lanzadorRef = useRef(null);
@@ -136,7 +141,7 @@ export function Asistente() {
         aria-haspopup="dialog"
         aria-expanded={abierto}
         aria-controls="asistente-panel"
-        aria-label="Abrir asistente del sitio"
+        aria-label={ui.lanzador.abrir}
         onPointerEnter={precargar}
         onFocus={precargar}
         onClick={() => {
@@ -150,7 +155,7 @@ export function Asistente() {
         }
       >
         <StarIcon className="h-5 w-5" />
-        <span className="max-sm:sr-only">Asistente</span>
+        <span className="max-sm:sr-only">{ui.lanzador.etiqueta}</span>
       </button>
 
       {abierto ? (

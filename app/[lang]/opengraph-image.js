@@ -1,13 +1,16 @@
 import { ImageResponse } from "next/og";
 import { site } from "@/lib/site";
-import { hero } from "@/lib/content/hero";
+import { getHero } from "@/lib/content/hero";
 
 export const runtime = "nodejs";
-export const alt = `${site.name}. ${hero.titulo}`;
+// El texto alternativo es el mismo en los dos idiomas: la marca.
+export const alt = site.name;
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
-export default function OpenGraphImage() {
+export default async function OpenGraphImage({ params }) {
+  const { lang } = await params;
+  const hero = getHero(lang);
   return new ImageResponse(
     (
       <div

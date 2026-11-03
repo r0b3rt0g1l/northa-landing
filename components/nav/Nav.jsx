@@ -6,8 +6,11 @@ import { cn } from "@/lib/cn";
 import { Logo } from "@/components/ui/Logo";
 import { BotonWhatsapp } from "@/components/ui/BotonWhatsapp";
 import { useScrollSpy } from "@/hooks/useScrollSpy";
-import { navSections, ctaPrincipal } from "@/lib/content/nav";
-import { servicios, seguridad } from "@/lib/content/servicios";
+import { getNav } from "@/lib/content/nav";
+import { getServicios, getSeguridad } from "@/lib/content/servicios";
+import { hrefSeccion } from "@/lib/i18n/config";
+import { useUi } from "@/components/i18n/LocaleProvider";
+import { SelectorIdioma } from "@/components/i18n/SelectorIdioma";
 import { abrirAsistente } from "@/lib/acciones";
 import { MenuServicios } from "./MenuServicios";
 
@@ -25,6 +28,10 @@ const ALIAS = { final: "contacto" };
  * desplazarse y al elegir una opción.
  */
 export function Nav() {
+  const { locale, ui } = useUi();
+  const { navSections, ctaPrincipal } = getNav(locale);
+  const servicios = getServicios(locale);
+  const seguridad = getSeguridad(locale);
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const [serviciosMovil, setServiciosMovil] = useState(false);
@@ -102,15 +109,14 @@ export function Nav() {
       className="fixed inset-x-0 top-0 z-50 px-3 pt-3 has-[[aria-expanded=true]]:z-[70] sm:px-6 sm:pt-4"
     >
       <nav
-        aria-label="Navegación principal"
+        aria-label={ui.nav.aria}
         className={cn(
           "mx-auto flex h-[60px] w-full max-w-[1200px] items-center justify-between gap-3 rounded-full pl-4 pr-2 transition-[background-color,box-shadow] duration-300 sm:pl-5",
           scrolled || open ? "glass-strong" : "glass",
         )}
       >
         {/* Ancla dentro de la página; desde la 404 lleva al inicio. */}
-        {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
-        <a href="/#inicio" className="inline-flex min-h-11 items-center rounded-full" aria-label="Northa Digital, inicio">
+        <a href={hrefSeccion(locale, "inicio")} className="inline-flex min-h-11 items-center rounded-full" aria-label={ui.logoInicio}>
           <Logo />
         </a>
 
@@ -147,11 +153,14 @@ export function Nav() {
         </ul>
 
         <div className="flex items-center gap-1.5">
-          <BotonWhatsapp size="sm" className="hidden whitespace-nowrap pl-2.5 sm:inline-flex">
+          <SelectorIdioma className="hidden md:inline-flex" />
+          <BotonWhatsapp size="sm" className="hidden whitespace-nowrap pl-2.5 sm:inline-flex md:hidden lg:inline-flex">
             {ctaPrincipal.label}
           </BotonWhatsapp>
-          {/* Por debajo de 350 px solo queda el ícono, para que quepa el menú. */}
-          <BotonWhatsapp size="sm" magnetic={false} className="pl-2 pr-4 max-[349px]:pr-2 sm:hidden">
+          {/* Por debajo de 350 px solo queda el ícono, para que quepa el menú. Entre
+              768 y 1023 px también se usa la versión corta: con el selector de
+              idioma en la barra, la larga no cabe. */}
+          <BotonWhatsapp size="sm" magnetic={false} className="pl-2 pr-4 max-[349px]:pr-2 sm:hidden md:inline-flex lg:hidden">
             <span className="max-[349px]:sr-only">{ctaPrincipal.short}</span>
           </BotonWhatsapp>
           <button
@@ -160,7 +169,7 @@ export function Nav() {
             className="grid h-11 w-11 place-items-center rounded-full border border-line-strong bg-white/[0.04] text-text transition-colors hover:bg-white/[0.08] md:hidden"
             aria-expanded={open}
             aria-controls="menu-movil"
-            aria-label={open ? "Cerrar menú" : "Abrir menú"}
+            aria-label={open ? ui.nav.cerrarMenu : ui.nav.abrirMenu}
             onClick={() => (open ? cerrarMenu() : setOpen(true))}
           >
             {open ? <X className="h-5 w-5" aria-hidden="true" /> : <Menu className="h-5 w-5" aria-hidden="true" />}
@@ -188,7 +197,7 @@ export function Nav() {
                     : "text-text-2 hover:bg-white/[0.05] hover:text-text",
                 )}
               >
-                Servicios
+                {ui.nav.servicios}
                 <ChevronDown
                   className={cn("h-4 w-4 transition-transform duration-300", serviciosMovil && "rotate-180")}
                   aria-hidden="true"
@@ -222,13 +231,12 @@ export function Nav() {
                   </button>
                 </li>
                 <li>
-                  {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
                   <a
-                    href="/#servicios"
+                    href={hrefSeccion(locale, "servicios")}
                     onClick={cerrarMenu}
                     className="flex min-h-12 items-center rounded-xl px-3 text-[14px] font-medium text-muted hover:text-text"
                   >
-                    Ver la sección de servicios
+                    {ui.nav.verSeccion}
                   </a>
                 </li>
               </ul>
@@ -252,6 +260,9 @@ export function Nav() {
                   </a>
                 </li>
               ))}
+            <li className="mt-1 flex">
+              <SelectorIdioma completo className="w-full justify-start rounded-2xl border-transparent" onClick={cerrarMenu} />
+            </li>
             <li className="mt-2">
               <BotonWhatsapp
                 className="w-full"

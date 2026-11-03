@@ -2,6 +2,7 @@
 
 import { useEffect, useId, useRef } from "react";
 import { StarIcon } from "@/components/ui/StarIcon";
+import { useUi } from "@/components/i18n/LocaleProvider";
 
 /**
  * Sello circular «Creado por Northa Digital» con la estrella al centro. Al
@@ -10,6 +11,7 @@ import { StarIcon } from "@/components/ui/StarIcon";
  * junto al título. Con movimiento reducido, quieto.
  */
 export function SelloNortha({ className = "" }) {
+  const { ui } = useUi();
   const ref = useRef(null);
   const uid = useId().replace(/:/g, "");
 
@@ -45,7 +47,7 @@ export function SelloNortha({ className = "" }) {
   }, []);
 
   return (
-    <div ref={ref} role="img" aria-label="Sello: creado por Northa Digital" className={`sello ${className}`}>
+    <div ref={ref} role="img" aria-label={ui.servicios.sello} className={`sello ${className}`}>
       <svg className="sello-anillo" viewBox="0 0 200 200" aria-hidden="true" focusable="false">
         <defs>
           <path id={`${uid}-circulo`} d="M100,100 m-74,0 a74,74 0 1,1 148,0 a74,74 0 1,1 -148,0" />
@@ -55,7 +57,7 @@ export function SelloNortha({ className = "" }) {
         {/* textLength va en <text>: Firefox lo ignora en <textPath>. */}
         <text className="sello-texto" textLength="462" lengthAdjust="spacing">
           <textPath href={`#${uid}-circulo`} startOffset="0">
-            CREADO POR NORTHA DIGITAL ✦ DISEÑO · SISTEMAS · CONTENIDO ✦
+            {ui.servicios.selloTexto}
           </textPath>
         </text>
       </svg>

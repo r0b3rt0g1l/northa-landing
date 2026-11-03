@@ -5,26 +5,13 @@ import { ArrowLeft, ArrowUpRight, Mail, RotateCcw, Send, X } from "lucide-react"
 import { cn } from "@/lib/cn";
 import { StarIcon } from "@/components/ui/StarIcon";
 import { WhatsAppIcon } from "@/components/ui/WhatsAppIcon";
-import { asistente } from "@/lib/content/asistente";
-import {
-  aplica,
-  aplicarRespuesta,
-  consulta,
-  consultaCompleta,
-  correoValido,
-  lineasResumen,
-  mensajeConsulta,
-  OPCION_OTRA,
-  opcionDesdeTexto,
-  pasos,
-  pasosVisibles,
-  preguntaSola,
-  quitarRespuesta,
-  respuestasDesde,
-  siguientePaso,
-} from "@/lib/content/consulta";
-import { interpretar, responderTema, responderTexto, temaPorId } from "@/lib/asistente";
-import { site, textoWhatsapp } from "@/lib/site";
+import { getConsulta } from "@/lib/content/consulta";
+import { getMotor } from "@/lib/asistente";
+import { getSite, textoWhatsapp } from "@/lib/site";
+import { getUi } from "@/lib/i18n/ui";
+import { hrefSeccion } from "@/lib/i18n/config";
+import { porIdioma } from "@/lib/i18n/localizar";
+import { useLocale } from "@/components/i18n/LocaleProvider";
 import { EnlaceWhatsapp } from "@/components/ui/EnlaceWhatsapp";
 import { irASeccion } from "@/lib/acciones";
 
@@ -33,9 +20,6 @@ const MAX_MENSAJES = 60;
 const MODOS = ["consulta", "resumen", "dudas", "persona"];
 // Datos que se conservan si el visitante empieza otra consulta desde la página.
 const DATOS_PERSONALES = ["organizacion", "nombre", "contacto", "correo"];
-// Frases explícitas para pedir una persona en cualquier momento.
-const PIDE_PERSONA =
-  /hablar con (una |un |alguna |alg[uú]n )?(persona|alguien|asesor(a)?|humano|ejecutiv[oa])|persona del equipo|atenci[oó]n humana|asesor(a)? humano/i;
 // Dudas frecuentes que se contestan a mitad de la conversación sin guardarlas
 // como respuesta; después se repite la pregunta pendiente.
 const DUDAS_EN_CURSO = ["costos", "tiempos", "proceso", "asistente", "ubicacion", "redes-northa", "mantenimiento", "seguridad"];
@@ -43,6 +27,15 @@ const DUDAS_EN_CURSO = ["costos", "tiempos", "proceso", "asistente", "ubicacion"
 const recortar = (t, n) => Array.from(t).slice(0, n).join("");
 
 let contador = 0;
+// Todo lo que depende del idioma, armado una vez por idioma: la consulta
+// guiada, el motor de respuestas y los textos del panel.
+const kitDe = porIdioma((locale) => ({
+  locale,
+  C: getConsulta(locale),
+  M: getMotor(locale),
+  ui: getUi(locale).panel,
+}));
+
 const nuevoId = (prefijo) => `${prefijo}${Date.now().toString(36)}${(contador++).toString(36)}`;
 const bot = (texto, extra = {}) => ({ id: nuevoId("b"), autor: "bot", texto, ...extra });
 const usuario = (texto) => ({ id: nuevoId("u"), autor: "usuario", texto });
@@ -55,33 +48,39 @@ const normalizar = (t) =>
     .trim();
 
 /** Tema de la conversación cuando empieza desde un servicio. */
-function temaDe(r) {
-  if (r.necesidad) return `Hablemos de ${r.necesidad.toLowerCase()}.`;
-  if (r.tipo) return `Hablemos de tu ${r.tipo.toLowerCase()}.`;
+function temaDe(k, r) {
+  if (r.necesidad) return k.ui.hablemosDe(r.necesidad.toLowerCase());
+  if (r.tipo) return k.ui.hablemosDeTu(r.tipo.toLowerCase());
   return "";
 }
 
 /** Primer mensaje: saludo breve y la primera pregunta que haga falta. */
-function saludo(r, paso) {
+function saludo(k, r, paso) {
+  const { consulta, pasos, preguntaSola } = k.C;
   if (paso === 0 && !r.tiposSugeridos) return [bot(consulta.bienvenida)];
-  const hola = ["¡Hola! Soy el asistente de Northa Digital.", temaDe(r)];
+  const hola = [k.ui.holaSoy, temaDe(k, r)];
   if (paso >= pasos.length) return [bot(hola.filter(Boolean).join(" ")), bot(consulta.cierre, { tipo: "resumen" })];
   return [bot([...hola, preguntaSola(paso, r)].filter(Boolean).join(" "))];
 }
 
-function estadoInicial(respuestas = {}) {
+function estadoInicial(k, respuestas = {}) {
+  const { pasos, siguientePaso } = k.C;
   const paso = siguientePaso(respuestas);
   return {
-    mensajes: saludo(respuestas, paso),
+    mensajes: saludo(k, respuestas, paso),
     modo: paso >= pasos.length ? "resumen" : "consulta",
     paso: Math.min(paso, pasos.length - 1),
     respuestas,
   };
 }
 
-function leerEstado() {
+// La conversación guardada es por idioma: sus etiquetas están en ese idioma.
+const claveDe = (k) => `${CLAVE}-${k.locale}`;
+
+function leerEstado(k) {
+  const { pasos } = k.C;
   try {
-    const g = JSON.parse(sessionStorage.getItem(CLAVE) || "null");
+    const g = JSON.parse(sessionStorage.getItem(claveDe(k)) || "null");
     // Solo se recupera un estado con la forma esperada; si no, se empieza de cero.
     if (
       g &&
@@ -97,18 +96,18 @@ function leerEstado() {
       return g;
     }
   } catch {}
-  return estadoInicial();
+  return estadoInicial(k);
 }
 
-function guardarEstado(estado) {
+function guardarEstado(k, estado) {
   try {
-    sessionStorage.setItem(CLAVE, JSON.stringify({ ...estado, mensajes: estado.mensajes.slice(-MAX_MENSAJES) }));
+    sessionStorage.setItem(claveDe(k), JSON.stringify({ ...estado, mensajes: estado.mensajes.slice(-MAX_MENSAJES) }));
   } catch {}
 }
 
 /** Mensajes con la tarjeta del cierre al final (sin duplicarla). */
-const conCierre = (mensajes) =>
-  mensajes.at(-1)?.tipo === "resumen" ? mensajes : [...mensajes, bot(consulta.cierre, { tipo: "resumen" })];
+const conCierre = (k, mensajes) =>
+  mensajes.at(-1)?.tipo === "resumen" ? mensajes : [...mensajes, bot(k.C.consulta.cierre, { tipo: "resumen" })];
 
 const reducido = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -133,7 +132,29 @@ const enlaceTexto =
  */
 export default function AsistentePanel({ onCerrar, peticion, onPeticionUsada }) {
   const uid = useId();
-  const [estado, setEstado] = useState(leerEstado);
+  const locale = useLocale();
+  const k = kitDe(locale);
+  const { ui } = k;
+  const site = getSite(locale);
+  const {
+    aplica,
+    aplicarRespuesta,
+    consulta,
+    consultaCompleta,
+    correoValido,
+    lineasResumen,
+    mensajeConsulta,
+    OPCION_OTRA,
+    opcionDesdeTexto,
+    pasos,
+    pasosVisibles,
+    preguntaSola,
+    quitarRespuesta,
+    respuestasDesde,
+    siguientePaso,
+  } = k.C;
+  const { asistente, interpretar, responderTema, responderTexto, temaPorId } = k.M;
+  const [estado, setEstado] = useState(() => leerEstado(k));
   const [texto, setTexto] = useState("");
   const panelRef = useRef(null);
   const listaRef = useRef(null);
@@ -147,8 +168,8 @@ export default function AsistentePanel({ onCerrar, peticion, onPeticionUsada }) 
   const pasoActual = modo === "consulta" ? pasos[paso] : null;
 
   useEffect(() => {
-    guardarEstado(estado);
-  }, [estado]);
+    guardarEstado(k, estado);
+  }, [k, estado]);
 
   // Lleva la conversación al final y el foco a las nuevas opciones. En el
   // cierre se ancla en la última burbuja del visitante: así quedan a la vista
@@ -209,7 +230,7 @@ export default function AsistentePanel({ onCerrar, peticion, onPeticionUsada }) 
   const avanzar = (prev, r, nuevos) => {
     const sig = siguientePaso(r);
     if (sig >= pasos.length) {
-      return { ...prev, respuestas: r, modo: "resumen", mensajes: conCierre([...prev.mensajes, ...nuevos]) };
+      return { ...prev, respuestas: r, modo: "resumen", mensajes: conCierre(k, [...prev.mensajes, ...nuevos]) };
     }
     return {
       ...prev,
@@ -225,13 +246,13 @@ export default function AsistentePanel({ onCerrar, peticion, onPeticionUsada }) 
       if (!servicioId) {
         // Sin servicio: sigue la conversación en curso o vuelve al cierre.
         if (prev.modo === "consulta") {
-          return { ...prev, mensajes: [...prev.mensajes, bot(`Sigamos. ${preguntaSola(prev.paso, prev.respuestas)}`)] };
+          return { ...prev, mensajes: [...prev.mensajes, bot(`${ui.sigamos}${preguntaSola(prev.paso, prev.respuestas)}`)] };
         }
         if (consultaCompleta(prev.respuestas)) {
-          return { ...prev, modo: "resumen", mensajes: conCierre(prev.mensajes) };
+          return { ...prev, modo: "resumen", mensajes: conCierre(k, prev.mensajes) };
         }
         const sig = siguientePaso(prev.respuestas);
-        const intro = Object.keys(prev.respuestas).length ? "Sigamos. " : "";
+        const intro = Object.keys(prev.respuestas).length ? ui.sigamos : "";
         return {
           ...prev,
           modo: "consulta",
@@ -246,11 +267,11 @@ export default function AsistentePanel({ onCerrar, peticion, onPeticionUsada }) 
       );
       const r = { ...conservados, ...respuestasDesde(servicioId) };
       const sinConversar = prev.mensajes.length === 1 && !Object.keys(prev.respuestas).length;
-      if (sinConversar) return estadoInicial(r);
+      if (sinConversar) return estadoInicial(k, r);
       const sig = siguientePaso(r);
-      const tema = temaDe(r);
+      const tema = temaDe(k, r);
       if (sig >= pasos.length) {
-        return { ...prev, respuestas: r, modo: "resumen", mensajes: conCierre([...prev.mensajes, bot(tema)]) };
+        return { ...prev, respuestas: r, modo: "resumen", mensajes: conCierre(k, [...prev.mensajes, bot(tema)]) };
       }
       // Si esa misma pregunta ya es la última del chat, solo se nombra el tema.
       const pregunta = preguntaSola(sig, r);
@@ -263,7 +284,8 @@ export default function AsistentePanel({ onCerrar, peticion, onPeticionUsada }) 
         mensajes: [...prev.mensajes, bot(yaPreguntada ? tema : [tema, pregunta].filter(Boolean).join(" "))],
       };
     });
-  }, []);
+    // Todo lo que usa viene del kit del idioma, que no cambia mientras el panel está abierto.
+  }, [k, ui.sigamos, pasos.length, preguntaSola, siguientePaso, consultaCompleta, respuestasDesde]);
 
   /** Guarda la respuesta del paso actual y sigue. */
   const responderPaso = (valor, eco) => {
@@ -294,7 +316,7 @@ export default function AsistentePanel({ onCerrar, peticion, onPeticionUsada }) 
     actualizar((prev) => {
       const r = quitarRespuesta(prev.respuestas, pasos[anterior].campo);
       const sig = siguientePaso(r);
-      return { ...prev, respuestas: r, paso: sig, mensajes: [...prev.mensajes, usuario("Atrás"), bot(preguntaSola(sig, r))] };
+      return { ...prev, respuestas: r, paso: sig, mensajes: [...prev.mensajes, usuario(ui.atras), bot(preguntaSola(sig, r))] };
     });
   };
 
@@ -310,7 +332,7 @@ export default function AsistentePanel({ onCerrar, peticion, onPeticionUsada }) 
         respuestas: r,
         modo: "consulta",
         paso: sig,
-        mensajes: [...prev.mensajes, usuario(`Cambiar: ${pasos[i].titulo.toLowerCase()}`), bot(preguntaSola(sig, r))],
+        mensajes: [...prev.mensajes, usuario(ui.cambiarEco(pasos[i].titulo.toLowerCase())), bot(preguntaSola(sig, r))],
       };
     });
   };
@@ -321,11 +343,11 @@ export default function AsistentePanel({ onCerrar, peticion, onPeticionUsada }) 
     actualizar((prev) => ({
       ...prev,
       modo: "dudas",
-      mensajes: [...prev.mensajes, usuario("Tengo una duda"), bot(consulta.dudas, { sugerencias: asistente.sugerenciasIniciales })],
+      mensajes: [...prev.mensajes, usuario(ui.tengoDuda), bot(consulta.dudas, { sugerencias: asistente.sugerenciasIniciales })],
     }));
   };
 
-  const mostrarPersona = (eco = "Quiero hablar con una persona") => {
+  const mostrarPersona = (eco = ui.ecoPersona) => {
     actualizar((prev) => ({
       ...prev,
       modo: "persona",
@@ -337,13 +359,13 @@ export default function AsistentePanel({ onCerrar, peticion, onPeticionUsada }) 
     actualizar((prev) => {
       const nuevos = [...prev.mensajes, usuario(deUsuario), bot(respuesta.texto, respuesta)];
       if (prev.modo === "consulta") {
-        return { ...prev, mensajes: [...nuevos, bot(`Sigamos. ${preguntaSola(prev.paso, prev.respuestas)}`)] };
+        return { ...prev, mensajes: [...nuevos, bot(`${ui.sigamos}${preguntaSola(prev.paso, prev.respuestas)}`)] };
       }
       return {
         ...prev,
         modo: prev.modo === "consulta" || prev.modo === "resumen" ? prev.modo : "dudas",
         // En el cierre, la tarjeta con «Continuar por WhatsApp» vuelve a quedar al final.
-        mensajes: prev.modo === "resumen" ? conCierre(nuevos) : nuevos,
+        mensajes: prev.modo === "resumen" ? conCierre(k, nuevos) : nuevos,
       };
     });
     // En el cierre el foco se queda en el campo de texto.
@@ -359,7 +381,7 @@ export default function AsistentePanel({ onCerrar, peticion, onPeticionUsada }) 
   const reiniciar = () => {
     enfocarControles.current = true;
     setTexto("");
-    setEstado(estadoInicial());
+    setEstado(estadoInicial(k));
   };
 
   // Acciones que trae una respuesta.
@@ -370,7 +392,7 @@ export default function AsistentePanel({ onCerrar, peticion, onPeticionUsada }) 
       mostrarPersona(a.label);
     } else if (a.tipo === "seccion") {
       if (!document.getElementById(a.destino)) {
-        window.location.assign(`/#${a.destino}`);
+        window.location.assign(hrefSeccion(locale, a.destino));
         return;
       }
       irASeccion(a.destino);
@@ -390,7 +412,7 @@ export default function AsistentePanel({ onCerrar, peticion, onPeticionUsada }) 
     const limpio = recortar(valor.trim(), 200);
     if (!limpio) return;
     const paso = pasoActual?.campo;
-    const pidePersona = PIDE_PERSONA.test(limpio) && (paso !== "necesidad" || limpio.split(/\s+/).length <= 7);
+    const pidePersona = k.C.pidePersona.test(limpio) && (paso !== "necesidad" || limpio.split(/\s+/).length <= 7);
     if ((modo === "consulta" || modo === "resumen") && pidePersona) {
       setTexto("");
       mostrarPersona(limpio);
@@ -413,19 +435,19 @@ export default function AsistentePanel({ onCerrar, peticion, onPeticionUsada }) 
       const tema = interpretar(limpio).tema?.id;
       // Un saludo en el primer paso: se saluda y se repite la pregunta.
       if (paso === "tipo" && tema === "saludo") {
-        actualizar((prev) => ({ ...prev, mensajes: [...prev.mensajes, usuario(limpio), bot(`¡Hola! ${preguntaSola(0, prev.respuestas)}`)] }));
+        actualizar((prev) => ({ ...prev, mensajes: [...prev.mensajes, usuario(limpio), bot(`${ui.hola}${preguntaSola(0, prev.respuestas)}`)] }));
         return;
       }
       // Contacto: un correo escrito elige «Correo» y lo guarda de una vez.
       if (paso === "contacto" && correoValido(limpio)) {
         actualizar((prev) => {
-          const r = aplicarRespuesta(aplicarRespuesta(prev.respuestas, "contacto", "Correo"), "correo", limpio);
+          const r = aplicarRespuesta(aplicarRespuesta(prev.respuestas, "contacto", k.C.formasContacto[1]), "correo", limpio);
           return avanzar(prev, r, [usuario(limpio)]);
         });
         return;
       }
       // Contacto: no hay llamadas; se aclara y se pide elegir WhatsApp o correo.
-      if (paso === "contacto" && /llam|marc|telef|celular/i.test(limpio) && !/whats|wasap|wpp|correo|mail/i.test(limpio)) {
+      if (paso === "contacto" && k.C.pideLlamada.test(limpio) && !k.C.mencionaCanal.test(limpio)) {
         avisar(limpio, consulta.sinLlamadas);
         return;
       }
@@ -448,7 +470,7 @@ export default function AsistentePanel({ onCerrar, peticion, onPeticionUsada }) 
         return;
       }
       // Paso de solo opciones sin coincidencia: se pide elegir, sin cambiar de paso.
-      avisar(limpio, tema && tema !== "saludo" ? responderTexto(limpio).texto : "Elige una de las opciones de abajo o escríbela con otras palabras.");
+      avisar(limpio, tema && tema !== "saludo" ? responderTexto(limpio).texto : ui.eligeOpcion);
       return;
     }
     setTexto("");
@@ -474,7 +496,7 @@ export default function AsistentePanel({ onCerrar, peticion, onPeticionUsada }) 
   const ultimo = mensajes[mensajes.length - 1];
   const opcionesPaso = pasoActual ? pasoActual.opciones(respuestas) : [];
   const completa = consultaCompleta(respuestas);
-  const mensajeFinal = textoWhatsapp(mensajeConsulta(respuestas), respuestas.nombre);
+  const mensajeFinal = textoWhatsapp(mensajeConsulta(respuestas), respuestas.nombre, locale);
   const visibles = pasosVisibles(respuestas);
   const numeroPaso = pasoActual ? visibles.indexOf(pasoActual) + 1 : 0;
 
@@ -486,11 +508,12 @@ export default function AsistentePanel({ onCerrar, peticion, onPeticionUsada }) 
             ? `${mensajeConsulta(respuestas)}\n\n${consulta.mensajePersona}`
             : consulta.mensajePersona,
           respuestas.nombre,
+          locale,
         )}
         className={principal}
       >
         <WhatsAppIcon className="h-4 w-4 text-[#128C7E]" />
-        Escribir por WhatsApp
+        {ui.escribirWhatsapp}
       </EnlaceWhatsapp>
       <a href={site.contact.emailHref} className={accion}>
         <Mail className="h-3.5 w-3.5" aria-hidden="true" />
@@ -507,6 +530,7 @@ export default function AsistentePanel({ onCerrar, peticion, onPeticionUsada }) 
           texto={textoWhatsapp(
             completa ? `${mensajeConsulta(respuestas)}\n\n${a.texto ?? ""}`.trim() : a.texto ?? "",
             respuestas.nombre,
+            locale,
           )}
           className={accion}
         >
@@ -533,11 +557,11 @@ export default function AsistentePanel({ onCerrar, peticion, onPeticionUsada }) 
   const atajos = (
     <div className="flex w-full flex-wrap items-center gap-x-1">
       <button type="button" onClick={() => mostrarPersona()} className={enlaceTexto}>
-        Hablar con una persona
+        {ui.hablarPersona}
       </button>
       {modo === "consulta" && numeroPaso <= 1 ? (
         <button type="button" onClick={mostrarDudas} className={enlaceTexto}>
-          Tengo una duda
+          {ui.tengoDuda}
         </button>
       ) : null}
     </div>
@@ -566,7 +590,7 @@ export default function AsistentePanel({ onCerrar, peticion, onPeticionUsada }) 
           {anterior >= 0 ? (
             <button type="button" onClick={atras} className={cn(enlaceTexto, "gap-1.5 no-underline hover:no-underline")}>
               <ArrowLeft className="h-3.5 w-3.5" aria-hidden="true" />
-              Atrás
+              {ui.atras}
             </button>
           ) : (
             <span />
@@ -582,7 +606,7 @@ export default function AsistentePanel({ onCerrar, peticion, onPeticionUsada }) 
     controles = (
       <>
         <button type="button" className={chip} onClick={() => iniciarConsulta()}>
-          {completa ? "Volver a mi consulta" : "Seguir con mi consulta"}
+          {completa ? ui.volverConsulta : ui.seguirConsulta}
         </button>
         {atajos}
       </>
@@ -591,16 +615,16 @@ export default function AsistentePanel({ onCerrar, peticion, onPeticionUsada }) 
     controles = (
       <>
         <button type="button" className={chip} onClick={() => iniciarConsulta()}>
-          {Object.keys(respuestas).length ? "Volver a mi consulta" : "Mejor cuéntame tu proyecto"}
+          {Object.keys(respuestas).length ? ui.volverConsulta : ui.mejorProyecto}
         </button>
         <button type="button" className={chip} onClick={mostrarDudas}>
-          Tengo una duda
+          {ui.tengoDuda}
         </button>
       </>
     );
   }
 
-  const placeholder = pasoActual ? pasoActual.entrada ?? "Escribe tu respuesta…" : "Escribe tu pregunta…";
+  const placeholder = pasoActual ? pasoActual.entrada ?? ui.placeholderRespuesta : ui.placeholderPregunta;
 
   return (
     <div
@@ -628,8 +652,8 @@ export default function AsistentePanel({ onCerrar, peticion, onPeticionUsada }) 
         <button
           type="button"
           onClick={reiniciar}
-          aria-label="Empezar de nuevo"
-          title="Empezar de nuevo"
+          aria-label={ui.reiniciar}
+          title={ui.reiniciar}
           className="grid h-11 w-11 place-items-center rounded-full text-muted transition-colors hover:bg-white/[0.06] hover:text-text"
         >
           <RotateCcw className="h-4 w-4" aria-hidden="true" />
@@ -637,7 +661,7 @@ export default function AsistentePanel({ onCerrar, peticion, onPeticionUsada }) 
         <button
           type="button"
           onClick={() => onCerrar(true)}
-          aria-label="Cerrar asistente"
+          aria-label={ui.cerrar}
           className="grid h-11 w-11 place-items-center rounded-full text-muted transition-colors hover:bg-white/[0.06] hover:text-text"
         >
           <X className="h-5 w-5" aria-hidden="true" />
@@ -648,7 +672,7 @@ export default function AsistentePanel({ onCerrar, peticion, onPeticionUsada }) 
         ref={listaRef}
         role="log"
         aria-live="polite"
-        aria-label="Conversación"
+        aria-label={ui.conversacion}
         className="flex min-h-[min(120px,18svh)] flex-1 flex-col gap-3 overflow-y-auto overscroll-contain px-4 py-4"
       >
         {mensajes.map((m) =>
@@ -657,14 +681,14 @@ export default function AsistentePanel({ onCerrar, peticion, onPeticionUsada }) 
               key={m.id}
               className="mensaje-in m-0 ml-auto max-w-[85%] whitespace-pre-line wrap-anywhere rounded-2xl rounded-tr-md border border-accent/25 bg-accent/[0.14] px-4 py-2.5 text-[14.5px] leading-relaxed text-text"
             >
-              <span className="sr-only">Tú: </span>
+              <span className="sr-only">{ui.tu}</span>
               {m.texto}
             </p>
           ) : (
             <div key={m.id} className="mensaje-in flex max-w-[94%] flex-col gap-2.5">
               {m.texto ? (
                 <p className="m-0 whitespace-pre-line rounded-2xl rounded-tl-md border border-line bg-white/[0.04] px-4 py-3 text-[14.5px] leading-relaxed text-text-2">
-                  <span className="sr-only">Asistente: </span>
+                  <span className="sr-only">{ui.asistente}</span>
                   {m.texto}
                 </p>
               ) : null}
@@ -682,25 +706,25 @@ export default function AsistentePanel({ onCerrar, peticion, onPeticionUsada }) 
                           type="button"
                           onClick={() => cambiar(l.campo)}
                           className="inline-flex min-h-11 shrink-0 items-center rounded-full px-2 text-[12.5px] font-medium text-accent-2 hover:text-text"
-                          aria-label={`Cambiar ${l.titulo.toLowerCase()}`}
+                          aria-label={ui.cambiarAria(l.titulo.toLowerCase())}
                         >
-                          Cambiar
+                          {ui.cambiar}
                         </button>
                       </div>
                     ))}
                   </dl>
                   <EnlaceWhatsapp texto={mensajeFinal} className={cn(principal, "w-full")}>
                     <WhatsAppIcon className="h-[18px] w-[18px] text-[#128C7E]" />
-                    Continuar por WhatsApp
+                    {ui.continuarWhatsapp}
                     <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
-                    <span className="sr-only"> (abre WhatsApp; tú decides si envías el mensaje)</span>
+                    <span className="sr-only">{ui.continuarAviso}</span>
                   </EnlaceWhatsapp>
                   <p className="m-0 text-[12px] leading-snug text-faint">
-                    Se abre WhatsApp con el mensaje listo. Nada se envía hasta que tú lo mandes.
+                    {ui.notaWhatsapp}
                   </p>
                   <details className="group rounded-xl bg-white/[0.03] px-3 py-1">
                     <summary className="flex min-h-11 cursor-pointer list-none items-center justify-between text-[13px] font-medium text-text-2">
-                      Ver el mensaje
+                      {ui.verMensaje}
                       <span aria-hidden="true" className="transition-transform group-open:rotate-180">
                         ⌄
                       </span>
@@ -711,10 +735,10 @@ export default function AsistentePanel({ onCerrar, peticion, onPeticionUsada }) 
                   </details>
                   <div className="flex flex-wrap gap-x-1">
                     <button type="button" onClick={reiniciar} className={enlaceTexto}>
-                      Empezar de nuevo
+                      {ui.reiniciar}
                     </button>
                     <button type="button" onClick={() => mostrarPersona()} className={enlaceTexto}>
-                      Hablar con una persona
+                      {ui.hablarPersona}
                     </button>
                   </div>
                 </div>
@@ -732,7 +756,7 @@ export default function AsistentePanel({ onCerrar, peticion, onPeticionUsada }) 
               ) : null}
 
               {m === ultimo && m.sugerencias?.length && modo === "dudas" ? (
-                <div className="flex flex-wrap gap-2" role="group" aria-label="Preguntas frecuentes">
+                <div className="flex flex-wrap gap-2" role="group" aria-label={ui.preguntasFrecuentes}>
                   {m.sugerencias.map((id) => {
                     const t = temaPorId(id);
                     return t ? (
@@ -752,7 +776,7 @@ export default function AsistentePanel({ onCerrar, peticion, onPeticionUsada }) 
         <div
           ref={controlesRef}
           role="group"
-          aria-label={pasoActual ? `Paso ${numeroPaso} de ${visibles.length}. ${pasoActual.pregunta(respuestas)}` : "Opciones"}
+          aria-label={pasoActual ? ui.pasoDe(numeroPaso, visibles.length, pasoActual.pregunta(respuestas)) : ui.opciones}
           className="flex max-h-[42svh] min-h-0 shrink flex-wrap gap-2 overflow-y-auto border-t border-line px-4 py-3"
         >
           {controles}
@@ -785,7 +809,7 @@ export default function AsistentePanel({ onCerrar, peticion, onPeticionUsada }) 
         />
         <button
           type="submit"
-          aria-label="Enviar"
+          aria-label={ui.enviar}
           disabled={!texto.trim()}
           className={cn(
             "grid h-11 w-11 shrink-0 place-items-center rounded-full bg-text text-bg transition-[background-color,opacity,scale] active:scale-95",

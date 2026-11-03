@@ -3,10 +3,10 @@
 import { useEffect, useRef, useState } from "react";
 import { Pause, Play } from "lucide-react";
 import { cn } from "@/lib/cn";
-import { servicios, seguridad } from "@/lib/content/servicios";
+import { getServicios, getSeguridad } from "@/lib/content/servicios";
+import { useUi } from "@/components/i18n/LocaleProvider";
 import { abrirAsistente } from "@/lib/acciones";
 
-const piezas = [...servicios, seguridad];
 // Copias de la fila para que el recorrido no tenga huecos ni en pantallas muy
 // anchas: la pista avanza exactamente una copia y vuelve a empezar.
 const COPIAS = 4;
@@ -30,6 +30,9 @@ const COPIAS = 4;
  * pequeños. Cada botón abre el asistente con ese servicio.
  */
 export function BarraServicios() {
+  const { locale, ui } = useUi();
+  const seguridad = getSeguridad(locale);
+  const piezas = [...getServicios(locale), seguridad];
   const [pausada, setPausada] = useState(false);
   const [tocada, setTocada] = useState(false);
   const [fuera, setFuera] = useState(false);
@@ -75,7 +78,7 @@ export function BarraServicios() {
             <ul
               key={copia}
               className="banda-grupo"
-              aria-label={copia === 0 ? "Servicios de Northa Digital" : undefined}
+              aria-label={copia === 0 ? ui.servicios.banda : undefined}
               aria-hidden={copia > 0 || undefined}
             >
               {piezas.map((s, i) => (
@@ -110,7 +113,7 @@ export function BarraServicios() {
           setTocada(false);
           setPausada((v) => !v);
         }}
-        aria-label={pausada ? "Reanudar el movimiento de los servicios" : "Pausar el movimiento de los servicios"}
+        aria-label={pausada ? ui.servicios.reanudar : ui.servicios.pausar}
       >
         {pausada ? <Play className="h-4 w-4" aria-hidden="true" /> : <Pause className="h-4 w-4" aria-hidden="true" />}
       </button>

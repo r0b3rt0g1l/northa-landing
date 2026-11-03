@@ -21,7 +21,9 @@ const INDICE = path.join(RAIZ, "lib/content/capturas.json");
 const ANCHO = 1440;
 const ALTO = 900;
 
-const { proyectoDestacado } = await import(path.join(RAIZ, "lib/content/proyectos.js"));
+const { getProyectoDestacado } = await import(path.join(RAIZ, "lib/content/proyectos.js"));
+// Los enlaces (nombre, url, color) son iguales en todos los idiomas.
+const proyectoDestacado = getProyectoDestacado("es");
 const { slugMunicipio } = await import(path.join(RAIZ, "lib/content/slug.js"));
 const { chromium } = await import(process.env.PLAYWRIGHT_MODULE ?? "playwright");
 

@@ -3,7 +3,9 @@
 import { useCallback, useEffect, useId, useRef, useState } from "react";
 import { ArrowRight, ChevronDown, ShieldCheck } from "lucide-react";
 import { cn } from "@/lib/cn";
-import { servicios, seguridad } from "@/lib/content/servicios";
+import { getServicios, getSeguridad } from "@/lib/content/servicios";
+import { hrefSeccion } from "@/lib/i18n/config";
+import { useUi } from "@/components/i18n/LocaleProvider";
 import { abrirAsistente } from "@/lib/acciones";
 
 const ESPERA_ABRIR = 90; // ms con el ratón encima antes de abrir
@@ -21,6 +23,10 @@ const ESPERA_CERRAR = 240; // ms fuera antes de cerrar
  *  - con ratón, además, se abre al pasar por encima y se cierra al salir.
  */
 export function MenuServicios({ activo = false }) {
+  const { locale, ui } = useUi();
+  const servicios = getServicios(locale);
+  const seguridad = getSeguridad(locale);
+  const t = ui.menuServicios;
   const uid = useId();
   const panelId = `${uid}-servicios`;
   const [abierto, setAbierto] = useState(false);
@@ -152,7 +158,7 @@ export function MenuServicios({ activo = false }) {
           activo || abierto ? "text-text" : "text-text-2 hover:text-text",
         )}
       >
-        Servicios
+        {ui.nav.servicios}
         <ChevronDown
           className={cn("h-3.5 w-3.5 transition-transform duration-300", abierto && "rotate-180")}
           aria-hidden="true"
@@ -174,7 +180,7 @@ export function MenuServicios({ activo = false }) {
         className="menu-servicios glass-strong absolute left-1/2 top-[calc(100%+6px)] z-50 w-[min(760px,calc(100vw-48px))] -translate-x-1/2 rounded-[24px] p-3"
       >
         <div className="grid gap-3 md:grid-cols-[1.5fr_1fr]">
-          <ul className="m-0 grid list-none grid-cols-2 gap-1 p-0" aria-label="Servicios">
+          <ul className="m-0 grid list-none grid-cols-2 gap-1 p-0" aria-label={t.aria}>
             {servicios.map((s) => (
               <li key={s.id}>
                 <button
@@ -205,14 +211,13 @@ export function MenuServicios({ activo = false }) {
             </div>
             <div className="flex flex-col gap-1.5">
               {/* Ancla dentro de la página; desde la 404 lleva al inicio. */}
-              {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
               <a
-                href="/#seguridad"
+                href={hrefSeccion(locale, "seguridad")}
                 data-opcion=""
                 onClick={() => cerrar()}
                 className="inline-flex min-h-10 items-center gap-1.5 rounded-full px-1 text-[13px] font-medium text-text hover:text-accent-2"
               >
-                Conocer más
+                {t.conocerMas}
                 <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
               </a>
               <button
@@ -221,21 +226,20 @@ export function MenuServicios({ activo = false }) {
                 onClick={() => consultar(seguridad.id)}
                 className="inline-flex min-h-10 items-center justify-center rounded-full border border-accent/40 bg-accent/[0.12] px-4 text-[13px] font-semibold text-text transition-colors hover:bg-accent/[0.2]"
               >
-                Consultar sobre seguridad
+                {t.consultarSeguridad}
               </button>
             </div>
           </div>
         </div>
         <div className="mt-2 flex items-center justify-between gap-3 border-t border-line px-3 pt-2.5">
-          <p className="m-0 text-[12px] text-faint">Elige un servicio y el asistente te guía en tu consulta.</p>
-          {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
+          <p className="m-0 text-[12px] text-faint">{t.ayuda}</p>
           <a
-            href="/#servicios"
+            href={hrefSeccion(locale, "servicios")}
             data-opcion=""
             onClick={() => cerrar()}
             className="inline-flex min-h-10 shrink-0 items-center gap-1.5 rounded-full px-1 text-[13px] font-medium text-text-2 hover:text-text"
           >
-            Ver todo
+            {t.verTodo}
             <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
           </a>
         </div>
