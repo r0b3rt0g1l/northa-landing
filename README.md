@@ -12,6 +12,9 @@ cada bloque responde una sola pregunta.
 | Seguridad | ¿Puedo confiar en ellos? |
 | Escena final y pie | ¿Cómo los contacto? |
 
+«Chatbots inteligentes» tiene su propio bloque en «Lo que construimos» (qué es,
+cómo funciona y beneficios; `components/servicios/Chatbots.jsx`).
+
 La oferta completa vive en el banner de servicios de «Lo que construimos», en el
 menú «Servicios» de la barra superior y en el asistente.
 
@@ -100,12 +103,24 @@ El sitio no tiene formulario ni envía datos a ningún servidor. Los botones
 asistente se abre con su botón flotante, con el banner de servicios o desde el
 menú «Servicios».
 
-## Asistente del sitio
+## Asistente del sitio: Nora
 
-Asistente con respuestas automáticas. No es inteligencia artificial ni atención en
-tiempo real, y lo aclara si se le pregunta. Hace pocas preguntas, con opciones claras:
+Nora es la asistente virtual del sitio, con respuestas automáticas preparadas por el
+equipo. No es inteligencia artificial ni atención en tiempo real, y lo aclara si se
+le pregunta. Su tono es cercano y breve:
 
-1. «¿Buscas un portal municipal, una página web o algún sistema digital?». Si el
+- Saluda con una pregunta abierta («¿En qué puedo ayudarte hoy?») y escucha: no
+  muestra opciones ni la lista de servicios, que ya están en la página.
+- Responde a lo que se pregunta y, si sirve, hace una pregunta para seguir. Solo
+  habla de un servicio cuando es relevante para la duda.
+- No inventa precios, fechas ni disponibilidad: lo que no sabe lo pasa al equipo.
+- Ante algo urgente o si el visitante quiere hablar con alguien, ofrece WhatsApp.
+
+Cuando el visitante quiere contar su proyecto («Quiero contarte mi proyecto», o
+desde cualquier servicio de la página), hace pocas preguntas, con opciones claras:
+
+1. «¿Buscas un portal municipal, una página web o algún sistema digital?» (también
+   «Contenido y diseño» y «Chatbot»). Si el
    visitante no sabe, pregunta si es para un municipio, un negocio o un proyecto
    personal. También entiende texto libre (portal, turismo, trámites, formularios,
    galería, transparencia…).

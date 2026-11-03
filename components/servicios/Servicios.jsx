@@ -2,6 +2,7 @@ import { Reveal } from "@/components/ui/Reveal";
 import { Palabras } from "@/components/ui/Palabras";
 import { BarraServicios } from "./BarraServicios";
 import { SelloNortha } from "./SelloNortha";
+import { Chatbots } from "./Chatbots";
 import { getBeneficios } from "@/lib/content/servicios";
 import { getUi } from "@/lib/i18n/ui";
 
@@ -47,6 +48,10 @@ export function Servicios({ locale }) {
 
         <Reveal delay={120}>
           <BarraServicios />
+        </Reveal>
+
+        <Reveal delay={160}>
+          <Chatbots locale={locale} />
         </Reveal>
       </div>
     </section>

@@ -15,14 +15,15 @@ import { useLocale } from "@/components/i18n/LocaleProvider";
 import { EnlaceWhatsapp } from "@/components/ui/EnlaceWhatsapp";
 import { irASeccion } from "@/lib/acciones";
 
-const CLAVE = "northa-asistente-v4";
+// v5: Nora saluda sin opciones; una conversación guardada de antes no se recupera.
+const CLAVE = "northa-asistente-v5";
 const MAX_MENSAJES = 60;
 const MODOS = ["consulta", "resumen", "dudas", "persona"];
 // Datos que se conservan si el visitante empieza otra consulta desde la página.
 const DATOS_PERSONALES = ["organizacion", "nombre", "contacto", "correo"];
 // Dudas frecuentes que se contestan a mitad de la conversación sin guardarlas
 // como respuesta; después se repite la pregunta pendiente.
-const DUDAS_EN_CURSO = ["costos", "tiempos", "proceso", "asistente", "ubicacion", "redes-northa", "mantenimiento", "seguridad"];
+const DUDAS_EN_CURSO = ["costos", "tiempos", "proceso", "asistente", "ubicacion", "redes-northa", "mantenimiento", "seguridad", "urgente"];
 /** Recorta por caracteres reales (no parte un emoji por la mitad). */
 const recortar = (t, n) => Array.from(t).slice(0, n).join("");
 
@@ -54,17 +55,22 @@ function temaDe(k, r) {
   return "";
 }
 
-/** Primer mensaje: saludo breve y la primera pregunta que haga falta. */
+/** Primer mensaje al empezar desde un servicio: saludo breve y la pregunta que haga falta. */
 function saludo(k, r, paso) {
   const { consulta, pasos, preguntaSola } = k.C;
-  if (paso === 0 && !r.tiposSugeridos) return [bot(consulta.bienvenida)];
   const hola = [k.ui.holaSoy, temaDe(k, r)];
   if (paso >= pasos.length) return [bot(hola.filter(Boolean).join(" ")), bot(consulta.cierre, { tipo: "resumen" })];
   return [bot([...hola, preguntaSola(paso, r)].filter(Boolean).join(" "))];
 }
 
 function estadoInicial(k, respuestas = {}) {
-  const { pasos, siguientePaso } = k.C;
+  const { consulta, pasos, siguientePaso } = k.C;
+  // Sin nada elegido, Nora saluda y escucha: una pregunta abierta, sin
+  // opciones ni lista de servicios. La consulta guiada empieza cuando el
+  // visitante quiere contar su proyecto.
+  if (!Object.keys(respuestas).length) {
+    return { mensajes: [bot(consulta.bienvenida)], modo: "dudas", paso: 0, respuestas };
+  }
   const paso = siguientePaso(respuestas);
   return {
     mensajes: saludo(k, respuestas, paso),
@@ -606,7 +612,7 @@ export default function AsistentePanel({ onCerrar, peticion, onPeticionUsada }) 
     controles = (
       <>
         <button type="button" className={chip} onClick={() => iniciarConsulta()}>
-          {completa ? ui.volverConsulta : ui.seguirConsulta}
+          {completa ? ui.volverConsulta : Object.keys(respuestas).length ? ui.seguirConsulta : ui.empezarConsulta}
         </button>
         {atajos}
       </>
