@@ -1,7 +1,7 @@
 # Northa Digital — landing
 
 Sitio de Northa Digital: diseño, sistemas y presencia digital para organizaciones.
-Una sola página en español, construida con el método "una idea por sección":
+Una sola página, en español e inglés, construida con el método "una idea por sección":
 cada bloque responde una sola pregunta.
 
 | Sección | Pregunta que responde |
@@ -130,11 +130,52 @@ correo. Cualquier servicio de la página abre el asistente ya en ese servicio.
 Regla: nada de precios, plazos, funciones, integraciones, clientes o métricas
 inventadas.
 
+## Idiomas (español e inglés)
+
+El sitio es bilingüe. El español es el idioma principal y no cambió de dirección:
+
+| Idioma | Dirección |
+|---|---|
+| Español | `/` (por dentro se sirve como `/es`) |
+| Inglés | `/en` |
+
+- `proxy.js` reescribe las rutas sin prefijo a `/es`; `/en` pasa tal cual. Una ruta
+  que no existe muestra el 404 de su idioma.
+- `app/[lang]/` tiene el layout, la portada, el 404 y la imagen para redes. El layout
+  pone `<html lang>`, los metadatos (título, descripción, Open Graph) y las
+  etiquetas `hreflang` de cada idioma; `app/sitemap.js` lista los dos.
+- El selector de idioma («EN» / «ES») está en la barra superior, en el menú móvil y
+  en el pie; conserva la sección en la que estás. No se redirige por el idioma del
+  navegador: cada visitante elige.
+- El asistente, el mensaje de WhatsApp y el 404 también salen en el idioma de la página.
+  El mensaje prellenado de WhatsApp sale en el idioma desde el que se escribe.
+
+Dónde está cada texto:
+
+- `lib/i18n/ui.js`: etiquetas, avisos y nombres accesibles de la interfaz.
+- `lib/content/*.js`: contenido (hero, servicios, seguridad, portafolio, navegación).
+  Cada texto se escribe como `{ es: "…", en: "…" }`.
+- `lib/content/asistente.js`: temas, respuestas y palabras clave del asistente, por idioma.
+- `lib/content/consulta.js`: la consulta guiada. La lógica es una sola; cada idioma
+  tiene su «paquete» (`PACKS`) con textos, opciones y las expresiones que reconoce.
+- `lib/site.js`: nombre, descripción y palabras clave por idioma; contacto compartido.
+
+Para añadir o cambiar un texto, edita las dos versiones (`es` y `en`). Para sumar un
+tercer idioma: agrega el código en `lib/i18n/config.js`, su diccionario en
+`lib/i18n/ui.js`, su traducción en cada `{ es, en }`, su paquete en `consulta.js` y
+ajusta `proxy.js`.
+
+Pendiente: la tercera captura de «Así se entra a tu panel administrativo»
+(`public/seguridad/acceso-panel-2.webp`) tiene texto dentro de la imagen en español
+(«Correo electrónico», «Iniciar sesión»). Las dos primeras ya están en inglés.
+
 ## Estructura del proyecto
 
 ```
-app/                 rutas, metadatos, sitemap, robots, imagen para redes, estilos
+app/                 rutas por idioma (app/[lang]), sitemap, robots, estilos
+proxy.js             español en «/», inglés en «/en»
 components/
+  i18n/              idioma de la página y selector de idioma
   nav/               barra superior y menú de servicios
   hero/ servicios/ seguridad/ portafolio/ cierre/ footer/   secciones
   asistente/         lanzador y panel del asistente
@@ -142,6 +183,7 @@ components/
   cursor/            puntero adaptable
   ui/                botón, logo, sección, encabezado, revelado, iconos
 lib/
+  i18n/              idiomas, textos de la interfaz y resolución de traducciones
   content/           textos editables: hero, servicios, consulta, proyectos, asistente
   asistente.js       motor del asistente
   acciones.js        puente entre bloques (abrir el asistente, ir a una sección)

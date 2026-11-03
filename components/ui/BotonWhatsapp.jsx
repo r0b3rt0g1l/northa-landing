@@ -2,7 +2,8 @@
 
 import { Button } from "./Button";
 import { WhatsAppIcon } from "./WhatsAppIcon";
-import { abrirWhatsapp, enlaceWhatsapp, MENSAJE_WHATSAPP } from "@/lib/whatsapp";
+import { abrirWhatsapp, enlaceWhatsapp } from "@/lib/whatsapp";
+import { useUi } from "@/components/i18n/LocaleProvider";
 import { usePestanaNueva } from "@/hooks/usePestanaNueva";
 
 /**
@@ -11,8 +12,11 @@ import { usePestanaNueva } from "@/hooks/usePestanaNueva";
  * listo que el visitante revisa y envía. Sin JavaScript es un enlace wa.me.
  * En computadora, el nombre accesible avisa que se abre en una pestaña nueva.
  */
-export function BotonWhatsapp({ texto = MENSAJE_WHATSAPP, children = "Escríbenos por WhatsApp", className, onAbrir, ...props }) {
+export function BotonWhatsapp({ texto, children, className, onAbrir, ...props }) {
   const pestana = usePestanaNueva();
+  const { ui } = useUi();
+  texto ??= ui.whatsapp.mensaje;
+  children ??= ui.whatsapp.boton;
   return (
     <Button
       href={enlaceWhatsapp(texto)}
@@ -29,8 +33,8 @@ export function BotonWhatsapp({ texto = MENSAJE_WHATSAPP, children = "Escríbeno
       </span>
       {children}
       {/* El ícono es decorativo: el nombre del botón dice a dónde lleva. */}
-      {typeof children === "string" && /whatsapp/i.test(children) ? null : <span className="sr-only"> por WhatsApp</span>}
-      {pestana ? <span className="sr-only"> (se abre en una pestaña nueva)</span> : null}
+      {typeof children === "string" && /whatsapp/i.test(children) ? null : <span className="sr-only">{ui.whatsapp.porWhatsapp}</span>}
+      {pestana ? <span className="sr-only">{ui.whatsapp.pestana}</span> : null}
     </Button>
   );
 }

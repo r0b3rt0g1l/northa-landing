@@ -1,5 +1,7 @@
 import { HeroSenal } from "./HeroSenal";
-import { hero } from "@/lib/content/hero";
+import { getHero } from "@/lib/content/hero";
+import { getUi } from "@/lib/i18n/ui";
+import { hrefSeccion } from "@/lib/i18n/config";
 
 /**
  * Hero: ¿qué hacemos? Una sola idea, centrada bajo una señal de luz.
@@ -8,7 +10,8 @@ import { hero } from "@/lib/content/hero";
  * desplaza la página por su cuenta. El titular no espera: es el elemento
  * principal de la primera pintura.
  */
-export function Hero() {
+export function Hero({ locale }) {
+  const hero = getHero(locale);
   return (
     <section
       id="inicio"
@@ -40,14 +43,13 @@ export function Hero() {
       </div>
 
       {/* Ancla dentro de la página; desde la 404 lleva al inicio. */}
-      {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
       <a
-        href="/#servicios"
+        href={hrefSeccion(locale, "servicios")}
         className="indicador hero-in absolute bottom-7 left-1/2 -translate-x-1/2 rounded-full px-3 py-2 sm:bottom-9"
         style={{ "--d": "700ms" }}
       >
         <span className="indicador-raton" aria-hidden="true" />
-        Explorar
+        {getUi(locale).hero.explorar}
       </a>
     </section>
   );

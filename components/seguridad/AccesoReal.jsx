@@ -1,5 +1,6 @@
 import Image from "next/image";
-import { seguridad } from "@/lib/content/servicios";
+import { getSeguridad } from "@/lib/content/servicios";
+import { getUi } from "@/lib/i18n/ui";
 import { DesplazableAccesible } from "@/components/ui/DesplazableAccesible";
 
 /**
@@ -14,8 +15,9 @@ import { DesplazableAccesible } from "@/components/ui/DesplazableAccesible";
  *  - Más angosto: tarjetas que se deslizan de lado (con teclado, la franja
  *    recibe el foco y las flechas avanzan una tarjeta).
  */
-export function AccesoReal() {
-  const { titulo, texto, pasos } = seguridad.acceso;
+export function AccesoReal({ locale }) {
+  const { titulo, texto, pasos } = getSeguridad(locale).acceso;
+  const ui = getUi(locale).seguridad;
   return (
     <div className="ingreso">
       <div className="flex flex-wrap items-end justify-between gap-x-6 gap-y-2">
@@ -24,16 +26,16 @@ export function AccesoReal() {
           <p className="m-0 text-[14.5px] leading-snug text-muted">{texto}</p>
         </div>
         <span className="shrink-0 rounded-full border border-line-strong px-3 py-1 font-mono text-[11.5px] text-text-2">
-          Capturas reales
+          {ui.capturasReales}
         </span>
       </div>
-      <DesplazableAccesible className="ingreso-ventana" etiqueta="Pasos del acceso al panel. Desliza para ver los tres.">
+      <DesplazableAccesible className="ingreso-ventana" etiqueta={ui.pasosEtiqueta}>
         <ol className="ingreso-pasos">
           {pasos.map((p, i) => (
             <li key={p.src} className="ingreso-paso glass glass-interior">
               <figure className="m-0 flex flex-col gap-3">
                 <figcaption className="flex flex-col gap-1">
-                  <span className="ingreso-num">Paso {i + 1}</span>
+                  <span className="ingreso-num">{ui.paso(i + 1)}</span>
                   <strong className="text-[15.5px] font-semibold leading-snug tracking-[-0.01em] text-text">{p.titulo}</strong>
                   <span className="text-[13.5px] leading-snug text-muted">{p.texto}</span>
                 </figcaption>

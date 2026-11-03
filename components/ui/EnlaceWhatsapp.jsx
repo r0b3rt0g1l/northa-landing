@@ -1,6 +1,7 @@
 "use client";
 
-import { abrirWhatsapp, enlaceWhatsapp, MENSAJE_WHATSAPP } from "@/lib/whatsapp";
+import { abrirWhatsapp, enlaceWhatsapp } from "@/lib/whatsapp";
+import { useUi } from "@/components/i18n/LocaleProvider";
 import { usePestanaNueva } from "@/hooks/usePestanaNueva";
 
 /**
@@ -8,8 +9,10 @@ import { usePestanaNueva } from "@/hooks/usePestanaNueva";
  * Sin JavaScript sigue funcionando: es un enlace wa.me normal. En computadora,
  * el nombre accesible avisa que se abre en una pestaña nueva.
  */
-export function EnlaceWhatsapp({ texto = MENSAJE_WHATSAPP, onClick, children, ...props }) {
+export function EnlaceWhatsapp({ texto, onClick, children, ...props }) {
   const pestana = usePestanaNueva();
+  const { ui } = useUi();
+  texto ??= ui.whatsapp.mensaje;
   return (
     <a
       href={enlaceWhatsapp(texto)}
@@ -21,7 +24,7 @@ export function EnlaceWhatsapp({ texto = MENSAJE_WHATSAPP, onClick, children, ..
       {...props}
     >
       {children}
-      {pestana ? <span className="sr-only"> (se abre en una pestaña nueva)</span> : null}
+      {pestana ? <span className="sr-only">{ui.whatsapp.pestana}</span> : null}
     </a>
   );
 }

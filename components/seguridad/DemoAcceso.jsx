@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { KeyRound, Laptop, Lock, LockKeyhole, ShieldCheck, UserRound } from "lucide-react";
+import { useUi } from "@/components/i18n/LocaleProvider";
 
 /**
  * Demostración visual del servicio de seguridad: un equipo entra por un
@@ -19,6 +20,8 @@ import { KeyRound, Laptop, Lock, LockKeyhole, ShieldCheck, UserRound } from "luc
  */
 export function DemoAcceso() {
   const ref = useRef(null);
+  const { ui } = useUi();
+  const d = ui.seguridad.demo;
 
   useEffect(() => {
     const el = ref.current;
@@ -52,7 +55,7 @@ export function DemoAcceso() {
       ref={ref}
       className="acceso"
       role="img"
-      aria-label="Ilustración: un equipo se conecta por un túnel VPN cifrado, inicia sesión de forma segura y llega a un panel administrativo protegido y monitoreado."
+      aria-label={d.aria}
     >
       <div className="acceso-panel glass glass-interior" aria-hidden="true">
         <div className="acceso-barra">
@@ -63,11 +66,11 @@ export function DemoAcceso() {
           </span>
           <span className="acceso-titulo">
             <LockKeyhole className="h-3.5 w-3.5" strokeWidth={2} />
-            Panel administrativo
+            {d.panel}
           </span>
           <span className="acceso-estado">
             <i />
-            Protegido
+            {d.protegido}
           </span>
         </div>
         <div className="acceso-cuerpo">
@@ -110,8 +113,8 @@ export function DemoAcceso() {
             <UserRound className="h-4 w-4" strokeWidth={1.8} />
           </span>
           <span className="flex min-w-0 flex-col">
-            <strong>Login seguro</strong>
-            <small>Acceso administrativo</small>
+            <strong>{d.login}</strong>
+            <small>{d.loginSub}</small>
           </span>
         </div>
         <span className="acceso-campo">
@@ -144,13 +147,13 @@ export function DemoAcceso() {
           <ShieldCheck className="h-4 w-4" strokeWidth={1.8} />
         </span>
         <span className="acceso-vpn-texto">
-          <strong>VPN</strong>
-          <small>Conexión cifrada</small>
+          <strong>{d.vpn}</strong>
+          <small>{d.vpnSub}</small>
         </span>
       </div>
 
       <span className="acceso-etiqueta" aria-hidden="true">
-        Demostración visual
+        {d.etiqueta}
       </span>
     </div>
   );

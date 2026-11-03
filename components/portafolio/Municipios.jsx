@@ -4,6 +4,7 @@ import { ArrowUpRight } from "lucide-react";
 import { StarIcon } from "@/components/ui/StarIcon";
 import capturas from "@/lib/content/capturas.json";
 import { slugMunicipio } from "@/lib/content/slug";
+import { getUi } from "@/lib/i18n/ui";
 
 const sinGuion = (t) => t.replace(/­/g, "");
 const dominio = (url) => new URL(url).hostname.replace(/^www\./, "");
@@ -26,19 +27,20 @@ const capturaDe = (m) => capturas[slugMunicipio(m.nombre)] ?? null;
  * (índice en lib/content/capturas.json); si falta una, se muestra un respaldo
  * con el color institucional del municipio. Funciona sin JavaScript.
  */
-export function Municipios({ enlaces }) {
+export function Municipios({ enlaces, locale }) {
+  const ui = getUi(locale).portafolio;
   return (
     <div className="portales-marco glass">
       <div className="portales-cabeza">
         <div className="flex min-w-0 flex-col gap-1">
-          <h3 className="text-[clamp(1.2rem,0.9vw+1rem,1.5rem)] tracking-[-0.02em]">Portales municipales</h3>
+          <h3 className="text-[clamp(1.2rem,0.9vw+1rem,1.5rem)] tracking-[-0.02em]">{ui.marco}</h3>
           <p className="m-0 inline-flex items-center gap-1.5 text-[13.5px] text-muted">
             <StarIcon className="h-3.5 w-3.5" />
-            Hechos por Northa Digital
+            {ui.hechosPor}
           </p>
         </div>
         <span className="shrink-0 rounded-full border border-line-strong px-3 py-1 font-mono text-[11.5px] text-text-2">
-          {enlaces.length} publicados
+          {ui.publicados(enlaces.length)}
         </span>
       </div>
       <ul className="portales m-0 list-none p-0">
@@ -82,7 +84,7 @@ export function Municipios({ enlaces }) {
                   </span>
                   <ArrowUpRight className="portal-flecha" aria-hidden="true" />
                 </span>
-                <span className="sr-only"> (abre el portal de {nombre} en una pestaña nueva)</span>
+                <span className="sr-only">{ui.abre(nombre)}</span>
               </a>
             </li>
           );

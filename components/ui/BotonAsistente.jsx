@@ -2,12 +2,14 @@
 
 import { Button } from "./Button";
 import { abrirAsistente } from "@/lib/acciones";
+import { useUi } from "@/components/i18n/LocaleProvider";
 
 /** Botón que abre el asistente del sitio. */
-export function BotonAsistente({ children = "Hablar con el asistente", variant = "secondary", ...props }) {
+export function BotonAsistente({ children, variant = "secondary", ...props }) {
+  const { ui } = useUi();
   return (
     <Button variant={variant} onClick={() => abrirAsistente()} aria-haspopup="dialog" {...props}>
-      {children}
+      {children ?? ui.botonAsistente}
     </Button>
   );
 }

@@ -2,25 +2,28 @@ import { Reveal } from "@/components/ui/Reveal";
 import { Palabras } from "@/components/ui/Palabras";
 import { BarraServicios } from "./BarraServicios";
 import { SelloNortha } from "./SelloNortha";
-import { beneficios } from "@/lib/content/servicios";
+import { getBeneficios } from "@/lib/content/servicios";
+import { getUi } from "@/lib/i18n/ui";
 
 /**
  * Lo que construimos: una frase directa, el sello de Northa, los beneficios
  * para el cliente en seis piezas cortas y el banner de servicios que avanza
  * hacia la derecha con un brinco lento. Cada servicio abre el asistente.
  */
-export function Servicios() {
+export function Servicios({ locale }) {
+  const ui = getUi(locale).servicios;
+  const beneficios = getBeneficios(locale);
   return (
     <section id="servicios" aria-labelledby="servicios-title" className="relative px-5 py-24 sm:px-8 sm:py-32">
       <div className="mx-auto flex w-full max-w-[1200px] flex-col gap-12 sm:gap-16">
         <Reveal className="flex flex-col items-start gap-8 md:flex-row md:items-center md:justify-between md:gap-12">
           <div className="flex max-w-[680px] flex-col gap-5">
-            <p className="eyebrow m-0">Servicios</p>
+            <p className="eyebrow m-0">{ui.eyebrow}</p>
             <h2 id="servicios-title" className="text-[length:var(--text-h2)]">
-              <Palabras>Lo que construimos</Palabras>
+              <Palabras>{ui.titulo}</Palabras>
             </h2>
             <p className="m-0 max-w-[48ch] text-[length:var(--text-lead)] leading-[1.55] text-text-2">
-              Portales municipales, sitios web y soluciones digitales con diseño limpio y tecnología bien hecha.
+              {ui.lead}
             </p>
           </div>
           <SelloNortha className="self-center md:self-auto" />
